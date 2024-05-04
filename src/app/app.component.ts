@@ -1,9 +1,8 @@
-import { ShowsComponent } from './shows';
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { FooterComponent } from './core/footer/footer.component';
-import { HeaderComponent } from './core/header/header.component';
+import { FooterComponent, HeaderComponent } from './core';
+import { ShowsComponent } from './shows';
 
 @Component({
   selector: 'app-root',
