@@ -1,7 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Observable } from 'rxjs';
-import { CountrieResponseModel, LanguageResponseInterface } from '../';
+import {
+  CountrieResponseModel,
+  LanguageResponseInterface,
+  StreamingPlatformsInterface,
+} from '../';
 import { environment } from '../../../environments/environment.development';
 
 @Injectable({
@@ -11,51 +14,51 @@ export class ConfigurationService {
   private readonly http = inject(HttpClient);
   private readonly countriesPath = 'configuration/countries';
   private readonly languagesPath = 'configuration/languages';
-  private readonly streamingPlatforms = [
+  private readonly streamingPlatforms: StreamingPlatformsInterface[] = [
     {
-      providerID: 8,
-      logoPath: '/pbpMk2JmcoNnQwx5JGpXngfoWtp.jpg',
-      providerName: 'Netflix',
+      provider_id: 8,
+      logo_path: '/pbpMk2JmcoNnQwx5JGpXngfoWtp.jpg',
+      provider_name: 'Netflix',
     },
     {
-      providerID: 337,
-      logoPath: '/97yvRBw1GzX7fXprcF80er19ot.jpg',
-      providerName: 'Disney Plus',
+      provider_id: 337,
+      logo_path: '/97yvRBw1GzX7fXprcF80er19ot.jpg',
+      provider_name: 'Disney Plus',
     },
     {
-      providerID: 384,
-      logoPath: '/b8edpTaLCHFrUnhpGQIZJUpFX7T.jpg',
-      providerName: 'HBO Max',
+      provider_id: 384,
+      logo_path: '/b8edpTaLCHFrUnhpGQIZJUpFX7T.jpg',
+      provider_name: 'HBO Max',
     },
     {
-      providerID: 119,
-      logoPath: '/dQeAar5H991VYporEjUspolDarG.jpg',
-      providerName: 'Amazone Prime Video',
+      provider_id: 119,
+      logo_path: '/dQeAar5H991VYporEjUspolDarG.jpg',
+      provider_name: 'Amazone Prime Video',
     },
     {
-      providerName: 'Hulu',
-      logoPath: '/bxBlRPEPpMVDc4jMhSrTf2339DW.jpg',
-      providerID: 15,
+      provider_name: 'Hulu',
+      logo_path: '/bxBlRPEPpMVDc4jMhSrTf2339DW.jpg',
+      provider_id: 15,
     },
     {
-      providerID: 2,
-      logoPath: '/9ghgSC0MA082EL6HLCW3GalykFD.jpg',
-      providerName: 'Apple TV',
+      provider_id: 2,
+      logo_path: '/9ghgSC0MA082EL6HLCW3GalykFD.jpg',
+      provider_name: 'Apple TV',
     },
     {
-      providerID: 35,
-      logoPath: '/bZvc9dXrXNly7cA0V4D9pR8yJwm.jpg',
-      providerName: 'Rakuten TV',
+      provider_id: 35,
+      logo_path: '/bZvc9dXrXNly7cA0V4D9pR8yJwm.jpg',
+      provider_name: 'Rakuten TV',
     },
     {
-      providerID: 7,
-      logoPath: '/i6lRmkKmJ23oOZ6IyjnOYLKxA9J.jpg',
-      providerName: 'Vudu',
+      provider_id: 7,
+      logo_path: '/i6lRmkKmJ23oOZ6IyjnOYLKxA9J.jpg',
+      provider_name: 'Vudu',
     },
     {
-      providerID: 3,
-      logoPath: '/8z7rC8uIDaTM91X0ZfkRf04ydj2.jpg',
-      providerName: 'Google Play Movies',
+      provider_id: 3,
+      logo_path: '/8z7rC8uIDaTM91X0ZfkRf04ydj2.jpg',
+      provider_name: 'Google Play Movies',
     },
   ];
 
