@@ -1,3 +1,5 @@
+export { streamingPlatforms } from './data/streaming-platforms';
+
 export { ConfigurationService } from './services/configuration.service';
 export { ShowsService } from './services/shows.service';
 

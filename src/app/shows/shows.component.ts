@@ -1,5 +1,4 @@
-import { Component, inject } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { Component, inject, signal } from '@angular/core';
 import {
   GenresComponent,
   ShowComponent,
@@ -26,19 +25,22 @@ export class ShowsComponent {
   private readonly showsService = inject(ShowsService);
   private readonly configurationService = inject(ConfigurationService);
 
-  public readonly $streamingPlatforms = toSignal(
+  public readonly $streamingPlatforms = signal(
     this.configurationService.getStreamingPlatforms()
   );
-
   public userLocation = '';
 
   constructor() {
     this.getUserLocation();
   }
 
-  public getShows(showType: string) {
+  public getShows(
+    showType: string,
+    genres: number[],
+    watchProviders: number[]
+  ) {
     this.showsService
-      .getShows('movie', 'en-US', 1, this.userLocation, [16, 35], [8, 337])
+      .getShows(showType, 1, this.userLocation, genres, watchProviders)
       .subscribe((res) => console.log(res));
   }
 
