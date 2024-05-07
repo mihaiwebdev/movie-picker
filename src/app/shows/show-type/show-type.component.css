@@ -1,0 +1,87 @@
+.show-types-container {
+  background-color: var(--bg-color);
+  position: relative;
+  margin-top: 5em;
+
+  .movies {
+    position: absolute;
+    top: -56%;
+    left: -5%;
+    width: 60%;
+    height: 200px;
+    background-color: var(--bg-color);
+    border-radius: 50%;
+    z-index: 1;
+  }
+
+  .tv-series {
+    position: absolute;
+    top: -189%;
+    left: 45%;
+    width: 60%;
+    height: 200px;
+    background-color: red;
+    border-radius: 50%;
+    z-index: 1;
+  }
+
+  .show-types {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    align-items: flex-start;
+    position: relative;
+    top: -1em;
+
+    .show-type {
+      text-align: start;
+      z-index: 2;
+      margin-bottom: 3em;
+      font-size: 1.2rem;
+      font-weight: 500;
+      border: none;
+      background-color: transparent;
+      color: var(--text-color-white);
+
+      &.active {
+        color: #caf0f8;
+      }
+
+      .movie-hr {
+        animation: movieHrAnimation 0.3s ease;
+        background-color: #caf0f8;
+        display: block;
+        width: 100%;
+        height: 1px;
+      }
+
+      .tv-hr {
+        animation: tvHrAnimation 0.3s ease;
+        background-color: #caf0f8;
+        display: block;
+        width: 100%;
+        height: 1px;
+      }
+    }
+  }
+}
+
+@keyframes movieHrAnimation {
+  0% {
+    transform: translateX(200%);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes tvHrAnimation {
+  0% {
+    transform: translateX(-200%);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}

@@ -1,3 +1,10 @@
-<app-show-type></app-show-type>
+<app-genres
+  [$genres]="$genres()"
+  ($selectGenresOutput)="onGenresSelect($event)"
+></app-genres>
+
+<app-show-type
+  (selectShowTypeOutput)="onShowTypeSelect($event)"
+></app-show-type>
+
 <app-streaming-platform></app-streaming-platform>
-<app-genres></app-genres>

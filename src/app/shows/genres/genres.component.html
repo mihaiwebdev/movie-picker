@@ -1,1 +1,11 @@
-<p>genres works!</p>
+<div class="genres-container">
+  <div class="card flex justify-content-center">
+    <p-multiSelect
+      [options]="$genres()"
+      [(ngModel)]="$selectedGenres"
+      optionLabel="name"
+      placeholder="Select Genres"
+      (onChange)="onGenreChange()"
+    />
+  </div>
+</div>

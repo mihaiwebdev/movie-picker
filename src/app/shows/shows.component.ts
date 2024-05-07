@@ -6,7 +6,12 @@ import {
   StreamingPlatformComponent,
   TrendingComponent,
 } from '.';
-import { ConfigurationService, ShowsService } from '../core';
+import {
+  ConfigurationService,
+  GenreInterface,
+  ShowTypesEnum,
+  ShowsService,
+} from '../core';
 
 @Component({
   selector: 'app-movie',
@@ -25,29 +30,47 @@ export class ShowsComponent {
   private readonly showsService = inject(ShowsService);
   private readonly configurationService = inject(ConfigurationService);
 
+  private selectedShowType = ShowTypesEnum.movie;
+  private selectedGenres: GenreInterface[] = [];
   public readonly $streamingPlatforms = signal(
     this.configurationService.getStreamingPlatforms()
   );
-  public userLocation = '';
+  public readonly $userLocation = this.configurationService.$userLocation;
+  public readonly $genres = this.configurationService.$genres;
 
   constructor() {
     this.getUserLocation();
+    this.getGenres();
   }
 
   public getShows(
     showType: string,
+    page: number,
+    location: string,
     genres: number[],
     watchProviders: number[]
   ) {
     this.showsService
-      .getShows(showType, 1, this.userLocation, genres, watchProviders)
+      .getShows(showType, page, location, genres, watchProviders)
       .subscribe((res) => console.log(res));
   }
 
+  public onShowTypeSelect(showType: ShowTypesEnum) {
+    this.selectedShowType = showType;
+  }
+
+  public onGenresSelect(genres: GenreInterface[]) {
+    this.selectedGenres = genres;
+  }
+
   private getUserLocation() {
-    this.configurationService
-      .getUserLocation()
-      .subscribe((res) => (this.userLocation = res.country));
+    if (this.$userLocation()) return;
+    this.configurationService.getUserLocation();
+  }
+
+  private getGenres() {
+    if (this.$genres().length > 0) return;
+    this.configurationService.getGenres();
   }
 }
 

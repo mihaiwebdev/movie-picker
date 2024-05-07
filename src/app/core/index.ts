@@ -1,17 +1,26 @@
+// Data
 export { streamingPlatforms } from './data/streaming-platforms';
 
+// Services
 export { ConfigurationService } from './services/configuration.service';
 export { ShowsService } from './services/shows.service';
 
-export { CountrieResponseModel } from './types/countrie-response.interface';
-export { LanguageResponseInterface } from './types/language-response.interface';
+// Enumes
+export { ShowTypesEnum } from './enums/show-types.enum';
+
+// Interfaces
+export {
+  GenreInterface,
+  GenresResponseInterface,
+} from './types/genres-response.interface';
 export { StreamingPlatformsInterface } from './types/show-platforms.interface';
 export {
-  ShowResponseInterface,
   ShowInterface,
+  ShowResponseInterface,
 } from './types/show-response.interface';
 export { UserLocationResponseInterface } from './types/user-location-response.interface';
 
+// Components
 export { FooterComponent } from './footer/footer.component';
 export { HeaderComponent } from './header/header.component';
 export { tmdbApiAuthInterceptor } from './interceptors/tmdb-api-auth.interceptor';
