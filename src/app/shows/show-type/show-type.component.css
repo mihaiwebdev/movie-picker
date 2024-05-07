@@ -1,15 +1,15 @@
 .show-types-container {
-  background-color: var(--bg-color);
+  background-color: var(--bg-dark);
   position: relative;
-  margin-top: 5em;
+  margin-top: 4em;
 
   .movies {
     position: absolute;
-    top: -56%;
+    top: -54%;
     left: -5%;
     width: 60%;
     height: 200px;
-    background-color: var(--bg-color);
+    background-color: var(--bg-dark);
     border-radius: 50%;
     z-index: 1;
   }
@@ -20,7 +20,7 @@
     left: 45%;
     width: 60%;
     height: 200px;
-    background-color: red;
+    background-color: var(--bg-red);
     border-radius: 50%;
     z-index: 1;
   }
@@ -33,7 +33,7 @@
     position: relative;
     top: -1em;
 
-    .show-type {
+    .show-type-btn {
       text-align: start;
       z-index: 2;
       margin-bottom: 3em;
@@ -42,25 +42,12 @@
       border: none;
       background-color: transparent;
       color: var(--text-color-white);
+      cursor: pointer;
+      font-family: var(--text-font);
+      font-weight: 600;
 
       &.active {
         color: #caf0f8;
-      }
-
-      .movie-hr {
-        animation: movieHrAnimation 0.3s ease;
-        background-color: #caf0f8;
-        display: block;
-        width: 100%;
-        height: 1px;
-      }
-
-      .tv-hr {
-        animation: tvHrAnimation 0.3s ease;
-        background-color: #caf0f8;
-        display: block;
-        width: 100%;
-        height: 1px;
       }
     }
   }

@@ -1,10 +1,12 @@
-<app-genres
-  [$genres]="$genres()"
-  ($selectGenresOutput)="onGenresSelect($event)"
-></app-genres>
-
-<app-show-type
-  (selectShowTypeOutput)="onShowTypeSelect($event)"
-></app-show-type>
-
-<app-streaming-platform></app-streaming-platform>
+<div class="sub-header-container">
+  <div class="content-container">
+    <app-genres
+      [$genres]="$genres()"
+      ($selectGenresOutput)="onGenresSelect($event)"
+    ></app-genres>
+  </div>
+  <app-show-type
+    (selectShowTypeOutput)="onShowTypeSelect($event)"
+  ></app-show-type>
+</div>
+<!-- <app-streaming-platform></app-streaming-platform> -->

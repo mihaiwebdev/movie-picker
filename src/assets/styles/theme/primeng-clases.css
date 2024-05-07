@@ -2,4 +2,21 @@
   width: 80%;
   left: 50%;
   transform: translateX(-50%);
+  background-color: transparent;
+  border-color: var(--text-color-primary);
+  border-radius: 8px;
+
+  .p-multiselect-label.p-placeholder {
+    color: var(--text-color-primary);
+    font-size: 0.9rem;
+    padding-left: 1.2em;
+  }
+
+  .p-multiselect-trigger {
+    color: var(--text-color-primary);
+  }
+
+  .p-multiselect-header {
+    display: none;
+  }
 }

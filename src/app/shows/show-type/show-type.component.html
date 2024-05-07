@@ -1,26 +1,22 @@
 <div class="show-types-container">
-  <div class="movies"></div>
-  <div class="tv-series"></div>
-  <div class="show-types">
-    <button
-      (click)="selectShowType(showTypesEnum.movie)"
-      class="show-type"
-      [class.active]="showType === showTypesEnum.movie"
-    >
-      Movies @if (showType === showTypesEnum.movie) {
-
-      <span class="movie-hr"></span>
-      }
-    </button>
-    <button
-      (click)="selectShowType(showTypesEnum.tv)"
-      class="show-type"
-      [class.active]="showType === showTypesEnum.tv"
-    >
-      TV Series @if (showType === showTypesEnum.tv) {
-
-      <span class="tv-hr"></span>
-      }
-    </button>
+  <div class="content-container">
+    <div class="movies"></div>
+    <div class="tv-series"></div>
+    <div class="show-types">
+      <button
+        (click)="selectShowType(showTypesEnum.movie)"
+        class="show-type-btn"
+        [class.active]="showType === showTypesEnum.movie"
+      >
+        Movies
+      </button>
+      <button
+        (click)="selectShowType(showTypesEnum.tv)"
+        class="show-type-btn"
+        [class.active]="showType === showTypesEnum.tv"
+      >
+        TV Series
+      </button>
+    </div>
   </div>
 </div>

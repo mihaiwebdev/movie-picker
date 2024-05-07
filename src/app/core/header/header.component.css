@@ -3,11 +3,14 @@
   color: var(--text-color-primary);
   letter-spacing: 0.1em;
   height: 7.7em;
+  z-index: 4;
+  position: relative;
 
   .header-container {
     max-width: 1500px;
     margin: 0 auto;
     padding: 1em;
+    padding-bottom: 0;
 
     .navbar {
       display: flex;
@@ -24,7 +27,7 @@
         }
 
         .span {
-          font-size: 1.3rem;
+          font-size: 1rem;
           margin-left: 0.4em;
           color: var(--text-color-primary);
 
@@ -72,7 +75,8 @@
       font-size: 1.5rem;
       text-align: center;
       margin-top: 0.7em;
-      font-weight: 100;
+      font-weight: 700;
+      letter-spacing: 0.5px;
     }
   }
 }

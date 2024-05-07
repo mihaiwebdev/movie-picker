@@ -14,7 +14,7 @@ import {
 } from '../core';
 
 @Component({
-  selector: 'app-movie',
+  selector: 'app-shows',
   standalone: true,
   imports: [
     ShowTypeComponent,
