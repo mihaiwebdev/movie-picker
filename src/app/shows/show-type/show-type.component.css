@@ -1,0 +1,74 @@
+.show-types-container {
+  background-color: var(--bg-dark);
+  position: relative;
+  margin-top: 4em;
+
+  .movies {
+    position: absolute;
+    top: -54%;
+    left: -5%;
+    width: 60%;
+    height: 200px;
+    background-color: var(--bg-dark);
+    border-radius: 50%;
+    z-index: 1;
+  }
+
+  .tv-series {
+    position: absolute;
+    top: -189%;
+    left: 45%;
+    width: 60%;
+    height: 200px;
+    background-color: var(--bg-light-red);
+    border-radius: 50%;
+    z-index: 1;
+  }
+
+  .show-types {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    align-items: flex-start;
+    position: relative;
+    top: -1em;
+
+    .show-type-btn {
+      text-align: start;
+      z-index: 2;
+      margin-bottom: 3em;
+      font-size: 1.2rem;
+      font-weight: 500;
+      border: none;
+      background-color: transparent;
+      color: var(--font-color-primary);
+      cursor: pointer;
+      font-family: var(--text-font);
+      font-weight: 600;
+
+      &.active {
+        color: #caf0f8;
+      }
+    }
+  }
+}
+
+@keyframes movieHrAnimation {
+  0% {
+    transform: translateX(200%);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes tvHrAnimation {
+  0% {
+    transform: translateX(-200%);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}

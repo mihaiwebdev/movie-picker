@@ -1,13 +1,16 @@
 .header {
-  background-color: var(--bg-redish);
-  color: var(--text-color-primary);
+  background-color: var(--bg-light-red);
+  color: var(--font-color-primary);
   letter-spacing: 0.1em;
   height: 7.7em;
+  z-index: 4;
+  position: relative;
 
   .header-container {
     max-width: 1500px;
     margin: 0 auto;
     padding: 1em;
+    padding-bottom: 0;
 
     .navbar {
       display: flex;
@@ -25,13 +28,15 @@
         }
 
         .span {
-          font-size: 1.3rem;
+          font-size: 1rem;
           margin-left: 0.4em;
-          color: var(--text-color-primary);
-
-          .wiz {
-            color: var(--text-color-secondary);
-          }
+          color: var(--font-color-primary);
+          font-weight: 600;
+        }
+        .wiz {
+          font-size: 1rem;
+          color: var(--font-color-secondary);
+          font-weight: 600;
         }
       }
 
@@ -50,19 +55,19 @@
 
           .bi-bookmark {
             font-size: 1.4rem;
-            color: var(--text-color-primary);
+            color: var(--font-color-primary);
 
             &:hover {
-              color: var(--text-color-secondary);
+              color: var(--font-color-secondary);
             }
           }
 
           .bi-play-btn {
             font-size: 1.7rem;
-            color: var(--text-color-primary);
+            color: var(--font-color-primary);
 
             &:hover {
-              color: var(--text-color-secondary);
+              color: var(--font-color-secondary);
             }
           }
         }
@@ -73,7 +78,8 @@
       font-size: 1.5rem;
       text-align: center;
       margin-top: 0.7em;
-      font-weight: 100;
+      font-weight: 700;
+      letter-spacing: 0.5px;
     }
   }
 }

@@ -1,0 +1,6 @@
+.genres-container {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  padding-top: 1em;
+}

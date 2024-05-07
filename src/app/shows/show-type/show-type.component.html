@@ -1,1 +1,22 @@
-<p>streaming-type works!</p>
+<div class="show-types-container">
+  <div class="content-container">
+    <div class="movies"></div>
+    <div class="tv-series"></div>
+    <div class="show-types">
+      <button
+        (click)="selectShowType(showTypesEnum.movie)"
+        class="show-type-btn"
+        [class.active]="showType === showTypesEnum.movie"
+      >
+        Movies
+      </button>
+      <button
+        (click)="selectShowType(showTypesEnum.tv)"
+        class="show-type-btn"
+        [class.active]="showType === showTypesEnum.tv"
+      >
+        TV Series
+      </button>
+    </div>
+  </div>
+</div>
