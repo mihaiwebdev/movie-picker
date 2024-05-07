@@ -1,5 +1,5 @@
 .header {
-  background-color: var(--bg-red);
+  background-color: var(--bg-redish);
   color: var(--text-color-primary);
   letter-spacing: 0.1em;
   height: 7.7em;
@@ -21,6 +21,7 @@
         img {
           width: 3.125em;
           height: 3.125em;
+          border-radius: 50%;
         }
 
         .span {
