@@ -1,9 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import {
-  StreamingPlatformsInterface,
-  UserLocationResponseInterface,
-} from '../';
+import { UserLocationResponseInterface, streamingPlatforms } from '../';
 import { environment } from '../../../environments/environment.development';
 
 @Injectable({
@@ -13,9 +10,7 @@ export class ConfigurationService {
   private readonly http = inject(HttpClient);
 
   public getStreamingPlatforms() {
-    return this.http.get<StreamingPlatformsInterface>(
-      '../data/streaming-platforms.json'
-    );
+    return streamingPlatforms;
   }
 
   public getUserLocation() {

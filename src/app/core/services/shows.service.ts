@@ -13,7 +13,6 @@ export class ShowsService {
 
   public getShows(
     showType: string,
-    language: string,
     page: number,
     watchRegion: string,
     genres: number[],
@@ -24,7 +23,7 @@ export class ShowsService {
 
     return this.http
       .get<ShowResponseInterface>(
-        `${this.tmdbApi}/discover/${showType}?language=${language}&page=${page}&sort_by=popularity.desc&watch_region=${watchRegion}&with_genres=${joinedGenres}&with_watch_providers=${joinedWatchProviders}`
+        `${this.tmdbApi}/discover/${showType}?language=en-US&page=${page}&sort_by=popularity.desc&watch_region=${watchRegion}&with_genres=${joinedGenres}&with_watch_providers=${joinedWatchProviders}`
       )
       .pipe(
         map((res) => {
