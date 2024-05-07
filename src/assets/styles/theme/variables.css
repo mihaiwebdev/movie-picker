@@ -1,7 +1,8 @@
 :root {
   --bg-dark: #131a24;
-  --bg-red: #e12939;
+  --bg-red: #a31c2e;
+  --bg-redish: #e12939;
   --text-color-primary: #f8f9fa;
-  --text-color-secondary: #9622c0;
-  --text-font: "Raleway", sans-serif;
+  --text-color-secondary: #ffde59;
+  --text-font: "Boogaloo", sans-serif;
 }
