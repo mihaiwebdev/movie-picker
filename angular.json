@@ -19,11 +19,7 @@
             "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
             "assets": ["src/favicon.ico", "src/assets"],
-            "styles": [
-              "primeng/resources/themes/soho-dark/theme.css",
-              "primeng/resources/primeng.css",
-              "src/assets/styles/styles.css"
-            ],
+            "styles": ["src/assets/styles/styles.css"],
             "scripts": []
           },
           "configurations": {

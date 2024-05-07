@@ -1,6 +1,6 @@
 .header {
-  background-color: var(--bg-redish);
-  color: var(--text-color-primary);
+  background-color: var(--bg-light-red);
+  color: var(--font-color-primary);
   letter-spacing: 0.1em;
   height: 7.7em;
   z-index: 4;
@@ -30,11 +30,13 @@
         .span {
           font-size: 1rem;
           margin-left: 0.4em;
-          color: var(--text-color-primary);
-
-          .wiz {
-            color: var(--text-color-secondary);
-          }
+          color: var(--font-color-primary);
+          font-weight: 600;
+        }
+        .wiz {
+          font-size: 1rem;
+          color: var(--font-color-secondary);
+          font-weight: 600;
         }
       }
 
@@ -53,19 +55,19 @@
 
           .bi-bookmark {
             font-size: 1.4rem;
-            color: var(--text-color-primary);
+            color: var(--font-color-primary);
 
             &:hover {
-              color: var(--text-color-secondary);
+              color: var(--font-color-secondary);
             }
           }
 
           .bi-play-btn {
             font-size: 1.7rem;
-            color: var(--text-color-primary);
+            color: var(--font-color-primary);
 
             &:hover {
-              color: var(--text-color-secondary);
+              color: var(--font-color-secondary);
             }
           }
         }

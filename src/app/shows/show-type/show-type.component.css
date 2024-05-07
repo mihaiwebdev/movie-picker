@@ -20,7 +20,7 @@
     left: 45%;
     width: 60%;
     height: 200px;
-    background-color: var(--bg-red);
+    background-color: var(--bg-light-red);
     border-radius: 50%;
     z-index: 1;
   }
@@ -41,7 +41,7 @@
       font-weight: 500;
       border: none;
       background-color: transparent;
-      color: var(--text-color-white);
+      color: var(--font-color-primary);
       cursor: pointer;
       font-family: var(--text-font);
       font-weight: 600;
