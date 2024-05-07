@@ -41,15 +41,28 @@
         a {
           margin-left: 1.2em;
           cursor: pointer;
+          transition: transform 0.3s ease;
+
+          &:hover {
+            transform: scale(1.1);
+          }
 
           .bi-bookmark {
             font-size: 1.4rem;
             color: var(--text-color-primary);
+
+            &:hover {
+              color: var(--text-color-secondary);
+            }
           }
 
           .bi-play-btn {
             font-size: 1.7rem;
             color: var(--text-color-primary);
+
+            &:hover {
+              color: var(--text-color-secondary);
+            }
           }
         }
       }
