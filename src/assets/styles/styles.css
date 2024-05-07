@@ -1,4 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
+@import url("https://fonts.googleapis.com/css2?family=Boogaloo&display=swap");
 @import "./theme/variables.css";
 @import "./theme/primeng-clases.css";
 
@@ -6,9 +7,12 @@
   box-sizing: border-box;
 }
 
+
+
 body {
-  background-color: var(--bg-color);
-  color: #fff;
+  background-color: var(--bg-dark);
+  color: var(--text-color-primary);
+  font-family: var(--text-font);
   margin: 0;
   padding: 0;
 }
