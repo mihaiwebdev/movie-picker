@@ -2,6 +2,26 @@ import { StreamingPlatformsInterface } from '../';
 
 export const streamingPlatforms: StreamingPlatformsInterface[] = [
   {
+    provider_id: 8,
+    logo_path: '/pbpMk2JmcoNnQwx5JGpXngfoWtp.jpg',
+    provider_name: 'Netflix',
+  },
+  {
+    provider_id: 337,
+    logo_path: '/97yvRBw1GzX7fXprcF80er19ot.jpg',
+    provider_name: 'Disney Plus',
+  },
+  {
+    provider_id: 384,
+    logo_path: '/b8edpTaLCHFrUnhpGQIZJUpFX7T.jpg',
+    provider_name: 'HBO Max',
+  },
+  {
+    provider_id: 119,
+    logo_path: '/dQeAar5H991VYporEjUspolDarG.jpg',
+    provider_name: 'Amazone Prime Video',
+  },
+  {
     provider_name: 'Hulu',
     logo_path: '/bxBlRPEPpMVDc4jMhSrTf2339DW.jpg',
     provider_id: 15,
@@ -20,10 +40,5 @@ export const streamingPlatforms: StreamingPlatformsInterface[] = [
     provider_id: 7,
     logo_path: '/i6lRmkKmJ23oOZ6IyjnOYLKxA9J.jpg',
     provider_name: 'Vudu',
-  },
-  {
-    provider_id: 3,
-    logo_path: '/8z7rC8uIDaTM91X0ZfkRf04ydj2.jpg',
-    provider_name: 'Google Play Movies',
   },
 ];

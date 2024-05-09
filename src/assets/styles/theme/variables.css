@@ -3,6 +3,11 @@
   --bg-red: #a31c2e;
   --bg-light-red: #e12939;
   --font-color-primary: #f8f9fa;
-  --font-color-secondary: #fff134;
+  --font-color-secondary: #f3ca52;
+  --light-gray: #afaaaae7;
   --text-font: "Boogaloo", sans-serif;
+
+  --swiper-pagination-top: 110%;
+  --swiper-pagination-bullet-inactive-color: var(--font-color-primary);
+  --swiper-pagination-color: var(--bg-light-red);
 }

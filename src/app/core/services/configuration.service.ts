@@ -7,7 +7,7 @@ import {
   streamingPlatforms,
 } from '../';
 import { environment } from '../../../environments/environment.development';
-import { tap } from 'rxjs';
+import { map, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -40,7 +40,14 @@ export class ConfigurationService {
       .get<GenresResponseInterface>(
         `${environment.tmdbApiUrl}/genre/movie/list`
       )
-      .pipe(tap((genres) => this.state.$genres.set(genres.genres)))
+      .pipe(
+        map((genres) => {
+          console.log(genres);
+
+          return genres;
+        }),
+        tap((genres) => this.state.$genres.set(genres.genres))
+      )
       .subscribe();
   }
 }

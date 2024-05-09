@@ -1,22 +1,32 @@
 <div class="show-types-container">
   <div class="content-container">
-    <div class="movies"></div>
-    <div class="tv-series"></div>
+    <div
+      class="movies"
+      [class.movie-active]="showType === showTypesEnum.movie"
+      [class.tv-series-active]="showType === showTypesEnum.tv"
+    ></div>
+    <div
+      class="tv-series"
+      [class.tv-series-active]="showType === showTypesEnum.tv"
+      [class.movie-active]="showType === showTypesEnum.movie"
+    ></div>
     <div class="show-types">
       <button
         (click)="selectShowType(showTypesEnum.movie)"
         class="show-type-btn"
-        [class.active]="showType === showTypesEnum.movie"
       >
         Movies
       </button>
-      <button
-        (click)="selectShowType(showTypesEnum.tv)"
-        class="show-type-btn"
-        [class.active]="showType === showTypesEnum.tv"
-      >
+      <button (click)="selectShowType(showTypesEnum.tv)" class="show-type-btn">
         TV Series
       </button>
     </div>
+  </div>
+  <div class="card show-type-desktop">
+    <p-tabMenu
+      [model]="showTypeItems"
+      [activeItem]="activeItem"
+      (activeItemChange)="onActiveItemChange($event)"
+    />
   </div>
 </div>

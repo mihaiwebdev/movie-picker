@@ -1,28 +1,54 @@
 .show-types-container {
   background-color: var(--bg-dark);
   position: relative;
-  margin-top: 4em;
+  margin-top: 1em;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    background-color: var(--bg-light-red);
+  }
 
   .movies {
     position: absolute;
-    top: -54%;
-    left: -5%;
     width: 60%;
     height: 200px;
-    background-color: var(--bg-dark);
     border-radius: 50%;
     z-index: 1;
+    transition: left 0.5s ease;
+    background-color: var(--bg-dark);
+    top: -6%;
+
+    &.tv-series-active {
+      left: 45%;
+    }
+
+    &.movie-active {
+      left: -5%;
+    }
   }
 
   .tv-series {
     position: absolute;
-    top: -189%;
-    left: 45%;
     width: 60%;
+    top: -144%;
     height: 200px;
-    background-color: var(--bg-light-red);
     border-radius: 50%;
     z-index: 1;
+    transition: left 0.5s ease;
+    background-color: var(--bg-light-red);
+
+    &.tv-series-active {
+      left: -5%;
+    }
+
+    &.movie-active {
+      left: 45%;
+    }
   }
 
   .show-types {
@@ -31,12 +57,14 @@
     width: 100%;
     align-items: flex-start;
     position: relative;
-    top: -1em;
 
     .show-type-btn {
-      text-align: start;
+      width: 100%;
+      text-align: center;
       z-index: 2;
-      margin-bottom: 3em;
+      height: 100%;
+      padding-top: 1.5em;
+      padding-bottom: 1.5em;
       font-size: 1.2rem;
       font-weight: 500;
       border: none;
@@ -45,11 +73,11 @@
       cursor: pointer;
       font-family: var(--text-font);
       font-weight: 600;
-
-      &.active {
-        color: #caf0f8;
-      }
     }
+  }
+
+  .show-type-desktop {
+    display: none;
   }
 }
 
@@ -70,5 +98,32 @@
 
   100% {
     transform: translateX(0);
+  }
+}
+
+@media screen and (min-width: 820px) {
+  .show-types-container {
+    margin-bottom: 2rem;
+    &::after {
+      display: none;
+    }
+
+    background-color: var(--bg-light-red);
+
+    .movies {
+      display: none;
+    }
+
+    .tv-series {
+      display: none;
+    }
+
+    .show-types {
+      display: none;
+    }
+
+    .show-type-desktop {
+      display: block;
+    }
   }
 }
