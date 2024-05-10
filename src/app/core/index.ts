@@ -1,5 +1,6 @@
 // Data
 export { streamingPlatforms } from './data/streaming-platforms';
+export { genres } from './data/genres-data';
 
 // Services
 export { ConfigurationService } from './services/configuration.service';
@@ -9,10 +10,7 @@ export { ShowsService } from './services/shows.service';
 export { ShowTypesEnum } from './enums/show-types.enum';
 
 // Interfaces
-export {
-  GenreInterface,
-  GenresResponseInterface,
-} from './types/genres-response.interface';
+export { GenreInterface } from './types/genres-response.interface';
 export { StreamingPlatformsInterface } from './types/show-platforms.interface';
 export {
   ShowInterface,

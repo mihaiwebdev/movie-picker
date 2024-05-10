@@ -1,0 +1,11 @@
+<div class="platform-list-container">
+  <div class="card flex justify-content-center">
+    <p-multiSelect
+      [options]="$streamingPlatforms()"
+      [(ngModel)]="$selectedStreamingPlatforms"
+      optionLabel="name"
+      placeholder="Select Platforms"
+      (onChange)="onPlatformSelect()"
+    />
+  </div>
+</div>

@@ -1,9 +1,9 @@
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import {
-  GenresComponent,
+  PlatformListComponent,
   ShowComponent,
+  ShowGenresComponent,
   ShowTypeComponent,
-  StreamingPlatformComponent,
   TrendingComponent,
 } from '.';
 import {
@@ -11,6 +11,7 @@ import {
   GenreInterface,
   ShowTypesEnum,
   ShowsService,
+  StreamingPlatformsInterface,
 } from '../core';
 
 @Component({
@@ -18,13 +19,14 @@ import {
   standalone: true,
   imports: [
     ShowTypeComponent,
-    StreamingPlatformComponent,
+    ShowGenresComponent,
     ShowComponent,
-    GenresComponent,
+    PlatformListComponent,
     TrendingComponent,
   ],
   templateUrl: './shows.component.html',
   styleUrl: './shows.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ShowsComponent {
   private readonly showsService = inject(ShowsService);
@@ -32,15 +34,15 @@ export class ShowsComponent {
 
   private selectedShowType = ShowTypesEnum.movie;
   private selectedGenres: GenreInterface[] = [];
-  public readonly $streamingPlatforms = signal(
-    this.configurationService.getStreamingPlatforms()
-  );
-  public readonly $userLocation = this.configurationService.$userLocation;
-  public readonly $genres = this.configurationService.$genres;
+  private selectedPlatforms: StreamingPlatformsInterface[] = [];
+  private readonly $userLocation = this.configurationService.$userLocation;
+
+  public readonly streamingPlatforms =
+    this.configurationService.getStreamingPlatforms();
+  public readonly genres = this.configurationService.getGenres();
 
   constructor() {
     this.getUserLocation();
-    this.getGenres();
   }
 
   public getShows(
@@ -63,14 +65,13 @@ export class ShowsComponent {
     this.selectedGenres = genres;
   }
 
+  public onPlatformSelect(platforms: StreamingPlatformsInterface[]) {
+    this.selectedPlatforms = platforms;
+  }
+
   private getUserLocation() {
     if (this.$userLocation()) return;
     this.configurationService.getUserLocation();
-  }
-
-  private getGenres() {
-    if (this.$genres().length > 0) return;
-    this.configurationService.getGenres();
   }
 }
 

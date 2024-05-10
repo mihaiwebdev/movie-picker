@@ -3,7 +3,6 @@
   color: var(--font-color-primary);
   letter-spacing: 0.1em;
   height: 7.7em;
-  z-index: 4;
   position: relative;
 
   .header-container {

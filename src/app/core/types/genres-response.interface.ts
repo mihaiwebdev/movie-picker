@@ -1,8 +1,5 @@
 export interface GenreInterface {
   id: number;
   name: string;
-}
-
-export interface GenresResponseInterface {
-  genres: GenreInterface[];
+  icon_path: string;
 }

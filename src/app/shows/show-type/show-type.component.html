@@ -1,26 +1,19 @@
 <div class="show-types-container">
-  <div class="content-container">
-    <div
-      class="movies"
-      [class.movie-active]="showType === showTypesEnum.movie"
-      [class.tv-series-active]="showType === showTypesEnum.tv"
-    ></div>
-    <div
-      class="tv-series"
-      [class.tv-series-active]="showType === showTypesEnum.tv"
-      [class.movie-active]="showType === showTypesEnum.movie"
-    ></div>
-    <div class="show-types">
-      <button
-        (click)="selectShowType(showTypesEnum.movie)"
-        class="show-type-btn"
-      >
-        Movies
-      </button>
-      <button (click)="selectShowType(showTypesEnum.tv)" class="show-type-btn">
-        TV Series
-      </button>
-    </div>
+  <div
+    class="movies"
+    [class.movie-active]="showType === showTypesEnum.movie"
+  ></div>
+  <div
+    class="tv-series"
+    [class.tv-series-active]="showType === showTypesEnum.tv"
+  ></div>
+  <div class="show-types">
+    <button (click)="selectShowType(showTypesEnum.movie)" class="show-type-btn">
+      Movies
+    </button>
+    <button (click)="selectShowType(showTypesEnum.tv)" class="show-type-btn">
+      TV Series
+    </button>
   </div>
   <div class="card show-type-desktop">
     <p-tabMenu

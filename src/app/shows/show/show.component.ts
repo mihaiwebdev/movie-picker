@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
   selector: 'app-show',
@@ -6,6 +6,7 @@ import { Component } from '@angular/core';
   imports: [],
   templateUrl: './show.component.html',
   styleUrl: './show.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ShowComponent {
   public readonly movieData = {

@@ -1,12 +1,15 @@
 <div class="sub-header-container">
   <div class="content-container">
-    <app-genres
-      [$genres]="$genres()"
-      ($selectGenresOutput)="onGenresSelect($event)"
-    ></app-genres>
+    <app-platform-list
+      [$streamingPlatforms]="streamingPlatforms"
+      ($platformListOutput)="onPlatformSelect($event)"
+    ></app-platform-list>
   </div>
   <app-show-type
     (selectShowTypeOutput)="onShowTypeSelect($event)"
   ></app-show-type>
 </div>
-<app-streaming-platform></app-streaming-platform>
+<app-show-genres
+  [$genres]="genres"
+  ($selectGenresOutput)="onGenresSelect($event)"
+></app-show-genres>

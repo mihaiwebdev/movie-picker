@@ -1,3 +1,4 @@
+/* Multiselect */
 .p-multiselect {
   width: 80%;
   left: 50%;
@@ -34,5 +35,18 @@
     font-size: 1.3rem;
     color: var(--font-color-primary);
     font-family: var(--text-font);
+  }
+}
+
+/* Chips */
+.p-inputtext {
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: none;
+  .p-chips-input-token {
+    display: none;
   }
 }

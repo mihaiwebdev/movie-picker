@@ -1,4 +1,4 @@
-import { Component, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, output } from '@angular/core';
 import { ShowTypesEnum } from '../../core';
 import { MenuItem } from 'primeng/api';
 import { TabMenuModule } from 'primeng/tabmenu';
@@ -9,6 +9,7 @@ import { TabMenuModule } from 'primeng/tabmenu';
   imports: [TabMenuModule],
   templateUrl: './show-type.component.html',
   styleUrl: './show-type.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ShowTypeComponent {
   public readonly showTypesEnum = ShowTypesEnum;

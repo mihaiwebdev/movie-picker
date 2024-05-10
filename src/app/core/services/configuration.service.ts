@@ -1,13 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
-import {
-  GenreInterface,
-  GenresResponseInterface,
-  UserLocationResponseInterface,
-  streamingPlatforms,
-} from '../';
+import { tap } from 'rxjs';
+import { UserLocationResponseInterface, genres, streamingPlatforms } from '../';
 import { environment } from '../../../environments/environment.development';
-import { map, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -17,10 +12,8 @@ export class ConfigurationService {
 
   private readonly state = {
     $userLocation: signal<UserLocationResponseInterface | undefined>(undefined),
-    $genres: signal<GenreInterface[]>([]),
   };
   public readonly $userLocation = this.state.$userLocation.asReadonly();
-  public readonly $genres = this.state.$genres.asReadonly();
 
   public getStreamingPlatforms() {
     return streamingPlatforms;
@@ -36,18 +29,6 @@ export class ConfigurationService {
   }
 
   public getGenres() {
-    this.http
-      .get<GenresResponseInterface>(
-        `${environment.tmdbApiUrl}/genre/movie/list`
-      )
-      .pipe(
-        map((genres) => {
-          console.log(genres);
-
-          return genres;
-        }),
-        tap((genres) => this.state.$genres.set(genres.genres))
-      )
-      .subscribe();
+    return genres;
   }
 }

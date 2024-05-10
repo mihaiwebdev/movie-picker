@@ -1,13 +1,13 @@
-.genres-container {
+.platform-list-container {
   position: relative;
-  z-index: 3;
   width: 100%;
   padding-top: 1em;
   margin: 0 auto;
+  z-index: 3;
 }
 
 @media screen and (min-width: 820px) {
-  .genres-container {
+  .platform-list-container {
     width: 50%;
   }
 }
