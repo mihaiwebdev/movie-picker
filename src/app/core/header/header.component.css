@@ -2,14 +2,11 @@
   background-color: var(--bg-light-red);
   color: var(--font-color-primary);
   letter-spacing: 0.1em;
-  height: 7.7em;
-  position: relative;
 
   .header-container {
     max-width: 1500px;
     margin: 0 auto;
     padding: 1em;
-    padding-bottom: 0;
 
     .navbar {
       display: flex;
@@ -26,16 +23,16 @@
           border-radius: 50%;
         }
 
-        .span {
+        .app-title {
           font-size: 1rem;
           margin-left: 0.4em;
           color: var(--font-color-primary);
-          font-weight: 600;
+          font-weight: 900;
         }
-        .wiz {
+        .app-title-suffix {
           font-size: 1rem;
           color: var(--font-color-secondary);
-          font-weight: 600;
+          font-weight: 900;
         }
       }
 
@@ -46,28 +43,18 @@
         a {
           margin-left: 1.2em;
           cursor: pointer;
-          transition: transform 0.3s ease;
-
-          &:hover {
-            transform: scale(1.1);
-          }
+          transition: transform 0.1s ease;
 
           .bi-bookmark {
             font-size: 1.4rem;
-            color: var(--font-color-primary);
-
-            &:hover {
-              color: var(--font-color-secondary);
-            }
           }
 
           .bi-play-btn {
             font-size: 1.7rem;
-            color: var(--font-color-primary);
+          }
 
-            &:hover {
-              color: var(--font-color-secondary);
-            }
+          .bi {
+            color: var(--font-color-primary);
           }
         }
       }
@@ -76,17 +63,16 @@
     h1 {
       font-size: 1.5rem;
       text-align: center;
-      margin-top: 0.7em;
-      font-weight: 700;
+      margin: 0;
+      font-weight: 600;
       letter-spacing: 0.5px;
+      margin-top: 1.5rem;
     }
   }
 }
 
 @media screen and (min-width: 600px) {
   .header {
-    height: 9em;
-
     .header-container {
       padding: 1em 2em;
 
@@ -97,7 +83,8 @@
             height: 4.375em;
           }
 
-          .span {
+          .app-title,
+          .app-title-suffix {
             font-size: 1.5rem;
           }
         }
@@ -113,13 +100,18 @@
             .bi-play-btn {
               font-size: 2.2rem;
             }
+
+            .bi {
+              &:hover {
+                color: var(--font-color-secondary);
+              }
+            }
           }
         }
       }
 
       h1 {
         font-size: 1.7rem;
-        margin-top: 0;
       }
     }
   }

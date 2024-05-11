@@ -2,11 +2,12 @@ import { ChangeDetectionStrategy, Component, output } from '@angular/core';
 import { ShowTypesEnum } from '../../core';
 import { MenuItem } from 'primeng/api';
 import { TabMenuModule } from 'primeng/tabmenu';
+import { RippleModule } from 'primeng/ripple';
 
 @Component({
   selector: 'app-show-type',
   standalone: true,
-  imports: [TabMenuModule],
+  imports: [TabMenuModule, RippleModule],
   templateUrl: './show-type.component.html',
   styleUrl: './show-type.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

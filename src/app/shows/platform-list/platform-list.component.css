@@ -1,7 +1,6 @@
 .platform-list-container {
   position: relative;
   width: 100%;
-  padding-top: 1em;
   margin: 0 auto;
   z-index: 3;
 }
