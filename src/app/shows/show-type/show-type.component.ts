@@ -18,15 +18,15 @@ export class ShowTypeComponent {
 
   public readonly showTypeItems: MenuItem[] = [
     { label: 'Movies' },
-    { label: 'Tv Series' },
+    { label: 'TV Series' },
   ];
   public activeItem = this.showTypeItems[0];
 
-  public readonly selectShowTypeOutput = output<ShowTypesEnum>();
+  public readonly $selectShowTypeOutput = output<ShowTypesEnum>();
 
   public selectShowType(show: ShowTypesEnum) {
     this.showType = show;
-    this.selectShowTypeOutput.emit(show);
+    this.$selectShowTypeOutput.emit(show);
   }
 
   public onActiveItemChange($event: MenuItem) {
@@ -35,5 +35,7 @@ export class ShowTypeComponent {
     } else {
       this.showType = this.showTypesEnum.movie;
     }
+
+    this.$selectShowTypeOutput.emit(this.showType);
   }
 }

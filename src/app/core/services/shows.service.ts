@@ -3,6 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { map } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
 import { ShowResponseInterface } from '../types/show-response.interface';
+import { ShowTypesEnum } from '../enums/show-types.enum';
 
 @Injectable({
   providedIn: 'root',
@@ -43,6 +44,12 @@ export class ShowsService {
           return res;
         })
       );
+  }
+
+  public getTrendingShows(showType: ShowTypesEnum) {
+    return this.http.get<ShowResponseInterface>(
+      `${this.tmdbApi}/trending/${showType}/day?language=en-US`
+    );
   }
 
   private calculateWeightedWilsonScore(

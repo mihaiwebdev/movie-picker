@@ -6,10 +6,31 @@
     ></app-platform-list>
   </div>
   <app-show-type
-    (selectShowTypeOutput)="onShowTypeSelect($event)"
+    ($selectShowTypeOutput)="onShowTypeSelect($event)"
   ></app-show-type>
 </div>
-<app-show-genres
-  [$genres]="genres"
-  ($selectGenresOutput)="onGenresSelect($event)"
-></app-show-genres>
+
+<div class="content-container">
+  <app-show-genres
+    [$genres]="genres"
+    ($selectGenresOutput)="onGenresSelect($event)"
+  ></app-show-genres>
+
+  @if ($isLoading()) {
+  <span class="loader"></span>
+  } @else {
+  <app-trending
+    [$trendingShows]="$trendingShows()"
+    [$selectedShowType]="$selectedShowType()"
+  ></app-trending>
+  }
+
+  <button
+    pRipple
+    (click)="getShow()"
+    class="find-show-btn"
+    [class.show]="$selectedGenres().length > 0"
+  >
+    Find Top Choice <i class="bi bi-search"></i>
+  </button>
+</div>

@@ -30,4 +30,8 @@ export class PlatformListComponent {
   public onPlatformSelect() {
     this.$platformListOutput.emit(this.$selectedStreamingPlatforms());
   }
+
+  ngOnInit() {
+    this.$selectedStreamingPlatforms.set([this.$streamingPlatforms()[0]]);
+  }
 }

@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Signal,
+  inject,
+  signal,
+} from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { RippleModule } from 'primeng/ripple';
 import {
   PlatformListComponent,
   ShowComponent,
@@ -9,10 +17,13 @@ import {
 import {
   ConfigurationService,
   GenreInterface,
+  ShowInterface,
+  ShowResponseInterface,
   ShowTypesEnum,
   ShowsService,
   StreamingPlatformsInterface,
 } from '../core';
+import { finalize, tap } from 'rxjs';
 
 @Component({
   selector: 'app-shows',
@@ -22,6 +33,8 @@ import {
     ShowGenresComponent,
     ShowComponent,
     PlatformListComponent,
+    TrendingComponent,
+    RippleModule,
     TrendingComponent,
   ],
   templateUrl: './shows.component.html',
@@ -33,16 +46,21 @@ export class ShowsComponent {
   private readonly configurationService = inject(ConfigurationService);
 
   private selectedShowType = ShowTypesEnum.movie;
-  private selectedGenres: GenreInterface[] = [];
-  private selectedPlatforms: StreamingPlatformsInterface[] = [];
+  private selectedPlatforms: number[] = [];
   private readonly $userLocation = this.configurationService.$userLocation;
 
+  public readonly $trendingShows = signal<ShowInterface[]>([]);
   public readonly streamingPlatforms =
     this.configurationService.getStreamingPlatforms();
   public readonly genres = this.configurationService.getGenres();
+  public readonly $selectedGenres = signal<number[]>([]);
+  public readonly $selectedShowType = signal('');
+  public readonly $page = signal(1);
+  public readonly $isLoading = signal(true);
 
   constructor() {
     this.getUserLocation();
+    this.getTrendingShows();
   }
 
   public getShows(
@@ -59,19 +77,49 @@ export class ShowsComponent {
 
   public onShowTypeSelect(showType: ShowTypesEnum) {
     this.selectedShowType = showType;
+    if (showType.includes('tv')) {
+      this.$selectedShowType.set('TV Serie');
+    } else {
+      this.$selectedShowType.set('Movie');
+    }
+    this.getTrendingShows();
   }
 
   public onGenresSelect(genres: GenreInterface[]) {
-    this.selectedGenres = genres;
+    this.$selectedGenres.set(genres.map((genre) => genre.id));
   }
 
   public onPlatformSelect(platforms: StreamingPlatformsInterface[]) {
-    this.selectedPlatforms = platforms;
+    this.selectedPlatforms = platforms.map((platform) => platform.provider_id);
+  }
+
+  public getShow() {
+    this.showsService
+      .getShows(
+        this.selectedShowType,
+        this.$page(),
+        this.$userLocation()?.country || 'US',
+        this.$selectedGenres(),
+        this.selectedPlatforms
+      )
+      .subscribe((res) => console.log(res));
   }
 
   private getUserLocation() {
     if (this.$userLocation()) return;
     this.configurationService.getUserLocation();
+  }
+
+  private getTrendingShows() {
+    this.$isLoading.set(true);
+
+    this.showsService
+      .getTrendingShows(this.selectedShowType)
+      .pipe(
+        tap((res) => this.$trendingShows.set(res.results)),
+        finalize(() => this.$isLoading.set(false))
+      )
+      .subscribe();
   }
 }
 

@@ -1,10 +1,5 @@
-<section class="show-genres content-container">
-  <swiper-container
-    #mySwiper
-    init="false"
-    class="overflow-visible"
-    pagination-clickable="true"
-  >
+<section class="show-genres">
+  <swiper-container #mySwiper init="false" pagination-clickable="true">
     @for(genre of $genres(); track genre.id) {
     <swiper-slide>
       <div
@@ -21,7 +16,7 @@
 
   <div class="swiper-pagination"></div>
 </section>
-<div class="content-container card p-fluid selected-genres">
+<div class="card p-fluid selected-genres">
   <form [formGroup]="genresForm">
     <p-chips
       formControlName="selectedGenresNames"

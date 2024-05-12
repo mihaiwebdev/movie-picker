@@ -10,12 +10,7 @@ import {
   output,
   ViewChild,
 } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ChipsModule } from 'primeng/chips';
 import { register } from 'swiper/element/bundle';
 import { GenreInterface } from '../../core';
@@ -51,6 +46,8 @@ export class ShowGenresComponent implements AfterViewInit, OnInit {
 
   // SWIPER Config
   public readonly breakpoints = {
+    slidesPerView: 3,
+    spaceBetween: 20,
     breakpoints: {
       320: {
         slidesPerView: 4,
@@ -120,6 +117,8 @@ export class ShowGenresComponent implements AfterViewInit, OnInit {
       ];
       this.selectedGenresControl.setValue(selectedGenres);
     }
+
+    this.$selectGenresOutput.emit(this.selectedGenresControl.value);
   }
 
   public isGenreSelected(genreId: number) {
@@ -136,5 +135,6 @@ export class ShowGenresComponent implements AfterViewInit, OnInit {
     );
 
     this.selectedGenresControl.setValue(filteredGenres);
+    this.$selectGenresOutput.emit(this.selectedGenresControl.value);
   }
 }
