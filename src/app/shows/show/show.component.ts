@@ -25,7 +25,7 @@ export class ShowComponent {
     vote_average: 6.875,
     vote_count: 52,
   };
-  public readonly imgBaseUrl = 'https://image.tmdb.org/t/p/original';
+  public readonly imgBaseUrl = 'https://image.tmdb.org/t/p/w1280';
 }
 
 export default ShowComponent;

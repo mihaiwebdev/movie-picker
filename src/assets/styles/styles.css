@@ -7,9 +7,11 @@
 
 @import "./theme/variables.css";
 @import "./theme/primeng-clases.css";
-@import "./theme/shared-classes.css"; /* * {
+@import "./theme/shared-classes.css";
+
+* {
   box-sizing: border-box;
-} */
+}
 body {
   background-color: var(--bg-dark);
   color: var(--text-color-primary);
