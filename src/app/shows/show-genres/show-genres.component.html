@@ -1,16 +1,16 @@
 <section class="show-genres">
   <swiper-container #mySwiper init="false" pagination-clickable="true">
-    @for(genre of $genres(); track genre.id) {
-    <swiper-slide>
-      <div
-        (click)="onGenreSelect(genre)"
-        class="genre-btn"
-        [class.active]="selectedGenresNames.value?.includes(genre.name)"
-      >
-        <img [src]="iconBasePath + genre.icon_path" alt="genre-image" />
-      </div>
-      <span class="genre-name">{{ genre.name }}</span>
-    </swiper-slide>
+    @for (genre of $genres(); track genre.id) {
+      <swiper-slide>
+        <div
+          (click)="onGenreSelect(genre)"
+          class="genre-btn"
+          [class.active]="selectedGenresNames.value?.includes(genre.name)"
+        >
+          <img [src]="iconBasePath + genre.icon_path" alt="genre-image" />
+        </div>
+        <span class="genre-name">{{ genre.name }}</span>
+      </swiper-slide>
     }
   </swiper-container>
 

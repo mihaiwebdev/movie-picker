@@ -1,46 +1,53 @@
-<div class="found-movie-page">
-  <div class="action-buttons">
-    <button><i class="bi bi-arrow-left-short"></i></button>
-    <button><i class="bi bi-bookmark"></i></button>
-  </div>
-
-  <img
-    id="poster-image"
-    [src]="imgBaseUrl + movieData.backdrop_path"
-    alt="poster"
-  />
-
-  <div class="gradient-overlay">
-    <div class="grid">
-      <h1>{{ movieData.title }}</h1>
-
-      <div class="display-genres">
-        <button>😎Action</button>
-        <button>🏹Adventure</button>
-      </div>
-
-      <div class="already-seen">
-        <p class="rating">TMDb rating</p>
-        <p class="rating">
-          <span class="span-rating">{{
-            movieData.vote_average.toFixed(1)
-          }}</span
-          >/10
-          <span class="span-vote-count"
-            ><i class="bi bi-people"></i> {{ movieData.vote_count }}</span
-          >
-        </p>
-        <button class="watched">Watched</button>
-      </div>
+@if ($selectedShow()) {
+  <div class="found-movie-page">
+    <div class="action-buttons">
+      <button [routerLink]="['/']">
+        <i class="bi bi-arrow-left-short"></i>
+      </button>
+      <button><i class="bi bi-bookmark"></i></button>
     </div>
 
-    <p>{{ movieData.overview }}</p>
-  </div>
+    <img
+      id="poster-image"
+      [src]="imgBaseUrl + $selectedShow()?.backdrop_path"
+      alt="poster"
+    />
 
-  <div class="choose-btn">
-    <button class="previous">
-      <i class="bi bi-arrow-left-circle"></i> Prev
-    </button>
-    <button class="next">Next <i class="bi bi-arrow-right-circle"></i></button>
+    <div class="gradient-overlay">
+      <div class="grid">
+        <h1>{{ $selectedShow()?.title }}</h1>
+
+        <div class="display-genres">
+          <button>😎Action</button>
+          <button>🏹Adventure</button>
+        </div>
+
+        <div class="already-seen">
+          <p class="rating">TMDb rating</p>
+          <p class="rating">
+            <span class="span-rating">{{
+              $selectedShow()?.vote_average?.toFixed(1)
+            }}</span
+            >/10
+            <span class="span-vote-count"
+              ><i class="bi bi-people"></i>
+              {{ $selectedShow()?.vote_count }}</span
+            >
+          </p>
+          <button class="watched">Watched</button>
+        </div>
+      </div>
+
+      <p>{{ $selectedShow()?.overview }}</p>
+    </div>
+
+    <div class="choose-btn">
+      <button class="previous">
+        <i class="bi bi-arrow-left-circle"></i> Prev
+      </button>
+      <button class="next">
+        Next <i class="bi bi-arrow-right-circle"></i>
+      </button>
+    </div>
   </div>
-</div>
+}

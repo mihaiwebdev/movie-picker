@@ -1,9 +1,12 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
-import { map } from 'rxjs';
+import { Injectable, inject, signal } from '@angular/core';
+import { map, tap } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
-import { ShowResponseInterface } from '../types/show-response.interface';
 import { ShowTypesEnum } from '../enums/show-types.enum';
+import {
+  ShowInterface,
+  ShowResponseInterface,
+} from './../types/show-response.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -11,6 +14,12 @@ import { ShowTypesEnum } from '../enums/show-types.enum';
 export class ShowsService {
   private readonly http = inject(HttpClient);
   private readonly tmdbApi = environment.tmdbApiUrl;
+
+  private readonly state = {
+    $showsResults: signal<ShowResponseInterface | null>(null),
+    $selectedShow: signal<ShowInterface | null>(null),
+  };
+  public readonly $selectedShow = this.state.$selectedShow.asReadonly();
 
   public getShows(
     showType: string,
@@ -42,6 +51,10 @@ export class ShowsService {
           });
 
           return res;
+        }),
+        tap((res) => {
+          this.state.$showsResults.set(res);
+          this.state.$selectedShow.set(res.results[0]);
         })
       );
   }

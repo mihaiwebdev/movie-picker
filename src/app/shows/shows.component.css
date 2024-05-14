@@ -36,6 +36,7 @@
     visibility: visible;
   }
 }
+
 @media screen and (min-width: 640px) {
   .find-show-btn {
     width: 50%;
