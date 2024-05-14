@@ -9,6 +9,9 @@
 @import "./theme/shared-classes.css";
 
 * {
+@import "./theme/shared-classes.css";
+
+* {
   box-sizing: border-box;
 }
 

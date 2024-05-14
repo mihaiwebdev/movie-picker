@@ -1,3 +1,46 @@
-<p>{{ movieData.title }}</p>
+<div class="found-movie-page">
+  <div class="action-buttons">
+    <button><i class="bi bi-arrow-left-short"></i></button>
+    <button><i class="bi bi-bookmark"></i></button>
+  </div>
 
-<img [src]="imgBaseUrl + movieData.poster_path" alt="" />
+  <img
+    id="poster-image"
+    [src]="imgBaseUrl + movieData.backdrop_path"
+    alt="poster"
+  />
+
+  <div class="gradient-overlay">
+    <div class="grid">
+      <h1>{{ movieData.title }}</h1>
+
+      <div class="display-genres">
+        <button>😎Action</button>
+        <button>🏹Adventure</button>
+      </div>
+
+      <div class="already-seen">
+        <p class="rating">TMDb rating</p>
+        <p class="rating">
+          <span class="span-rating">{{
+            movieData.vote_average.toFixed(1)
+          }}</span
+          >/10
+          <span class="span-vote-count"
+            ><i class="bi bi-people"></i> {{ movieData.vote_count }}</span
+          >
+        </p>
+        <button class="watched">Watched</button>
+      </div>
+    </div>
+
+    <p>{{ movieData.overview }}</p>
+  </div>
+
+  <div class="choose-btn">
+    <button class="previous">
+      <i class="bi bi-arrow-left-circle"></i> Prev
+    </button>
+    <button class="next">Next <i class="bi bi-arrow-right-circle"></i></button>
+  </div>
+</div>

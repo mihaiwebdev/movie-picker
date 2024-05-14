@@ -2,10 +2,16 @@
   --bg-dark: #131a24;
   --bg-red: #a31c2e;
   --bg-light-red: #e12939;
+  --red-gradient: linear-gradient(
+    to bottom right,
+    var(--bg-light-red),
+    var(--bg-red)
+  );
   --font-color-primary: #f8f9fa;
   --font-color-secondary: #ffd54f;
+  --very-light-gray: #dad7d7;
   --light-gray: #a5a4a4e7;
-  --text-font: "Raleway", sans-serif;
+  --text-font: "Boogaloo", sans-serif;
 
   --swiper-pagination-top: 100%;
   --swiper-pagination-bullet-inactive-color: var(--font-color-primary);
