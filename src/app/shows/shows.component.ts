@@ -1,12 +1,11 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  Signal,
   inject,
   signal,
 } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { RippleModule } from 'primeng/ripple';
+import { finalize, tap } from 'rxjs';
 import {
   PlatformListComponent,
   ShowComponent,
@@ -18,12 +17,10 @@ import {
   ConfigurationService,
   GenreInterface,
   ShowInterface,
-  ShowResponseInterface,
   ShowTypesEnum,
   ShowsService,
   StreamingPlatformsInterface,
 } from '../core';
-import { finalize, tap } from 'rxjs';
 
 @Component({
   selector: 'app-shows',
