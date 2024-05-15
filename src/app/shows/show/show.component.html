@@ -1,10 +1,10 @@
 @if ($selectedShow()) {
   <div class="found-movie-page">
     <div class="action-buttons">
-      <button [routerLink]="['/']">
+      <button class="back-btn" [routerLink]="['/']">
         <i class="bi bi-arrow-left-short"></i>
       </button>
-      <button><i class="bi bi-bookmark"></i></button>
+      <button class="bookmark-btn"><i class="bi bi-bookmark"></i></button>
     </div>
 
     <img
@@ -47,7 +47,9 @@
             </p>
           </div>
 
-          <button class="watched">Watched</button>
+          <button class="watched">
+            <i class="bi bi-check2-all"></i> Watched
+          </button>
         </div>
       </div>
 
