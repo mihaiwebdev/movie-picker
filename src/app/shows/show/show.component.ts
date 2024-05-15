@@ -14,11 +14,12 @@ import {
   ShowsService,
   StorageService,
 } from '../../core';
+import { RippleModule } from 'primeng/ripple';
 
 @Component({
   selector: 'app-show',
   standalone: true,
-  imports: [RouterLink, ReadMoreDirective],
+  imports: [RouterLink, ReadMoreDirective, RippleModule],
   templateUrl: './show.component.html',
   styleUrl: './show.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -41,6 +42,7 @@ export class ShowComponent {
 
   public readonly $selectedShow = this.showsService.$selectedShow;
   public readonly $showGenres = signal<GenreInterface[]>([]);
+  public readonly $isWatched = signal(false);
 
   ngOnInit(): void {
     if (this.$selectedShow()) {
@@ -60,6 +62,10 @@ export class ShowComponent {
     }
 
     this.$showGenres.set(this.getShowGenres());
+  }
+
+  public toggleWatched() {
+    this.$isWatched.update((isWatched) => !isWatched);
   }
 
   private getShowGenres(): GenreInterface[] {

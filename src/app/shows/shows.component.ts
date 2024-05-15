@@ -2,10 +2,11 @@ import {
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
-  Signal,
   inject,
   signal,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Router } from '@angular/router';
 import { RippleModule } from 'primeng/ripple';
 import { finalize, tap } from 'rxjs';
 import {
@@ -24,8 +25,6 @@ import {
   ShowsService,
   StreamingPlatformsInterface,
 } from '../core';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-shows',
@@ -58,7 +57,7 @@ export class ShowsComponent {
   public readonly movieGenres = this.configurationService.getMovieGenres();
   public readonly tvGenres = this.configurationService.getTvGenres();
 
-  public readonly $trendingShows = signal<ShowInterface[]>([]);
+  public readonly $trendingShows = signal<ShowResponseInterface | null>(null);
   public readonly $selectedGenres = signal<number[]>([]);
   public readonly $selectedShowGenres = signal(this.movieGenres);
   public readonly $selectedShowType = signal('');
@@ -125,7 +124,7 @@ export class ShowsComponent {
     this.showsService
       .getTrendingShows(this.selectedShowType)
       .pipe(
-        tap((res) => this.$trendingShows.set(res.results)),
+        tap((res) => this.$trendingShows.set(res)),
         finalize(() => this.$areTrendingShowsLoading.set(false)),
       )
       .subscribe();

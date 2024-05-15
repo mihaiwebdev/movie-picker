@@ -31,11 +31,13 @@
       cursor: pointer;
 
       &.bookmark-btn {
-        background-color: rgba(0, 0, 0, 0.5);
+        background: var(--light-dark);
+        opacity: 0.9;
       }
 
       &.back-btn {
-        background: var(--bg-dark);
+        background: var(--light-dark);
+        opacity: 0.9;
       }
     }
   }
@@ -52,6 +54,7 @@
     box-shadow: 0px -17px 28px 17px var(--bg-dark);
     display: flex;
     flex-direction: column;
+    justify-content: space-around;
 
     .show-overview {
       display: flex;
@@ -97,17 +100,25 @@
         text-align: center;
         width: fit-content;
 
-        button.watched {
+        button {
           font-family: var(--text-font);
           font-size: 0.7rem;
           padding: 0.9em;
-          margin-top: 1.4em;
+
           border: none;
           border-radius: 10px;
-          background: #323031;
           cursor: pointer;
-        }
 
+          &.already-watched {
+            background: var(--light-dark);
+          }
+
+          &.watched-it {
+            background-color: var(--font-color-secondary);
+            color: #333;
+            font-weight: 700;
+          }
+        }
         .rating {
           font-size: 0.8rem;
           color: var(--font-color-secondary);
@@ -123,11 +134,12 @@
     }
 
     .show-description-box {
-      margin: 0.8rem 0;
+      margin: 1rem 0;
 
       .show-description {
         margin: 0.5em 0;
         color: var(--very-light-gray);
+        margin-right: 0.3rem;
       }
     }
   }
@@ -135,7 +147,6 @@
   .choose-btn {
     display: flex;
     justify-content: space-evenly;
-    margin-top: auto;
     padding-bottom: 2em;
 
     button {

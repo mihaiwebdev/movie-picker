@@ -1,7 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
 import { map, tap } from 'rxjs';
-import { ShowInterface, ShowResponseInterface, ShowTypesEnum } from '../';
+import {
+  ShowInterface,
+  ShowResponseInterface,
+  ShowTypesEnum,
+  StreamingPlatformsInterface,
+} from '../';
 import { environment } from '../../../environments/environment.development';
 
 @Injectable({
@@ -14,8 +19,11 @@ export class ShowsService {
   private readonly state = {
     $showsResults: signal<ShowResponseInterface | null>(null),
     $selectedShow: signal<ShowInterface | null>(null),
+    $selectedPlatforms: signal<StreamingPlatformsInterface[]>([]),
   };
   public readonly $selectedShow = this.state.$selectedShow.asReadonly();
+  public readonly $selectedPlatforms =
+    this.state.$selectedPlatforms.asReadonly();
 
   public getShows(
     showType: string,
@@ -55,14 +63,22 @@ export class ShowsService {
       );
   }
 
-  public setSelectedShow(show: ShowInterface) {
-    this.state.$selectedShow.set(show);
-  }
-
   public getTrendingShows(showType: ShowTypesEnum) {
     return this.http.get<ShowResponseInterface>(
       `${this.tmdbApi}/trending/${showType}/day?language=en-US`,
     );
+  }
+
+  public setSelectedShow(show: ShowInterface) {
+    this.state.$selectedShow.set(show);
+  }
+
+  public setStreamingPlatforms(platforms: StreamingPlatformsInterface[]) {
+    this.state.$selectedPlatforms.set(platforms);
+  }
+
+  public setShowsResults(showResults: ShowResponseInterface) {
+    this.state.$showsResults.set(showResults);
   }
 
   private calculateWeightedWilsonScore(

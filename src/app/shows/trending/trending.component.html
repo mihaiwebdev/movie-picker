@@ -19,8 +19,8 @@
         coverflow-effect-slide-shadows="true"
         loop="true"
       >
-        @for (show of $trendingShows(); track show.id) {
-          <swiper-slide (click)="onShowClick()">
+        @for (show of $trendingShows()?.results; track show.id) {
+          <swiper-slide (click)="onShowClick(show)">
             <img
               class="show-image"
               [src]="imgBaseUrl + show.poster_path"
@@ -38,13 +38,13 @@
         effect="cards"
         grab-cursor="true"
       >
-        @for (show of $trendingShows(); track show.id) {
+        @for (show of $trendingShows()?.results; track show.id) {
           <swiper-slide>
             <img
               class="show-image"
               [src]="imgBaseUrl + show.poster_path"
               alt="movie-poster"
-              (click)="onShowClick()"
+              (click)="onShowClick(show)"
             />
           </swiper-slide>
         }
