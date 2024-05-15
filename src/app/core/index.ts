@@ -5,6 +5,7 @@ export { genres } from './data/genres-data';
 // Services
 export { ConfigurationService } from './services/configuration.service';
 export { ShowsService } from './services/shows.service';
+export { StorageService } from './services/storage.service';
 
 // Enumes
 export { ShowTypesEnum } from './enums/show-types.enum';
