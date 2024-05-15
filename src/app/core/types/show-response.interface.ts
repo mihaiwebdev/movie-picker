@@ -1,7 +1,7 @@
 export interface ShowInterface {
   adult: boolean;
   backdrop_path: string;
-  genres_ids: number[];
+  genre_ids: number[];
   id: number;
   original_language: string;
   original_title: string;

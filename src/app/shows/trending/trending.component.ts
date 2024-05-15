@@ -23,6 +23,7 @@ import { ShowInterface } from '../../core';
 export class TrendingComponent {
   public readonly $trendingShows = input<ShowInterface[]>([]);
   public readonly $selectedShowType = input('');
+  public readonly $areTrendingShowsLoading = input(true);
   public readonly imgBaseUrl = 'https://image.tmdb.org/t/p/w342';
   public readonly $screenWidth = signal(NaN);
   private swiperParams = {

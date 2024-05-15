@@ -1,7 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
 import { tap } from 'rxjs';
-import { UserLocationResponseInterface, genres, streamingPlatforms } from '../';
+import {
+  UserLocationResponseInterface,
+  movieGenres,
+  streamingPlatforms,
+  tvGenres,
+} from '../';
 import { environment } from '../../../environments/environment.development';
 
 @Injectable({
@@ -22,13 +27,17 @@ export class ConfigurationService {
   public getUserLocation() {
     this.http
       .get<UserLocationResponseInterface>(
-        `${environment.ipInfoUrl}?token=${environment.ipInfoToken}`
+        `${environment.ipInfoUrl}?token=${environment.ipInfoToken}`,
       )
       .pipe(tap((userLocation) => this.state.$userLocation.set(userLocation)))
       .subscribe();
   }
 
-  public getGenres() {
-    return genres;
+  public getMovieGenres() {
+    return movieGenres;
+  }
+
+  public getTvGenres() {
+    return tvGenres;
   }
 }

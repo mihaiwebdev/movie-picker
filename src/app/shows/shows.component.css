@@ -8,8 +8,9 @@
   left: 50%;
   transform: translate(-50%);
   cursor: pointer;
-  padding: 0.8rem 2rem;
-  background-color: var(--bg-light-red);
+  padding: 0 2rem;
+  height: 52px;
+  background: var(--red-gradient);
   border: none;
   border-radius: 10px;
   font-weight: 600;

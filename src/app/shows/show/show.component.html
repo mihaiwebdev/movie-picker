@@ -14,31 +14,48 @@
     />
 
     <div class="gradient-overlay">
-      <div class="grid">
-        <h1>{{ $selectedShow()?.title }}</h1>
+      <div class="show-overview">
+        <div class="show-overview-left">
+          <h1>{{ $selectedShow()?.title || $selectedShow()?.name }}</h1>
 
-        <div class="display-genres">
-          <button>😎Action</button>
-          <button>🏹Adventure</button>
+          <div class="display-genres">
+            @for (genre of $showGenres(); track genre.id) {
+              <div class="genre-card">
+                <img
+                  [src]="'../../../assets/icons/' + genre.icon_path"
+                  alt="genre image"
+                />
+                <span>{{ genre.name }}</span>
+              </div>
+            }
+          </div>
         </div>
 
-        <div class="already-seen">
-          <p class="rating">TMDb rating</p>
-          <p class="rating">
-            <span class="span-rating">{{
-              $selectedShow()?.vote_average?.toFixed(1)
-            }}</span
-            >/10
-            <span class="span-vote-count"
-              ><i class="bi bi-people"></i>
-              {{ $selectedShow()?.vote_count }}</span
-            >
-          </p>
+        <div class="show-overview-right">
+          <div class="show-rating">
+            <p class="rating">TMDb rating</p>
+
+            <p class="rating">
+              <span class="span-rating">{{
+                $selectedShow()?.vote_average?.toFixed(1)
+              }}</span
+              >/10
+              <span class="span-vote-count"
+                ><i class="bi bi-people"></i>
+                {{ $selectedShow()?.vote_count }}</span
+              >
+            </p>
+          </div>
+
           <button class="watched">Watched</button>
         </div>
       </div>
 
-      <p>{{ $selectedShow()?.overview }}</p>
+      <div class="show-description-box">
+        <span class="show-description" appReadMore [maxLength]="350">
+          {{ $selectedShow()?.overview }}
+        </span>
+      </div>
     </div>
 
     <div class="choose-btn">

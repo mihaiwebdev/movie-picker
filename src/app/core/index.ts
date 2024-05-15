@@ -1,6 +1,7 @@
 // Data
 export { streamingPlatforms } from './data/streaming-platforms';
-export { genres } from './data/genres-data';
+export { movieGenres } from './data/genres-data';
+export { tvGenres } from './data/genres-data';
 
 // Services
 export { ConfigurationService } from './services/configuration.service';
@@ -19,7 +20,10 @@ export {
 } from './types/show-response.interface';
 export { UserLocationResponseInterface } from './types/user-location-response.interface';
 
+// Directives
+export { ReadMoreDirective } from './directives/read-more.directive';
+
 // Components
-export { FooterComponent } from './footer/footer.component';
-export { HeaderComponent } from './header/header.component';
+export { FooterComponent } from './components/footer/footer.component';
+export { HeaderComponent } from './components/header/header.component';
 export { tmdbApiAuthInterceptor } from './interceptors/tmdb-api-auth.interceptor';

@@ -7,13 +7,15 @@
 .loader {
   width: 48px;
   height: 48px;
-  border: 3px solid #fff;
-  border-bottom-color: transparent;
   border-radius: 50%;
   display: block;
+  position: relative;
+  border: 10px solid;
+  border-color: rgba(255, 255, 255, 0.15) rgba(255, 255, 255, 0.25)
+    rgba(255, 255, 255, 0.35) rgba(255, 255, 255, 0.5);
   box-sizing: border-box;
   animation: rotation 1s linear infinite;
-  margin: 2rem auto;
+  margin: auto;
 }
 
 @keyframes rotation {
@@ -22,5 +24,27 @@
   }
   100% {
     transform: rotate(360deg);
+  }
+}
+
+.read-more-btn {
+  width: fit-content;
+  display: inline-block;
+  border: none;
+  background-color: transparent;
+  font-family: var(--text-font);
+  color: var(--font-color-primary);
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0;
+  margin: 0;
+  margin-left: 0.3rem;
+}
+
+@media screen and (min-width: 1000px) {
+  .read-more-btn {
+    &:hover {
+      opacity: 0.8;
+    }
   }
 }

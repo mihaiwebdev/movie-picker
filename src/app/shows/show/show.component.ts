@@ -1,29 +1,53 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  signal,
+} from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { ShowInterface, ShowsService, StorageService } from '../../core';
+import { environment } from '../../../environments/environment.development';
+import {
+  ConfigurationService,
+  GenreInterface,
+  ReadMoreDirective,
+  ShowInterface,
+  ShowsService,
+  StorageService,
+} from '../../core';
 
 @Component({
   selector: 'app-show',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, ReadMoreDirective],
   templateUrl: './show.component.html',
   styleUrl: './show.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ShowComponent {
   private readonly showsService = inject(ShowsService);
+  private readonly configService = inject(ConfigurationService);
   private readonly router = inject(Router);
   private readonly storageService = inject(StorageService);
 
+  private readonly allGenres = [
+    ...this.configService.getMovieGenres(),
+    ...this.configService.getTvGenres(),
+  ];
+
   public readonly imgBaseUrl = 'https://image.tmdb.org/t/p/w1280';
-  public readonly $selectedShow = this.showsService.$selectedShow;
   public readonly showFromStorage = this.storageService.getFromLocalStorage(
-    'show',
+    environment.showLsKey,
   ) as ShowInterface;
+
+  public readonly $selectedShow = this.showsService.$selectedShow;
+  public readonly $showGenres = signal<GenreInterface[]>([]);
 
   ngOnInit(): void {
     if (this.$selectedShow()) {
-      this.storageService.setToLocalStorage('show', this.$selectedShow());
+      this.storageService.setToLocalStorage(
+        environment.showLsKey,
+        this.$selectedShow(),
+      );
     }
 
     if (!this.$selectedShow() && this.showFromStorage) {
@@ -32,7 +56,21 @@ export class ShowComponent {
 
     if (!this.$selectedShow() && !this.showFromStorage) {
       this.router.navigate(['/']);
+      return;
     }
+
+    this.$showGenres.set(this.getShowGenres());
+  }
+
+  private getShowGenres(): GenreInterface[] {
+    let showGenres: GenreInterface[] = [];
+
+    for (let genreId of this.$selectedShow()!.genre_ids) {
+      const genre = this.allGenres.find((genre) => genre.id === genreId);
+      genre && showGenres.push(genre);
+    }
+
+    return showGenres;
   }
 }
 

@@ -55,10 +55,14 @@ export class ShowsComponent {
 
   public readonly streamingPlatforms =
     this.configurationService.getStreamingPlatforms();
-  public readonly genres = this.configurationService.getGenres();
+  public readonly movieGenres = this.configurationService.getMovieGenres();
+  public readonly tvGenres = this.configurationService.getTvGenres();
+
   public readonly $trendingShows = signal<ShowInterface[]>([]);
   public readonly $selectedGenres = signal<number[]>([]);
+  public readonly $selectedShowGenres = signal(this.movieGenres);
   public readonly $selectedShowType = signal('');
+
   public readonly $page = signal(1);
   public readonly $areTrendingShowsLoading = signal(true);
   public readonly $isGetShowLoading = signal(false);
@@ -69,10 +73,6 @@ export class ShowsComponent {
   }
 
   public getShows() {
-    console.log('selected show', this.selectedShowType);
-    console.log('selected genres', this.$selectedGenres());
-    console.log('selected platforms', this.selectedPlatforms);
-
     this.$isGetShowLoading.set(true);
     this.showsService
       .getShows(
@@ -80,25 +80,29 @@ export class ShowsComponent {
         this.$page(),
         this.$userLocation()?.country || 'US',
         this.$selectedGenres(),
-        this.selectedPlatforms
+        this.selectedPlatforms,
       )
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         finalize(() => {
           this.$isGetShowLoading.set(false);
           this.router.navigate(['/movie']);
-        })
+        }),
       )
       .subscribe();
   }
 
   public onShowTypeSelect(showType: ShowTypesEnum) {
     this.selectedShowType = showType;
+
     if (showType.includes('tv')) {
       this.$selectedShowType.set('TV Serie');
+      this.$selectedShowGenres.set(this.tvGenres);
     } else {
       this.$selectedShowType.set('Movie');
+      this.$selectedShowGenres.set(this.movieGenres);
     }
+
     this.getTrendingShows();
   }
 
@@ -122,7 +126,7 @@ export class ShowsComponent {
       .getTrendingShows(this.selectedShowType)
       .pipe(
         tap((res) => this.$trendingShows.set(res.results)),
-        finalize(() => this.$areTrendingShowsLoading.set(false))
+        finalize(() => this.$areTrendingShowsLoading.set(false)),
       )
       .subscribe();
   }
