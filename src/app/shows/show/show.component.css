@@ -28,8 +28,15 @@
       height: 3.8em;
       border: none;
       border-radius: 50%;
-      background: var(--red-gradient);
       cursor: pointer;
+
+      &.bookmark-btn {
+        background-color: rgba(0, 0, 0, 0.5);
+      }
+
+      &.back-btn {
+        background: var(--bg-dark);
+      }
     }
   }
 
@@ -78,25 +85,20 @@
       text-align: center;
       justify-self: end;
 
-      p {
-        font-size: 0.7rem;
-        color: var(--font-color-primary);
-      }
-
-      button {
+      button.watched {
         font-family: var(--text-font);
         font-size: 0.7rem;
-        padding: 0.8em;
-        margin-top: 1.1em;
+        padding: 0.9em;
+        margin-top: 1.4em;
         border: none;
         border-radius: 10px;
-        background: var(--red-gradient);
+        background: #323031;
         cursor: pointer;
       }
 
-      .rating {
+      p.rating {
         font-size: 0.8rem;
-        color: rgb(241, 210, 13);
+        color: var(--font-color-secondary);
 
         .span-vote-count {
           font-size: 0.7rem;
@@ -107,7 +109,7 @@
     }
   }
 
-  p {
+  p.overview-description {
     margin: 0.5em 0;
     color: var(--very-light-gray);
   }
