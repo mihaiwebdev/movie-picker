@@ -1,7 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
-import { map, tap } from 'rxjs';
+import { forkJoin, map, tap } from 'rxjs';
 import {
+  ConfigurationService,
+  GenreInterface,
   ShowInterface,
   ShowResponseInterface,
   ShowTypesEnum,
@@ -14,30 +16,79 @@ import { environment } from '../../../environments/environment.development';
 })
 export class ShowsService {
   private readonly http = inject(HttpClient);
+  private readonly configurationService = inject(ConfigurationService);
   private readonly tmdbApi = environment.tmdbApiUrl;
 
   private readonly state = {
-    $showsResults: signal<ShowResponseInterface | null>(null),
+    $showsResults: signal<ShowInterface[] | null>(null),
     $selectedShow: signal<ShowInterface | null>(null),
     $selectedPlatforms: signal<StreamingPlatformsInterface[]>([]),
+    $selectedGenres: signal<GenreInterface[]>([]),
+    $selectedShowType: signal<ShowTypesEnum>(ShowTypesEnum.movie),
+    $userLocation: this.configurationService.$userLocation,
   };
   public readonly $selectedShow = this.state.$selectedShow.asReadonly();
   public readonly $selectedPlatforms =
     this.state.$selectedPlatforms.asReadonly();
+  public readonly $selectedGenres = this.state.$selectedGenres.asReadonly();
+  public readonly $selectedShowType = this.state.$selectedShowType.asReadonly();
 
-  public getShows(
-    showType: string,
-    page: number,
-    watchRegion: string,
-    genres: number[],
-    watchProviders: number[],
-  ) {
-    const joinedWatchProviders = watchProviders.join('|');
-    const joinedGenres = genres.join(',');
+  public setSelectedShow(show: ShowInterface) {
+    this.state.$selectedShow.set(show);
+  }
+
+  public setStreamingPlatforms(platforms: StreamingPlatformsInterface[]) {
+    this.state.$selectedPlatforms.set(platforms);
+  }
+
+  public setShowsResults(showResults: ShowInterface[]) {
+    this.state.$showsResults.set(showResults);
+  }
+
+  public setSelectedGenres(genres: GenreInterface[]) {
+    this.state.$selectedGenres.set(genres);
+  }
+
+  public setSelectedShowType(showType: ShowTypesEnum) {
+    this.state.$selectedShowType.set(showType);
+  }
+
+  public getShows() {
+    const observables = [];
+
+    for (let i = 1; i <= 5; i++) {
+      observables.push(this.getShowsObservable(i));
+    }
+
+    forkJoin(observables)
+      .pipe(
+        map((res) => res.flat()),
+        tap((res) => {
+          this.state.$showsResults.set(res);
+          this.setSelectedShow(res[0]);
+        }),
+      )
+      .subscribe();
+
+    return forkJoin(observables);
+  }
+
+  public getTrendingShows(showType: ShowTypesEnum) {
+    return this.http.get<ShowResponseInterface>(
+      `${this.tmdbApi}/trending/${showType}/day?language=en-US`,
+    );
+  }
+
+  private getShowsObservable(page: number) {
+    const watchProviders = this.$selectedPlatforms()
+      .map((platform) => platform.provider_id)
+      .join('|');
+    const genresIds = this.$selectedGenres().map((genre) => genre.id);
+    const joinedGenres = genresIds.join(',');
 
     return this.http
       .get<ShowResponseInterface>(
-        `${this.tmdbApi}/discover/${showType}?language=en-US&page=${page}&sort_by=popularity.desc&watch_region=${watchRegion}&with_genres=${joinedGenres}&with_watch_providers=${joinedWatchProviders}`,
+        `${this.tmdbApi}/discover/${this.$selectedShowType()}?language=en-US&page=${page}&sort_by=vote_count.desc&watch_region=${this.state.$userLocation()?.country || 'US'}&with_genres=${joinedGenres}&with_watch_providers=${watchProviders}`,
       )
       .pipe(
         map((res) => {
@@ -54,31 +105,11 @@ export class ShowsService {
             return bScore - aScore;
           });
 
-          return res;
-        }),
-        tap((res) => {
-          this.state.$showsResults.set(res);
-          this.setSelectedShow(res.results[0]);
+          res.results = this.filterAnimations(genresIds, res.results);
+
+          return res.results;
         }),
       );
-  }
-
-  public getTrendingShows(showType: ShowTypesEnum) {
-    return this.http.get<ShowResponseInterface>(
-      `${this.tmdbApi}/trending/${showType}/day?language=en-US`,
-    );
-  }
-
-  public setSelectedShow(show: ShowInterface) {
-    this.state.$selectedShow.set(show);
-  }
-
-  public setStreamingPlatforms(platforms: StreamingPlatformsInterface[]) {
-    this.state.$selectedPlatforms.set(platforms);
-  }
-
-  public setShowsResults(showResults: ShowResponseInterface) {
-    this.state.$showsResults.set(showResults);
   }
 
   private calculateWeightedWilsonScore(
@@ -87,7 +118,7 @@ export class ShowsService {
   ): number {
     // Constants
     const zScore = 1.96; // Z-score for 95% confidence level
-    const weight = 0.9;
+    const weight = 0.94;
 
     // Calculate proportion of positive ratings
     const positiveVotes = voteCount * (voteAverage / 10);
@@ -111,4 +142,18 @@ export class ShowsService {
 
     return weightedWilsonScore;
   }
+
+  private filterAnimations(genres: number[], results: ShowInterface[]) {
+    if (!genres.includes(16)) {
+      return results.filter((result) => !result.genre_ids.includes(16));
+    } else {
+      return results;
+    }
+  }
+
+  // TODO:
+  private filterWatchedShows() {}
+
+  // TODO:
+  private filterSavedShows() {}
 }

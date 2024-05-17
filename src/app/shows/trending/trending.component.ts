@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   CUSTOM_ELEMENTS_SCHEMA,
   effect,
   ElementRef,
@@ -10,8 +11,8 @@ import {
   signal,
   ViewChild,
 } from '@angular/core';
-import { ShowInterface, ShowResponseInterface, ShowsService } from '../../core';
 import { Router } from '@angular/router';
+import { ShowInterface, ShowsService, ShowTypesEnum } from '../../core';
 
 @Component({
   selector: 'app-trending',
@@ -25,21 +26,27 @@ import { Router } from '@angular/router';
 export class TrendingComponent {
   private readonly showsService = inject(ShowsService);
   private readonly router = inject(Router);
-
-  public readonly $trendingShows = input<ShowResponseInterface | null>(null);
-  public readonly $selectedShowType = input('');
-  public readonly $areTrendingShowsLoading = input(true);
-
-  public readonly imgBaseUrl = 'https://image.tmdb.org/t/p/w342';
-
-  public readonly $screenWidth = signal(NaN);
-  private swiperParams = {
+  private readonly swiperParams = {
     slideToClickedSlide: true,
   };
 
+  public readonly $trendingShows = input<ShowInterface[] | null>(null);
+  public readonly $selectedShowType = computed(() =>
+    this.showsService.$selectedShowType() === ShowTypesEnum.tv
+      ? 'TV Series'
+      : 'Movies',
+  );
+  public readonly $areTrendingShowsLoading = input(true);
+  public readonly imgBaseUrl = 'https://image.tmdb.org/t/p/w342';
+  public readonly $screenWidth = signal(NaN);
+
   constructor() {
     effect(() => {
-      if (this.$trendingShows() && this.$trendingShows()!.results.length > 0) {
+      if (
+        this.$trendingShows() &&
+        this.$trendingShows()!.length > 0 &&
+        this.mySwiper
+      ) {
         Object.assign(this.mySwiper?.nativeElement, this.swiperParams);
         this.mySwiper?.nativeElement.initialize();
       }

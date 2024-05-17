@@ -8,7 +8,7 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { RippleModule } from 'primeng/ripple';
-import { finalize, tap } from 'rxjs';
+import { finalize, map, tap } from 'rxjs';
 import {
   PlatformListComponent,
   ShowComponent,
@@ -16,15 +16,7 @@ import {
   ShowTypeComponent,
   TrendingComponent,
 } from '.';
-import {
-  ConfigurationService,
-  GenreInterface,
-  ShowInterface,
-  ShowResponseInterface,
-  ShowTypesEnum,
-  ShowsService,
-  StreamingPlatformsInterface,
-} from '../core';
+import { ShowInterface, ShowTypesEnum, ShowsService } from '../core';
 
 @Component({
   selector: 'app-shows',
@@ -44,43 +36,18 @@ import {
 })
 export class ShowsComponent {
   private readonly showsService = inject(ShowsService);
-  private readonly configurationService = inject(ConfigurationService);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
 
-  private selectedShowType = ShowTypesEnum.movie;
-  private selectedPlatforms: number[] = [];
-  private readonly $userLocation = this.configurationService.$userLocation;
-
-  public readonly streamingPlatforms =
-    this.configurationService.getStreamingPlatforms();
-  public readonly movieGenres = this.configurationService.getMovieGenres();
-  public readonly tvGenres = this.configurationService.getTvGenres();
-
-  public readonly $trendingShows = signal<ShowResponseInterface | null>(null);
-  public readonly $selectedGenres = signal<number[]>([]);
-  public readonly $selectedShowGenres = signal(this.movieGenres);
-  public readonly $selectedShowType = signal('');
-
-  public readonly $page = signal(1);
-  public readonly $areTrendingShowsLoading = signal(true);
   public readonly $isGetShowLoading = signal(false);
-
-  constructor() {
-    // this.getUserLocation();
-    this.getTrendingShows();
-  }
+  public readonly $areTrendingShowsLoading = signal(false);
+  public readonly $trendingShows = signal<ShowInterface[] | null>(null);
+  public readonly $selectedGenres = this.showsService.$selectedGenres;
 
   public getShows() {
     this.$isGetShowLoading.set(true);
     this.showsService
-      .getShows(
-        this.selectedShowType,
-        this.$page(),
-        this.$userLocation()?.country || 'US',
-        this.$selectedGenres(),
-        this.selectedPlatforms,
-      )
+      .getShows()
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         finalize(() => {
@@ -91,40 +58,16 @@ export class ShowsComponent {
       .subscribe();
   }
 
-  public onShowTypeSelect(showType: ShowTypesEnum) {
-    this.selectedShowType = showType;
-
-    if (showType.includes('tv')) {
-      this.$selectedShowType.set('TV Serie');
-      this.$selectedShowGenres.set(this.tvGenres);
-    } else {
-      this.$selectedShowType.set('Movie');
-      this.$selectedShowGenres.set(this.movieGenres);
-    }
-
-    this.getTrendingShows();
-  }
-
-  public onGenresSelect(genres: GenreInterface[]) {
-    this.$selectedGenres.set(genres.map((genre) => genre.id));
-  }
-
-  public onPlatformSelect(platforms: StreamingPlatformsInterface[]) {
-    this.selectedPlatforms = platforms.map((platform) => platform.provider_id);
-  }
-
-  private getUserLocation() {
-    if (this.$userLocation()) return;
-    this.configurationService.getUserLocation();
-  }
-
-  private getTrendingShows() {
+  public onSelectShowTypeOutput(showType: ShowTypesEnum) {
     this.$areTrendingShowsLoading.set(true);
-
     this.showsService
-      .getTrendingShows(this.selectedShowType)
+      .getTrendingShows(showType)
       .pipe(
-        tap((res) => this.$trendingShows.set(res)),
+        takeUntilDestroyed(this.destroyRef),
+        map((res) => res.results),
+        tap((res) => {
+          this.$trendingShows.set(res);
+        }),
         finalize(() => this.$areTrendingShowsLoading.set(false)),
       )
       .subscribe();

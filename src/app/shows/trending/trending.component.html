@@ -1,4 +1,4 @@
-<h2 class="trending-text">Trending {{ $selectedShowType() }}s</h2>
+<h2 class="trending-text">Trending {{ $selectedShowType() }}</h2>
 
 @if ($areTrendingShowsLoading()) {
   <span class="loader"></span>
@@ -19,7 +19,7 @@
         coverflow-effect-slide-shadows="true"
         loop="true"
       >
-        @for (show of $trendingShows()?.results; track show.id) {
+        @for (show of $trendingShows(); track show.id) {
           <swiper-slide (click)="onShowClick(show)">
             <img
               class="show-image"
@@ -38,7 +38,7 @@
         effect="cards"
         grab-cursor="true"
       >
-        @for (show of $trendingShows()?.results; track show.id) {
+        @for (show of $trendingShows(); track show.id) {
           <swiper-slide>
             <img
               class="show-image"

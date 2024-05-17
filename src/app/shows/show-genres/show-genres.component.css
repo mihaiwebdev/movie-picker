@@ -3,7 +3,21 @@
   position: relative;
   color: var(--font-color-primary);
   margin-top: 1.5em;
-  margin-bottom: 1.5rem;
+  .movie-swiper-container {
+    display: none;
+
+    &.show {
+      display: block;
+    }
+  }
+
+  .tv-swiper-container {
+    display: none;
+
+    &.show {
+      display: block;
+    }
+  }
 
   swiper-container {
     width: 100%;
@@ -45,7 +59,15 @@
     margin: 0 auto;
     margin-top: 0.4rem;
   }
+
+  .swiper-pagination-movie,
+  .swiper-pagination-tv {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 }
+
 .selected-genres {
   .p-inputtext {
     background: transparent;
@@ -63,5 +85,10 @@
         opacity: 0.7;
       }
     }
+  }
+
+  .swiper-pagination-movie,
+  .swiper-pagination-tv {
+    margin-top: 0.5rem;
   }
 }

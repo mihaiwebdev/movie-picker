@@ -1,11 +1,11 @@
 <div class="show-types-container">
   <div
     class="movies"
-    [class.movie-active]="showType === showTypesEnum.movie"
+    [class.movie-active]="$showType() === showTypesEnum.movie"
   ></div>
   <div
     class="tv-series"
-    [class.tv-series-active]="showType === showTypesEnum.tv"
+    [class.tv-series-active]="$showType() === showTypesEnum.tv"
   ></div>
   <div class="show-types">
     <button (click)="selectShowType(showTypesEnum.movie)" class="show-type-btn">

@@ -3,17 +3,22 @@ import {
   ChangeDetectionStrategy,
   Component,
   CUSTOM_ELEMENTS_SCHEMA,
+  effect,
   ElementRef,
   inject,
-  input,
   OnInit,
-  output,
+  signal,
   ViewChild,
 } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ChipsModule } from 'primeng/chips';
 import { register } from 'swiper/element/bundle';
-import { GenreInterface } from '../../core';
+import {
+  ConfigurationService,
+  GenreInterface,
+  ShowsService,
+  ShowTypesEnum,
+} from '../../core';
 
 @Component({
   selector: 'app-show-genres',
@@ -25,11 +30,19 @@ import { GenreInterface } from '../../core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ShowGenresComponent implements AfterViewInit, OnInit {
+  private readonly configurationService = inject(ConfigurationService);
+  private readonly showsService = inject(ShowsService);
   private readonly formBuilder = inject(FormBuilder);
-  public readonly iconBasePath = '../../../assets/icons/';
+  private isFirstChange = true;
 
-  public readonly $genres = input<GenreInterface[]>([]);
-  public readonly $selectGenresOutput = output<GenreInterface[]>();
+  public readonly iconBasePath = '../../../assets/icons/';
+  public readonly $movieGenres = signal<GenreInterface[]>(
+    this.configurationService.getMovieGenres(),
+  );
+  public readonly $showGenres = signal<GenreInterface[]>(
+    this.configurationService.getTvGenres(),
+  );
+  public readonly $selectedShowType = this.showsService.$selectedShowType;
 
   private get selectedGenresControl() {
     return this.genresForm.controls['selectedGenres'];
@@ -39,9 +52,11 @@ export class ShowGenresComponent implements AfterViewInit, OnInit {
   }
   public readonly genresForm = this.formBuilder.group({
     selectedGenresNames: this.formBuilder.control<string[] | undefined>(
-      undefined
+      this.showsService.$selectedGenres().map((genre) => genre.name),
     ),
-    selectedGenres: this.formBuilder.control<GenreInterface[]>([]),
+    selectedGenres: this.formBuilder.control<GenreInterface[]>(
+      this.showsService.$selectedGenres(),
+    ),
   });
 
   // SWIPER Config
@@ -77,28 +92,60 @@ export class ShowGenresComponent implements AfterViewInit, OnInit {
     },
   };
 
-  public readonly pagination = {
+  public readonly moviePagination = {
     pagination: {
-      el: '.swiper-pagination',
+      el: '.swiper-pagination-movie',
       type: 'bullets',
     },
   };
 
+  public readonly tvPagination = {
+    pagination: {
+      el: '.swiper-pagination-tv',
+      type: 'bullets',
+    },
+  };
+
+  constructor() {
+    effect(() => {
+      if (this.$selectedShowType() === ShowTypesEnum.movie) {
+        this.tvSwiper?.nativeElement.parentElement.classList.remove('show');
+        this.movieSwiper?.nativeElement.parentElement.classList.add('show');
+      } else {
+        this.movieSwiper?.nativeElement.parentElement.classList.remove('show');
+        this.tvSwiper?.nativeElement.parentElement.classList.add('show');
+      }
+
+      if (!this.isFirstChange) {
+        this.selectedGenresControl.reset([]);
+        this.selectedGenresNames.reset([]);
+      }
+
+      this.isFirstChange = false;
+    });
+  }
   ngOnInit(): void {
     register();
 
     this.selectedGenresControl.valueChanges.subscribe((res) =>
-      this.selectedGenresNames.setValue(res?.map((genre) => genre.name))
+      this.selectedGenresNames.setValue(res?.map((genre) => genre.name)),
     );
   }
 
-  @ViewChild('mySwiper') mySwiper?: ElementRef;
+  @ViewChild('movieSwiper') movieSwiper?: ElementRef;
+  @ViewChild('tvSwiper') tvSwiper?: ElementRef;
 
+  // Initialize tv swiper and movie swiper
   ngAfterViewInit() {
-    Object.assign(this.mySwiper?.nativeElement, this.breakpoints);
-    Object.assign(this.mySwiper?.nativeElement, this.pagination);
+    Object.assign(this.movieSwiper?.nativeElement, this.breakpoints);
+    Object.assign(this.movieSwiper?.nativeElement, this.moviePagination);
+    this.movieSwiper?.nativeElement.parentElement.classList.add('show');
+    this.movieSwiper?.nativeElement.initialize();
 
-    this.mySwiper?.nativeElement.initialize();
+    Object.assign(this.tvSwiper?.nativeElement, this.breakpoints);
+    Object.assign(this.tvSwiper?.nativeElement, this.tvPagination);
+    this.tvSwiper?.nativeElement.parentElement.classList.add('show');
+    this.tvSwiper?.nativeElement.initialize();
   }
 
   public onGenreSelect(selectedGenre: GenreInterface) {
@@ -106,7 +153,7 @@ export class ShowGenresComponent implements AfterViewInit, OnInit {
 
     if (this.isGenreSelected(selectedGenre.id)) {
       const filteredGenres = this.selectedGenresControl.value.filter(
-        (genre) => genre.id !== selectedGenre.id
+        (genre) => genre.id !== selectedGenre.id,
       );
 
       this.selectedGenresControl.setValue(filteredGenres);
@@ -118,12 +165,12 @@ export class ShowGenresComponent implements AfterViewInit, OnInit {
       this.selectedGenresControl.setValue(selectedGenres);
     }
 
-    this.$selectGenresOutput.emit(this.selectedGenresControl.value);
+    this.showsService.setSelectedGenres(this.selectedGenresControl.value);
   }
 
   public isGenreSelected(genreId: number) {
     return this.selectedGenresControl.value?.find(
-      (genre) => genreId === genre.id
+      (genre) => genreId === genre.id,
     );
   }
 
@@ -131,10 +178,11 @@ export class ShowGenresComponent implements AfterViewInit, OnInit {
     if (!this.selectedGenresControl.value) return;
 
     const filteredGenres = this.selectedGenresControl.value.filter(
-      (genre) => genre.name.toLowerCase() !== $event.value.toLowerCase()
+      (genre) => genre.name.toLowerCase() !== $event.value.toLowerCase(),
     );
 
     this.selectedGenresControl.setValue(filteredGenres);
-    this.$selectGenresOutput.emit(this.selectedGenresControl.value);
+
+    this.showsService.setSelectedGenres(this.selectedGenresControl.value);
   }
 }

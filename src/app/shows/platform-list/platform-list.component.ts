@@ -2,13 +2,16 @@ import {
   ChangeDetectionStrategy,
   Component,
   inject,
-  input,
   model,
-  output,
+  signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MultiSelectModule } from 'primeng/multiselect';
-import { ShowsService, StreamingPlatformsInterface } from '../../core';
+import {
+  ConfigurationService,
+  ShowsService,
+  StreamingPlatformsInterface,
+} from '../../core';
 
 @Component({
   selector: 'app-platform-list',
@@ -20,20 +23,14 @@ import { ShowsService, StreamingPlatformsInterface } from '../../core';
 })
 export class PlatformListComponent {
   private readonly showsService = inject(ShowsService);
+  private readonly configurationService = inject(ConfigurationService);
 
-  public readonly $streamingPlatforms = input<StreamingPlatformsInterface[]>(
-    [],
+  public readonly $streamingPlatforms = signal(
+    this.configurationService.getStreamingPlatforms(),
   );
   public readonly $selectedStreamingPlatforms = model<
     StreamingPlatformsInterface[]
   >([]);
-
-  public readonly $platformListOutput = output<StreamingPlatformsInterface[]>();
-
-  public onPlatformSelect() {
-    this.showsService.setStreamingPlatforms(this.$selectedStreamingPlatforms());
-    this.$platformListOutput.emit(this.$selectedStreamingPlatforms());
-  }
 
   ngOnInit() {
     if (this.showsService.$selectedPlatforms().length < 1) {
@@ -43,7 +40,9 @@ export class PlatformListComponent {
     this.$selectedStreamingPlatforms.set(
       this.showsService.$selectedPlatforms(),
     );
+  }
 
-    this.$platformListOutput.emit(this.$selectedStreamingPlatforms());
+  public onPlatformSelect() {
+    this.showsService.setStreamingPlatforms(this.$selectedStreamingPlatforms());
   }
 }

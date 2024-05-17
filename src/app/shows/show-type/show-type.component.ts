@@ -1,8 +1,13 @@
-import { ChangeDetectionStrategy, Component, output } from '@angular/core';
-import { ShowTypesEnum } from '../../core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  output,
+} from '@angular/core';
 import { MenuItem } from 'primeng/api';
-import { TabMenuModule } from 'primeng/tabmenu';
 import { RippleModule } from 'primeng/ripple';
+import { TabMenuModule } from 'primeng/tabmenu';
+import { ShowTypesEnum, ShowsService } from '../../core';
 
 @Component({
   selector: 'app-show-type',
@@ -13,29 +18,37 @@ import { RippleModule } from 'primeng/ripple';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ShowTypeComponent {
-  public readonly showTypesEnum = ShowTypesEnum;
-  public showType = ShowTypesEnum.movie;
+  private readonly showsService = inject(ShowsService);
+  private isFirstChange = true;
 
+  public readonly showTypesEnum = ShowTypesEnum;
+  public readonly $showType = this.showsService.$selectedShowType;
+  public readonly $selectShowTypeOutput = output<ShowTypesEnum>();
   public readonly showTypeItems: MenuItem[] = [
     { label: 'Movies' },
     { label: 'TV Series' },
   ];
-  public activeItem = this.showTypeItems[0];
-
-  public readonly $selectShowTypeOutput = output<ShowTypesEnum>();
+  public activeItem =
+    this.$showType() === this.showTypesEnum.movie
+      ? this.showTypeItems[0]
+      : this.showTypeItems[1];
 
   public selectShowType(show: ShowTypesEnum) {
-    this.showType = show;
+    this.showsService.setSelectedShowType(show);
     this.$selectShowTypeOutput.emit(show);
   }
 
-  public onActiveItemChange($event: MenuItem) {
-    if ($event.label?.toLowerCase().includes('tv')) {
-      this.showType = this.showTypesEnum.tv;
-    } else {
-      this.showType = this.showTypesEnum.movie;
+  public onActiveItemChange($event: any) {
+    if (!this.isFirstChange) {
+      this.showsService.setSelectedGenres([]);
     }
 
-    this.$selectShowTypeOutput.emit(this.showType);
+    if ($event.label?.toLowerCase().includes('tv')) {
+      this.selectShowType(this.showTypesEnum.tv);
+    } else {
+      this.selectShowType(this.showTypesEnum.movie);
+    }
+
+    this.isFirstChange = false;
   }
 }

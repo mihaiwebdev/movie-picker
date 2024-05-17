@@ -20,6 +20,10 @@ export class ConfigurationService {
   };
   public readonly $userLocation = this.state.$userLocation.asReadonly();
 
+  constructor() {
+    this.getUserLocation();
+  }
+
   public getStreamingPlatforms() {
     return streamingPlatforms;
   }

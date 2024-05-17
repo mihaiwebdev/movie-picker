@@ -1,25 +1,18 @@
 <div class="sub-header-container">
   <div class="content-container">
-    <app-platform-list
-      [$streamingPlatforms]="streamingPlatforms"
-      ($platformListOutput)="onPlatformSelect($event)"
-    ></app-platform-list>
+    <app-platform-list></app-platform-list>
   </div>
   <app-show-type
-    ($selectShowTypeOutput)="onShowTypeSelect($event)"
+    ($selectShowTypeOutput)="onSelectShowTypeOutput($event)"
   ></app-show-type>
 </div>
 
 <div class="content-container">
-  <app-show-genres
-    [$genres]="$selectedShowGenres()"
-    ($selectGenresOutput)="onGenresSelect($event)"
-  ></app-show-genres>
+  <app-show-genres></app-show-genres>
 
   <app-trending
-    [$trendingShows]="$trendingShows()"
-    [$selectedShowType]="$selectedShowType()"
     [$areTrendingShowsLoading]="$areTrendingShowsLoading()"
+    [$trendingShows]="$trendingShows()"
   ></app-trending>
 
   <button
