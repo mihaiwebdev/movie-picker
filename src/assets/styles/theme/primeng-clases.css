@@ -50,3 +50,8 @@
     display: none;
   }
 }
+
+/* Toast */
+.toastr {
+  padding: 0 20px;
+}

@@ -7,8 +7,9 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
+import { MessageService } from 'primeng/api';
 import { RippleModule } from 'primeng/ripple';
-import { finalize, map, tap } from 'rxjs';
+import { catchError, finalize, map, of, tap } from 'rxjs';
 import {
   PlatformListComponent,
   ShowComponent,
@@ -38,6 +39,7 @@ export class ShowsComponent {
   private readonly showsService = inject(ShowsService);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly messageService = inject(MessageService);
 
   public readonly $isGetShowLoading = signal(false);
   public readonly $areTrendingShowsLoading = signal(false);
@@ -50,9 +52,19 @@ export class ShowsComponent {
       .getShows()
       .pipe(
         takeUntilDestroyed(this.destroyRef),
+        tap(() => {
+          this.router.navigate(['/movie']);
+        }),
+        catchError((err) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Could not get shows',
+          });
+          return of(err);
+        }),
         finalize(() => {
           this.$isGetShowLoading.set(false);
-          this.router.navigate(['/movie']);
         }),
       )
       .subscribe();
@@ -67,6 +79,14 @@ export class ShowsComponent {
         map((res) => res.results),
         tap((res) => {
           this.$trendingShows.set(res);
+        }),
+        catchError((err) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Could not get the trending shows',
+          });
+          return of(err);
         }),
         finalize(() => this.$areTrendingShowsLoading.set(false)),
       )

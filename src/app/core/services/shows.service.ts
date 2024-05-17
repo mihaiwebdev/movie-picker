@@ -32,6 +32,7 @@ export class ShowsService {
     this.state.$selectedPlatforms.asReadonly();
   public readonly $selectedGenres = this.state.$selectedGenres.asReadonly();
   public readonly $selectedShowType = this.state.$selectedShowType.asReadonly();
+  public readonly $showsResults = this.state.$showsResults.asReadonly();
 
   public setSelectedShow(show: ShowInterface) {
     this.state.$selectedShow.set(show);
@@ -53,24 +54,41 @@ export class ShowsService {
     this.state.$selectedShowType.set(showType);
   }
 
+  public nextShow() {
+    let idx = 0;
+
+    return (prev: boolean, next: boolean) => {
+      if (!this.$showsResults()) return;
+
+      if (next && idx < this.$showsResults()!.length - 1) {
+        idx++;
+
+        this.state.$selectedShow.set(this.$showsResults()![idx]);
+      }
+
+      if (prev && idx > 0) {
+        idx--;
+        this.state.$selectedShow.set(this.$showsResults()![idx]);
+      }
+
+      return idx;
+    };
+  }
+
   public getShows() {
     const observables = [];
 
-    for (let i = 1; i <= 5; i++) {
+    for (let i = 1; i <= 3; i++) {
       observables.push(this.getShowsObservable(i));
     }
 
-    forkJoin(observables)
-      .pipe(
-        map((res) => res.flat()),
-        tap((res) => {
-          this.state.$showsResults.set(res);
-          this.setSelectedShow(res[0]);
-        }),
-      )
-      .subscribe();
-
-    return forkJoin(observables);
+    return forkJoin(observables).pipe(
+      map((res) => res.flat()),
+      tap((res) => {
+        this.state.$showsResults.set(res);
+        this.setSelectedShow(res[0]);
+      }),
+    );
   }
 
   public getTrendingShows(showType: ShowTypesEnum) {
@@ -118,7 +136,7 @@ export class ShowsService {
   ): number {
     // Constants
     const zScore = 1.96; // Z-score for 95% confidence level
-    const weight = 0.94;
+    const weight = 0.95;
 
     // Calculate proportion of positive ratings
     const positiveVotes = voteCount * (voteAverage / 10);

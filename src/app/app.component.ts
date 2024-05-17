@@ -6,10 +6,11 @@ import {
   signal,
 } from '@angular/core';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
-import { PrimeNGConfig } from 'primeng/api';
+import { MessageService, PrimeNGConfig } from 'primeng/api';
 import { StyleClassModule } from 'primeng/styleclass';
 import { FooterComponent, HeaderComponent } from './core';
 import { ShowsComponent } from './shows';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-root',
@@ -21,7 +22,9 @@ import { ShowsComponent } from './shows';
     HeaderComponent,
     FooterComponent,
     StyleClassModule,
+    ToastModule,
   ],
+  providers: [MessageService],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

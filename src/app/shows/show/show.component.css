@@ -4,6 +4,7 @@
   width: 100%;
   min-height: 100dvh;
   height: 100dvh;
+  position: relative;
 
   .action-buttons {
     padding: 1em;
@@ -55,6 +56,11 @@
     display: flex;
     flex-direction: column;
     justify-content: space-around;
+    height: 60%;
+
+    .show-poster {
+      display: none;
+    }
 
     .show-overview {
       display: flex;
@@ -135,38 +141,150 @@
 
     .show-description-box {
       margin: 1rem 0;
-
+      max-height: 180px;
+      overflow-y: auto;
       .show-description {
         margin: 0.5em 0;
         color: var(--very-light-gray);
         margin-right: 0.3rem;
       }
     }
-  }
 
-  .choose-btn {
-    display: flex;
-    justify-content: space-evenly;
-    padding-bottom: 2em;
-
-    button {
-      font-size: 1rem;
-      font-family: var(--text-font);
-      background: var(--red-gradient);
-      border: 1px solid var(--bg-light-red);
-      border-radius: 5px;
-      padding: 1em 2em;
-      cursor: pointer;
+    .choose-btn {
       display: flex;
-      align-items: center;
-      line-height: 1;
 
-      .bi-arrow-left-circle {
-        margin-right: 0.5em;
+      padding-bottom: 2em;
+      margin-top: auto;
+
+      button {
+        font-size: 1rem;
+        font-family: var(--text-font);
+        background: var(--red-gradient);
+        border: 1px solid var(--bg-light-red);
+        border-radius: 5px;
+        padding: 1em 2em;
+        cursor: pointer;
+        display: block;
+        align-items: center;
+        line-height: 1;
+
+        .bi-arrow-left-circle {
+          margin-right: 0.5em;
+        }
+
+        .bi-arrow-right-circle {
+          margin-left: 0.5em;
+        }
+
+        &.next {
+          margin-left: auto;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .found-movie-page {
+    #poster-image {
+      height: 55%;
+    }
+
+    .gradient-overlay {
+      height: 55%;
+      .show-overview,
+      .show-description-box {
+        width: 80%;
+        max-width: 80%;
+        margin: 1rem auto;
       }
 
-      .bi-arrow-right-circle {
-        margin-left: 0.5em;
+      .choose-btn {
+        width: 80%;
+        max-width: 80%;
+        margin: auto;
+      }
+    }
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .found-movie-page {
+    .gradient-overlay {
+      .show-description-box {
+        width: 60%;
+        max-width: 60%;
+      }
+    }
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .found-movie-page {
+    .action-buttons {
+      max-width: 80%;
+      left: 50%;
+      transform: translateX(-50%);
+
+      button.back-btn,
+      button.bookmark-btn {
+        opacity: 1;
+      }
+    }
+
+    #poster-image {
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+
+    .gradient-overlay {
+      background-color: unset;
+      position: relative;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 50%;
+      max-width: 50%;
+      border-radius: 18px;
+      height: 95%;
+
+      &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: var(--bg-dark);
+        z-index: -1;
+        opacity: 0.9;
+        border-radius: 18px;
+      }
+
+      .show-poster {
+        display: block;
+        width: 100%;
+        height: 60%;
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+          object-position: center;
+        }
+      }
+
+      .show-overview,
+      .show-description-box {
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .choose-btn {
+        width: 100%;
+        max-width: 100%;
       }
     }
   }

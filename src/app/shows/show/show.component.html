@@ -16,6 +16,13 @@
     />
 
     <div class="gradient-overlay">
+      <div class="show-poster">
+        <img
+          [src]="imgBaseUrl + $selectedShow()?.poster_path"
+          alt="show poster image"
+        />
+      </div>
+
       <div class="show-overview">
         <div class="show-overview-left">
           <h1>{{ $selectedShow()?.title || $selectedShow()?.name }}</h1>
@@ -62,19 +69,29 @@
       </div>
 
       <div class="show-description-box">
-        <span class="show-description" appReadMore [maxLength]="350">
+        <span
+          class="show-description"
+          appReadMore
+          [maxLength]="380"
+          [text]="$selectedShow()?.overview || ''"
+        >
           {{ $selectedShow()?.overview }}
         </span>
       </div>
-    </div>
 
-    <div class="choose-btn">
-      <button pRipple class="previous">
-        <i class="bi bi-arrow-left-circle"></i> Prev
-      </button>
-      <button pRipple class="next">
-        Next <i class="bi bi-arrow-right-circle"></i>
-      </button>
+      <div class="choose-btn">
+        @if ($showIdx() > 0) {
+          <button (click)="nextShow(true, false)" pRipple class="previous">
+            <i class="bi bi-arrow-left-circle"></i> Prev
+          </button>
+        }
+
+        @if ($showIdx() < $showsResults()!.length - 1) {
+          <button (click)="nextShow(false, true)" pRipple class="next">
+            Next <i class="bi bi-arrow-right-circle"></i>
+          </button>
+        }
+      </div>
     </div>
   </div>
 }

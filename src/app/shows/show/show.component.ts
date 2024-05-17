@@ -1,20 +1,18 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   inject,
   signal,
 } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { environment } from '../../../environments/environment.development';
+import { RippleModule } from 'primeng/ripple';
 import {
   ConfigurationService,
   GenreInterface,
   ReadMoreDirective,
-  ShowInterface,
   ShowsService,
-  StorageService,
 } from '../../core';
-import { RippleModule } from 'primeng/ripple';
 
 @Component({
   selector: 'app-show',
@@ -28,44 +26,38 @@ export class ShowComponent {
   private readonly showsService = inject(ShowsService);
   private readonly configService = inject(ConfigurationService);
   private readonly router = inject(Router);
-  private readonly storageService = inject(StorageService);
 
   private readonly allGenres = [
     ...this.configService.getMovieGenres(),
     ...this.configService.getTvGenres(),
   ];
+  private readonly nextShowClosureFn = this.showsService.nextShow();
 
-  public readonly imgBaseUrl = 'https://image.tmdb.org/t/p/w1280';
-  public readonly showFromStorage = this.storageService.getFromLocalStorage(
-    environment.showLsKey,
-  ) as ShowInterface;
+  public readonly imgBaseUrl = 'https://image.tmdb.org/t/p/original';
 
   public readonly $selectedShow = this.showsService.$selectedShow;
-  public readonly $showGenres = signal<GenreInterface[]>([]);
+  public readonly $showsResults = this.showsService.$showsResults;
+  public readonly $showGenres = computed(
+    () => this.$selectedShow()?.genre_ids && this.getShowGenres(),
+  );
   public readonly $isWatched = signal(false);
+  public readonly $showIdx = signal(0);
 
   ngOnInit(): void {
-    if (this.$selectedShow()) {
-      this.storageService.setToLocalStorage(
-        environment.showLsKey,
-        this.$selectedShow(),
-      );
-    }
-
-    if (!this.$selectedShow() && this.showFromStorage) {
-      this.showsService.setSelectedShow(this.showFromStorage);
-    }
-
-    if (!this.$selectedShow() && !this.showFromStorage) {
+    if (!this.$selectedShow()) {
       this.router.navigate(['/']);
       return;
     }
-
-    this.$showGenres.set(this.getShowGenres());
   }
 
   public toggleWatched() {
     this.$isWatched.update((isWatched) => !isWatched);
+  }
+
+  public nextShow(prev: boolean, next: boolean) {
+    let idx = this.nextShowClosureFn(prev, next);
+
+    this.$showIdx.set(idx || 0);
   }
 
   private getShowGenres(): GenreInterface[] {

@@ -34,21 +34,20 @@ export class ShowTypeComponent {
       : this.showTypeItems[1];
 
   public selectShowType(show: ShowTypesEnum) {
+    if (!this.isFirstChange) {
+      this.showsService.setSelectedGenres([]);
+    }
+    this.isFirstChange = false;
+
     this.showsService.setSelectedShowType(show);
     this.$selectShowTypeOutput.emit(show);
   }
 
   public onActiveItemChange($event: any) {
-    if (!this.isFirstChange) {
-      this.showsService.setSelectedGenres([]);
-    }
-
     if ($event.label?.toLowerCase().includes('tv')) {
       this.selectShowType(this.showTypesEnum.tv);
     } else {
       this.selectShowType(this.showTypesEnum.movie);
     }
-
-    this.isFirstChange = false;
   }
 }
