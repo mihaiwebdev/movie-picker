@@ -7,15 +7,13 @@
 @import "./theme/variables.css";
 @import "./theme/primeng-clases.css";
 @import "./theme/shared-classes.css";
-@import 'firebaseui/dist/firebaseui.css';
+@import "firebaseui/dist/firebaseui.css";
 
 * {
   box-sizing: border-box;
 }
 
 body {
-  background-color: var(--bg-dark);
-  color: var(--text-color-primary);
   font-family: var(--text-font);
   margin: 0;
   padding: 0;
