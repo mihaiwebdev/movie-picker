@@ -106,11 +106,21 @@
         text-align: center;
         width: fit-content;
 
+        p.release-date {
+          text-align: center;
+          border: 1px solid #fff;
+          border-radius: 5px;
+          padding: 0.2em;
+          margin: 0.5em auto;
+          width: 45%;
+          font-size: 0.7rem;
+          background: rgba(0, 0, 0, 0.1);
+        }
+
         button {
           font-family: var(--text-font);
           font-size: 0.7rem;
           padding: 0.9em;
-
           border: none;
           border-radius: 10px;
           cursor: pointer;
@@ -125,7 +135,7 @@
             font-weight: 700;
           }
         }
-        .rating {
+        p.rating {
           font-size: 0.8rem;
           color: var(--font-color-secondary);
           text-wrap: nowrap;
@@ -152,7 +162,6 @@
 
     .choose-btn {
       display: flex;
-
       padding-bottom: 2em;
       margin-top: auto;
 
@@ -225,7 +234,6 @@
       max-width: 80%;
       left: 50%;
       transform: translateX(-50%);
-
       button.back-btn,
       button.bookmark-btn {
         opacity: 1;
@@ -241,6 +249,9 @@
     }
 
     .gradient-overlay {
+      box-shadow: 0px 0px 25px 9px #000;
+      backdrop-filter: blur(10px);
+      backdrop-filter: brightness(30%);
       background-color: unset;
       position: relative;
       top: 50%;
@@ -249,7 +260,7 @@
       width: 50%;
       max-width: 50%;
       border-radius: 18px;
-      height: 95%;
+      height: 80%;
 
       &::before {
         content: "";
@@ -258,21 +269,32 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: var(--bg-dark);
         z-index: -1;
-        opacity: 0.9;
         border-radius: 18px;
       }
 
-      .show-poster {
-        display: block;
-        width: 100%;
-        height: 60%;
-        img {
-          width: 100%;
-          height: 100%;
-          object-fit: contain;
-          object-position: center;
+      .show-overview {
+        .show-overview-left {
+          h1 {
+            font-size: 3rem;
+          }
+        }
+
+        .show-overview-right {
+          margin-right: 1em;
+
+          button {
+            font-size: 0.7rem;
+            padding: 0.9em;
+          }
+
+          .rating {
+            font-size: 0.8rem;
+
+            .span-vote-count {
+              font-size: 0.7rem;
+            }
+          }
         }
       }
 
@@ -280,11 +302,22 @@
       .show-description-box {
         width: 100%;
         max-width: 100%;
+
+        .show-description {
+          font-size: 1.2rem;
+        }
       }
 
       .choose-btn {
         width: 100%;
         max-width: 100%;
+        padding-left: 1.5em;
+        padding-right: 1.5em;
+        padding-bottom: 0;
+
+        button {
+          width: 40%;
+        }
       }
     }
   }

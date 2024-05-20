@@ -41,6 +41,11 @@
         </div>
 
         <div class="show-overview-right">
+          @if ($selectedShow()?.release_date) {
+            <p class="release-date">
+              {{ ($selectedShow()?.release_date?.split("-"))![0] }}
+            </p>
+          }
           <div class="show-rating">
             <p class="rating">TMDb rating</p>
 
