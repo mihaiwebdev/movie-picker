@@ -61,12 +61,6 @@
             </p>
           </div>
 
-          <!-- @if ($selectedShow()?.release_date) {
-            <p class="release-date">
-              {{ ($selectedShow()?.release_date?.split("-"))![0] }}
-            </p>
-          } -->
-
           @if ($isWatched()) {
             <button pRipple class="already-watched" (click)="toggleWatched()">
               <i class="bi bi-check2-all"></i> Watched
