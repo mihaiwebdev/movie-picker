@@ -1,6 +1,5 @@
-import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { MenuItem } from 'primeng/api';
+import { Component, inject, signal } from '@angular/core';
+import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { MenuModule } from 'primeng/menu';
 import { RippleModule } from 'primeng/ripple';
 
@@ -11,4 +10,18 @@ import { RippleModule } from 'primeng/ripple';
   templateUrl: './header.component.html',
   styleUrl: './header.component.css',
 })
-export class HeaderComponent {}
+export class HeaderComponent {
+  private readonly router = inject(Router);
+
+  public readonly $isHeadingHidden = signal(false);
+
+  ngOnInit() {
+    this.router.events.subscribe((res) => {
+      if (res instanceof NavigationEnd && res.url === '/movie') {
+        this.$isHeadingHidden.set(true);
+      } else {
+        this.$isHeadingHidden.set(false);
+      }
+    });
+  }
+}

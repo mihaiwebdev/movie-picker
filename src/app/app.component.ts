@@ -1,16 +1,14 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  signal,
-} from '@angular/core';
-import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { initializeApp } from 'firebase/app';
+import { getFirestore } from 'firebase/firestore';
 import { MessageService, PrimeNGConfig } from 'primeng/api';
 import { StyleClassModule } from 'primeng/styleclass';
-import { FooterComponent, HeaderComponent } from './core';
-import { ShowsComponent } from './shows';
 import { ToastModule } from 'primeng/toast';
+import { environment } from '../environments/environment.development';
+import { HeaderComponent } from './core';
+import { ShowsComponent } from './shows';
 
 @Component({
   selector: 'app-root',
@@ -20,7 +18,6 @@ import { ToastModule } from 'primeng/toast';
     RouterOutlet,
     ShowsComponent,
     HeaderComponent,
-    FooterComponent,
     StyleClassModule,
     ToastModule,
   ],
@@ -31,18 +28,19 @@ import { ToastModule } from 'primeng/toast';
 })
 export class AppComponent {
   private readonly primengConfig = inject(PrimeNGConfig);
-  private readonly router = inject(Router);
-  public readonly $isNavHidden = signal(false);
+  private readonly firebaseApp;
+  // private readonly analytics;
+  private readonly db;
+  private readonly firebaseConfig;
+
+  constructor() {
+    this.firebaseConfig = environment.firebaseConfig;
+    this.firebaseApp = initializeApp(this.firebaseConfig);
+    // this.analytics = getAnalytics(this.firebaseApp)
+    this.db = getFirestore(this.firebaseApp);
+  }
 
   ngOnInit() {
     this.primengConfig.ripple = true;
-
-    this.router.events.subscribe((res) => {
-      if (res instanceof NavigationEnd && res.url === '/movie') {
-        this.$isNavHidden.set(true);
-      } else {
-        this.$isNavHidden.set(false);
-      }
-    });
   }
 }

@@ -24,6 +24,6 @@ export { UserLocationResponseInterface } from './types/user-location-response.in
 export { ReadMoreDirective } from './directives/read-more.directive';
 
 // Components
-export { FooterComponent } from './components/footer/footer.component';
 export { HeaderComponent } from './components/header/header.component';
 export { tmdbApiAuthInterceptor } from './interceptors/tmdb-api-auth.interceptor';
+export { AuthComponent } from './components/auth/auth.component';
