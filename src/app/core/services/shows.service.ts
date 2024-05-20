@@ -56,6 +56,9 @@ export class ShowsService {
 
   public nextShow() {
     let idx = 0;
+    if (this.$selectedShow()) {
+      idx = this.$showsResults()?.indexOf(this.$selectedShow()!) || 0;
+    }
 
     return (prev: boolean, next: boolean) => {
       if (!this.$showsResults()) return;
