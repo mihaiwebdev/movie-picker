@@ -42,6 +42,7 @@ export class ShowComponent {
   );
   public readonly $isWatched = signal(false);
   public readonly $showIdx = signal(0);
+  public readonly $isImgLoading = signal(true);
 
   ngOnInit(): void {
     if (!this.$selectedShow()) {
@@ -50,11 +51,17 @@ export class ShowComponent {
     }
   }
 
+  public onImageLoad() {
+    this.$isImgLoading.set(false);
+  }
+
   public toggleWatched() {
     this.$isWatched.update((isWatched) => !isWatched);
   }
 
   public nextShow(prev: boolean, next: boolean) {
+    this.$isImgLoading.set(true);
+
     let idx = this.nextShowClosureFn(prev, next);
 
     this.$showIdx.set(idx || 0);

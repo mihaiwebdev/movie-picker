@@ -1,4 +1,4 @@
-<header class="header">
+<header class="header" [class.black-header]="!$isAppMainPageRoute()">
   <div class="header-container">
     <nav class="navbar">
       <div class="logo" [routerLink]="['/app']">
@@ -47,7 +47,7 @@
         </div>
       </div>
     </nav>
-    @if (!$isHeadingHidden()) {
+    @if ($isAppMainPageRoute()) {
       <h1>Enjoy your next favorite film</h1>
     }
   </div>

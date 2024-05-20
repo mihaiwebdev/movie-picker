@@ -4,6 +4,8 @@
       id="poster-image"
       [src]="imgBaseUrl + $selectedShow()?.backdrop_path"
       alt="poster"
+      (load)="onImageLoad()"
+      [class.loaded]="!$isImgLoading()"
     />
 
     <div class="gradient-overlay">
@@ -77,7 +79,7 @@
         <p
           class="show-description"
           appReadMore
-          [maxLength]="380"
+          [maxLength]="250"
           [text]="$selectedShow()?.overview || ''"
         >
           {{ $selectedShow()?.overview }}

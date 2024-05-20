@@ -13,12 +13,12 @@ import { RippleModule } from 'primeng/ripple';
 export class HeaderComponent {
   private readonly router = inject(Router);
 
-  public readonly $isHeadingHidden = signal(false);
+  public readonly $isAppMainPageRoute = signal(false);
 
   ngOnInit() {
     this.router.events.subscribe((res) => {
       if (res instanceof NavigationEnd) {
-        this.$isHeadingHidden.set(res.url.includes('/movie'));
+        this.$isAppMainPageRoute.set(res.url === '/app');
       }
     });
   }
