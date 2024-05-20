@@ -53,7 +53,7 @@ export class ShowsComponent {
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         tap(() => {
-          this.router.navigate(['/movie']);
+          this.router.navigateByUrl('/app/movie');
         }),
         catchError((err) => {
           this.messageService.add({
@@ -71,6 +71,7 @@ export class ShowsComponent {
   }
 
   public onSelectShowTypeOutput(showType: ShowTypesEnum) {
+    // Get trending shows
     this.$areTrendingShowsLoading.set(true);
     this.showsService
       .getTrendingShows(showType)
@@ -81,6 +82,8 @@ export class ShowsComponent {
           this.$trendingShows.set(res);
         }),
         catchError((err) => {
+          console.log(err);
+
           this.messageService.add({
             severity: 'error',
             summary: 'Error',

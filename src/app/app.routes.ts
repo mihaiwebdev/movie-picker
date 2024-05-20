@@ -9,4 +9,10 @@ export const routes: Routes = [
     path: 'app',
     loadChildren: () => import('./shows/shows.routes'),
   },
+
+  // Wildcard route
+  // {
+  //   path: '**',
+  //   loadChildren: () => import('./shows/shows.routes'),
+  // },
 ];

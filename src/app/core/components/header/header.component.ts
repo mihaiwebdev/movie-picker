@@ -17,10 +17,8 @@ export class HeaderComponent {
 
   ngOnInit() {
     this.router.events.subscribe((res) => {
-      if (res instanceof NavigationEnd && res.url === '/movie') {
-        this.$isHeadingHidden.set(true);
-      } else {
-        this.$isHeadingHidden.set(false);
+      if (res instanceof NavigationEnd) {
+        this.$isHeadingHidden.set(res.url.includes('/movie'));
       }
     });
   }

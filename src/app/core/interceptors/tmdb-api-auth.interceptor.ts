@@ -13,8 +13,7 @@ export const tmdbApiAuthInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(req).pipe(
     catchError((err) => {
-      console.log(err);
       return of(err);
-    })
+    }),
   );
 };

@@ -72,6 +72,6 @@ export class TrendingComponent {
     }
 
     this.showsService.setSelectedShow(show);
-    this.router.navigate(['/', 'movie']);
+    this.router.navigateByUrl('/app/movie');
   }
 }

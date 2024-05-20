@@ -52,10 +52,8 @@ export class AppComponent {
     this.primengConfig.ripple = true;
 
     this.router.events.subscribe((res) => {
-      if (res instanceof NavigationEnd && res.url === '/app') {
-        this.$isAppVisible.set(true);
-      } else {
-        this.$isAppVisible.set(false);
+      if (res instanceof NavigationEnd) {
+        this.$isAppVisible.set(res.url.includes('/app'));
       }
     });
   }

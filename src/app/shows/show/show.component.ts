@@ -45,7 +45,7 @@ export class ShowComponent {
 
   ngOnInit(): void {
     if (!this.$selectedShow()) {
-      this.router.navigate(['/']);
+      this.router.navigate(['/', 'app']);
       return;
     }
   }
