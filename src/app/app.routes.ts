@@ -1,18 +1,15 @@
 import { Routes } from '@angular/router';
 
-export const routes: Routes = [
+export const appRoutes: Routes = [
   {
     path: '',
-    loadComponent: () => import('./landing-page/landing-page.component'),
-  },
-  {
-    path: 'app',
     loadChildren: () => import('./shows/shows.routes'),
   },
 
-  // Wildcard route
-  // {
-  //   path: '**',
-  //   loadChildren: () => import('./shows/shows.routes'),
-  // },
+  {
+    path: 'login',
+    loadComponent: () => import('./core/components/auth/auth.component'),
+  },
 ];
+
+export default appRoutes;

@@ -1,4 +1,4 @@
-<header class="header" [class.black-header]="!$isAppMainPageRoute()">
+<header class="header" [class.black-header]="$isMoviePage()">
   <div class="header-container">
     <nav class="navbar">
       <div class="logo" [routerLink]="['/app']">
@@ -47,8 +47,5 @@
         </div>
       </div>
     </nav>
-    @if ($isAppMainPageRoute()) {
-      <h1>Enjoy your next favorite film</h1>
-    }
   </div>
 </header>

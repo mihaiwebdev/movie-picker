@@ -8,9 +8,9 @@ import {
 import { FormsModule } from '@angular/forms';
 import { MultiSelectModule } from 'primeng/multiselect';
 import {
-  ConfigurationService,
   ShowsService,
   StreamingPlatformsInterface,
+  streamingPlatforms,
 } from '../../core';
 
 @Component({
@@ -23,11 +23,8 @@ import {
 })
 export class PlatformListComponent {
   private readonly showsService = inject(ShowsService);
-  private readonly configurationService = inject(ConfigurationService);
 
-  public readonly $streamingPlatforms = signal(
-    this.configurationService.getStreamingPlatforms(),
-  );
+  public readonly $streamingPlatforms = signal(streamingPlatforms);
   public readonly $selectedStreamingPlatforms = model<
     StreamingPlatformsInterface[]
   >([]);

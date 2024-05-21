@@ -1,1 +1,16 @@
-<p>auth works!</p>
+<div class="auth-container content-container">
+  <form [formGroup]="form" (ngSubmit)="emailLinkAuth()">
+    <div class="form-control">
+      <input
+        type="email"
+        placeholder="Enter your email"
+        formControlName="email"
+      />
+      <input type="submit" value="Log in using Magic Link" />
+    </div>
+
+    @if ($successEmailSent()) {
+      <p>{{ $successEmailSent() }}</p>
+    }
+  </form>
+</div>

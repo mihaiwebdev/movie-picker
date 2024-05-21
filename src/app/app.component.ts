@@ -6,12 +6,9 @@ import {
   signal,
 } from '@angular/core';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
-import { initializeApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
-import { MessageService, PrimeNGConfig } from 'primeng/api';
+import { MessageService } from 'primeng/api';
 import { StyleClassModule } from 'primeng/styleclass';
 import { ToastModule } from 'primeng/toast';
-import { environment } from '../environments/environment.development';
 import { HeaderComponent } from './core';
 import { ShowsComponent } from './shows';
 
@@ -33,28 +30,26 @@ import { ShowsComponent } from './shows';
 })
 export class AppComponent {
   private readonly router = inject(Router);
-  private readonly primengConfig = inject(PrimeNGConfig);
-  private readonly firebaseApp;
-  // private readonly analytics;
-  private readonly db;
-  private readonly firebaseConfig;
 
   public readonly $isAppVisible = signal(true);
 
-  constructor() {
-    this.firebaseConfig = environment.firebaseConfig;
-    this.firebaseApp = initializeApp(this.firebaseConfig);
-    // this.analytics = getAnalytics(this.firebaseApp)
-    this.db = getFirestore(this.firebaseApp);
-  }
-
   ngOnInit() {
-    this.primengConfig.ripple = true;
-
     this.router.events.subscribe((res) => {
       if (res instanceof NavigationEnd) {
-        this.$isAppVisible.set(res.url.includes('/app'));
+        this.$isAppVisible.set(
+          res.url.includes('/app') || res.urlAfterRedirects.includes('/app'),
+        );
       }
     });
+
+    // onAuthStateChanged(this.auth, (user) => {
+    //   console.log('hi');
+
+    //   if (user) {
+    //     this.authService.setCurrentUser(user);
+    //   } else {
+    //     this.authService.setCurrentUser(null);
+    //   }
+    // });
   }
 }

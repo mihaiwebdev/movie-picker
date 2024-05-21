@@ -7,7 +7,6 @@
 @import "./theme/variables.css";
 @import "./theme/primeng-clases.css";
 @import "./theme/shared-classes.css";
-@import "firebaseui/dist/firebaseui.css";
 
 * {
   box-sizing: border-box;

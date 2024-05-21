@@ -7,6 +7,7 @@ export { tvGenres } from './data/genres-data';
 export { ConfigurationService } from './services/configuration.service';
 export { ShowsService } from './services/shows.service';
 export { StorageService } from './services/storage.service';
+export { UserDataService } from './services/user-data.service';
 
 // Enumes
 export { ShowTypesEnum } from './enums/show-types.enum';

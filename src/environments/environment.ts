@@ -1,4 +1,5 @@
 export const environment = {
+  baseAppUrl: 'https://moviepicker.app/app',
   tmdbApiUrl: 'https://api.themoviedb.org/3',
   ipInfoToken: 'e13edabe81e868',
   ipInfoUrl: 'https://ipinfo.io/json',
@@ -13,4 +14,6 @@ export const environment = {
     appId: '1:458754057875:web:31b804b976463872710f66',
     measurementId: 'G-44KF71FLTP',
   },
+  email: 'email',
+  accessToken: 'mp_access_token',
 };

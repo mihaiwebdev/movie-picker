@@ -12,6 +12,8 @@ import {
   GenreInterface,
   ReadMoreDirective,
   ShowsService,
+  movieGenres,
+  tvGenres,
 } from '../../core';
 
 @Component({
@@ -24,13 +26,9 @@ import {
 })
 export class ShowComponent {
   private readonly showsService = inject(ShowsService);
-  private readonly configService = inject(ConfigurationService);
   private readonly router = inject(Router);
 
-  private readonly allGenres = [
-    ...this.configService.getMovieGenres(),
-    ...this.configService.getTvGenres(),
-  ];
+  private readonly allGenres = [...movieGenres, ...tvGenres];
   private readonly nextShowClosureFn = this.showsService.nextShow();
 
   public readonly imgBaseUrl = 'https://image.tmdb.org/t/p/original';
