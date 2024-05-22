@@ -8,6 +8,7 @@ import {
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { AuthService } from '../../services/auth.service';
+import { UserDataService } from '../../services/user-data.service';
 
 @Component({
   selector: 'app-auth',
@@ -20,6 +21,7 @@ export class AuthComponent {
   private readonly router = inject(Router);
   private readonly messageService = inject(MessageService);
   private readonly authService = inject(AuthService);
+  private readonly userDataService = inject(UserDataService);
 
   public get emailFormControl() {
     return this.form.controls['email'];
@@ -31,10 +33,16 @@ export class AuthComponent {
     }),
   });
   public readonly $successEmailSent = signal('');
-  public readonly $currentUser = this.authService.$currentUser;
+  public readonly $currentUser = this.userDataService.$currentUser;
 
   ngOnInit() {
-    this.checkIsSignInWithEmailLink();
+    if (this.$currentUser()) this.router.navigateByUrl('/app');
+
+    if (this.router.url.includes('login')) {
+      console.log(this.router.url);
+
+      // this.checkIsSignInWithEmailLink();
+    }
   }
 
   public async emailLinkAuth() {
@@ -48,7 +56,15 @@ export class AuthComponent {
     }
 
     try {
-      await this.authService.emailLinkAuth(this.emailFormControl.value);
+      const response = await this.authService.emailLinkAuth(
+        this.emailFormControl.value,
+      );
+      // Add email to ls
+      console.log(response);
+      console.log('hi');
+      this.$successEmailSent.set(
+        'The magic link was successfully sent on your email!',
+      );
     } catch (error) {
       this.messageService.add({
         severity: 'error',
@@ -66,6 +82,7 @@ export class AuthComponent {
       if (response) {
         console.log(response);
         this.router.navigateByUrl('/app');
+        // Remove email from ls
       }
     } catch (error) {
       this.messageService.add({

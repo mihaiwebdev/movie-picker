@@ -3,6 +3,7 @@ import { UserLocationResponseInterface } from '../types/user-location-response.i
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment.development';
 import { tap } from 'rxjs';
+import { User } from 'firebase/auth';
 
 @Injectable({
   providedIn: 'root',
@@ -12,8 +13,15 @@ export class UserDataService {
 
   private readonly state = {
     $userLocation: signal<UserLocationResponseInterface | undefined>(undefined),
+    $currentUser: signal<User | null>(null),
   };
   public readonly $userLocation = this.state.$userLocation.asReadonly();
+
+  public readonly $currentUser = this.state.$currentUser.asReadonly();
+
+  public setCurrentUser(user: User | null) {
+    this.state.$currentUser.set(user);
+  }
 
   public getUserLocation() {
     this.http

@@ -1,12 +1,12 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
-  User,
-  getAuth,
   isSignInWithEmailLink,
   sendSignInLinkToEmail,
   signInWithEmailLink,
+  signOut,
 } from 'firebase/auth';
 import { environment } from '../../../environments/environment.development';
+import { ConfigurationService } from './configuration.service';
 import { StorageService } from './storage.service';
 
 @Injectable({
@@ -14,20 +14,12 @@ import { StorageService } from './storage.service';
 })
 export class AuthService {
   private readonly storageService = inject(StorageService);
-  private readonly auth = getAuth();
+  private readonly configService = inject(ConfigurationService);
+  private readonly auth = this.configService.auth;
   private readonly actionCodeSettings = {
     url: `${environment.baseAppUrl}/login`,
     handleCodeInApp: true,
   };
-
-  private readonly state = {
-    $currentUser: signal<User | null>(null),
-  };
-  public readonly $currentUser = this.state.$currentUser.asReadonly();
-
-  public setCurrentUser(user: User | null) {
-    this.state.$currentUser.set(user);
-  }
 
   public async emailLinkAuth(email: string) {
     return await sendSignInLinkToEmail(
@@ -49,5 +41,9 @@ export class AuthService {
     }
 
     return;
+  }
+
+  public async singOut() {
+    return await signOut(this.auth);
   }
 }
