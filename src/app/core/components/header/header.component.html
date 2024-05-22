@@ -1,61 +1,59 @@
 <header class="header" [class.black-header]="$isMoviePage()">
-  <div class="header-container">
-    <nav class="navbar">
-      <div class="logo" [routerLink]="['/app']">
-        <img src="../../../assets/logo-squaree.png" alt="movie picker logo" />
-        <span class="app-title">Movie</span>
-        <span class="app-title-suffix">Picker</span>
-      </div>
+  <nav class="navbar">
+    <div class="logo" [routerLink]="['/app']">
+      <img src="../../../assets/logo-squaree.png" alt="movie picker logo" />
+      <span class="app-title">Movie</span>
+      <span class="app-title-suffix">Picker</span>
+    </div>
 
-      <div class="desktop-nav">
+    <div class="desktop-nav">
+      @if (!$currentUser()) {
+        <a pRipple class="nav-link-desktop"
+          ><i class="bi bi-box-arrow-in-right"></i> Login
+        </a>
+      }
+
+      @if ($currentUser()) {
+        <a pRipple class="nav-link-desktop"
+          ><i class="bi bi-person"></i> Profile
+        </a>
+        <a pRipple class="nav-link-desktop">
+          <i pRipple class="bi bi-bookmark"></i>
+          Bookmarks
+        </a>
+
+        <a pRipple class="nav-link-desktop"
+          ><i class="bi bi-box-arrow-left"></i> Logout
+        </a>
+      }
+    </div>
+
+    <div class="mobile-nav">
+      <input class="checkbox" type="checkbox" />
+      <button pRipple class="hamburger">
+        <span class="line line1"></span>
+        <span class="line line2"></span>
+        <span class="line line3"></span>
+      </button>
+
+      <div class="nav-links">
         @if (!$currentUser()) {
-          <a pRipple class="nav-link-desktop"
-            ><i class="bi bi-box-arrow-in-right"></i> Login
-          </a>
+          <a pRipple class="nav-link login-btn"
+            ><i class="bi bi-box-arrow-in-right"></i> Login</a
+          >
         }
 
         @if ($currentUser()) {
-          <a pRipple class="nav-link-desktop"
-            ><i class="bi bi-person"></i> Profile
-          </a>
-          <a pRipple class="nav-link-desktop">
-            <i pRipple class="bi bi-bookmark"></i>
-            Bookmarks
-          </a>
+          <a pRipple class="nav-link"><i class="bi bi-person"></i> Profile</a>
+          <a pRipple class="nav-link">
+            <i class="bi bi-bookmark"></i> Bookmarks</a
+          >
 
-          <a pRipple class="nav-link-desktop"
-            ><i class="bi bi-box-arrow-left"></i> Logout
-          </a>
+          <a pRipple class="nav-link"
+            ><i class="bi bi-box-arrow-left"></i> Logout</a
+          >
         }
       </div>
-
-      <div class="mobile-nav">
-        <input class="checkbox" type="checkbox" />
-        <button pRipple class="hamburger">
-          <span class="line line1"></span>
-          <span class="line line2"></span>
-          <span class="line line3"></span>
-        </button>
-
-        <div class="nav-links">
-          @if (!$currentUser()) {
-            <a pRipple class="nav-link login-btn"
-              ><i class="bi bi-box-arrow-in-right"></i> Login</a
-            >
-          }
-
-          @if ($currentUser()) {
-            <a pRipple class="nav-link"><i class="bi bi-person"></i> Profile</a>
-            <a pRipple class="nav-link">
-              <i class="bi bi-bookmark"></i> Bookmarks</a
-            >
-
-            <a pRipple class="nav-link"
-              ><i class="bi bi-box-arrow-left"></i> Logout</a
-            >
-          }
-        </div>
-      </div>
-    </nav>
-  </div>
+    </div>
+  </nav>
 </header>

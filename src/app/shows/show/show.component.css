@@ -55,6 +55,7 @@
         border: none;
         border-radius: 50%;
         cursor: pointer;
+        color: var(--font-color-primary);
 
         &.bookmark-btn {
           background: var(--light-dark);
@@ -137,6 +138,7 @@
 
           &.already-watched {
             background: var(--light-dark);
+            color: var(--font-color-primary);
           }
 
           &.watched-it {
@@ -161,6 +163,7 @@
 
     .show-description-box {
       margin: 1rem 0;
+      margin-bottom: 2rem;
       max-height: 180px;
       overflow-y: auto;
 
@@ -174,7 +177,7 @@
 
     .choose-btn {
       display: flex;
-      padding-bottom: 2em;
+
       margin-top: auto;
 
       button {
@@ -188,6 +191,7 @@
         display: block;
         align-items: center;
         line-height: 1;
+        color: var(--font-color-primary);
 
         .bi-arrow-left-circle {
           margin-right: 0.5em;
@@ -243,23 +247,28 @@
 @media screen and (min-width: 1200px) {
   .found-movie-page {
     position: unset;
+    min-height: 100dvh;
     height: auto;
-    min-height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 0;
+    position: relative;
 
     #poster-image {
       height: 100%;
       position: absolute;
       top: 0;
       left: 0;
+      object-fit: cover;
     }
 
     .gradient-overlay {
       box-shadow: 0px 0px 25px 9px #000;
       background-color: unset;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+      position: relative;
+      margin-top: 87px;
+
       width: 50%;
       max-width: 50%;
       border-radius: 18px;
