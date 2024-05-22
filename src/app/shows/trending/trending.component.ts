@@ -59,13 +59,6 @@ export class TrendingComponent {
     this.$screenWidth.set(window.innerWidth);
   }
 
-  @HostListener('window:resize', ['$event'])
-  onResize(event: any) {
-    this.mySwiper?.nativeElement.initialize();
-
-    this.$screenWidth.set(window.innerWidth);
-  }
-
   public onShowClick(show: ShowInterface) {
     if (this.$trendingShows()) {
       this.showsService.setShowsResults(this.$trendingShows()!);
