@@ -1,4 +1,8 @@
-<header class="header" [class.black-header]="$isMoviePage()">
+<header
+  class="header"
+  [class.black-header]="$isMoviePage()"
+  [class.hidden]="$isMoviePage() && deviceWith < 1200"
+>
   <nav class="navbar">
     <div class="logo" [routerLink]="['/app']">
       <img src="../../../assets/logo-squaree.png" alt="movie picker logo" />

@@ -19,6 +19,7 @@ export class HeaderComponent {
 
   public readonly $currentUser = this.userDataService.$currentUser;
   public readonly $isMoviePage = signal(false);
+  public readonly deviceWith = window.innerWidth;
 
   ngOnInit() {
     this.router.events.subscribe((res) => {

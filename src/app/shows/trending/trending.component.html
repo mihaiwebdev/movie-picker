@@ -3,7 +3,7 @@
 @if ($areTrendingShowsLoading()) {
   <span class="loader"></span>
 } @else {
-  @if ($screenWidth() > 800) {
+  @if (screenWidth > 800) {
     <div class="swiper-desktop">
       <swiper-container
         #mySwiper

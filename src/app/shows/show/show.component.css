@@ -192,6 +192,7 @@
         align-items: center;
         line-height: 1;
         color: var(--font-color-primary);
+        font-weight: 600;
 
         .bi-arrow-left-circle {
           margin-right: 0.5em;

@@ -5,6 +5,10 @@
   position: relative;
   z-index: 5;
 
+  &.hidden {
+    display: none;
+  }
+
   &.black-header {
     background-color: transparent;
 
@@ -70,11 +74,14 @@
 
     .mobile-nav {
       position: relative;
+      z-index: 7;
+      padding: 0;
 
       .checkbox {
+        padding: 0;
         display: block;
         height: 32px;
-        width: 100%;
+        width: 32px;
         z-index: 5;
         position: absolute;
         top: -3px;
@@ -85,12 +92,10 @@
 
       .hamburger {
         display: block;
+        padding: 0;
         height: 26px;
-        width: 40px;
+        width: 32px;
         z-index: 2;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
         border: none;
         background-color: transparent;
 
@@ -105,15 +110,18 @@
         .line1 {
           transform-origin: 0% 0%;
           transition: transform 0.2s ease-in-out;
+          margin-left: 1px;
         }
 
         .line2 {
+          margin: 0.5rem 0;
           transition: transform 0.1s ease-in-out;
         }
 
         .line3 {
           transform-origin: 0% 100%;
           transition: transform 0.2s ease-in-out;
+          margin-left: 1px;
         }
       }
 
