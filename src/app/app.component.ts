@@ -6,11 +6,10 @@ import {
   signal,
 } from '@angular/core';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
-import { onAuthStateChanged } from 'firebase/auth';
-import { MessageService } from 'primeng/api';
+import { MessageService, PrimeNGConfig } from 'primeng/api';
 import { StyleClassModule } from 'primeng/styleclass';
 import { ToastModule } from 'primeng/toast';
-import { ConfigurationService, HeaderComponent, UserDataService } from './core';
+import { HeaderComponent } from './core';
 import { ShowsComponent } from './shows';
 
 @Component({
@@ -31,27 +30,17 @@ import { ShowsComponent } from './shows';
 })
 export class AppComponent {
   private readonly router = inject(Router);
-  private readonly configService = inject(ConfigurationService);
-  private readonly userDataService = inject(UserDataService);
-  private readonly auth = this.configService.auth;
+  private readonly primengConfig = inject(PrimeNGConfig);
 
   public readonly $isAppVisible = signal(true);
 
   ngOnInit() {
+    this.primengConfig.ripple = true;
+
     this.router.events.subscribe((res) => {
       if (res instanceof NavigationEnd) {
         this.$isAppVisible.set(res.urlAfterRedirects.includes('/app'));
       }
-    });
-
-    onAuthStateChanged(this.auth, (user) => {
-      if (user) {
-        this.userDataService.setCurrentUser(user);
-      } else {
-        this.userDataService.setCurrentUser(null);
-      }
-
-      console.log(this.userDataService.$currentUser());
     });
   }
 }

@@ -8,7 +8,6 @@ import {
 import { Router, RouterLink } from '@angular/router';
 import { RippleModule } from 'primeng/ripple';
 import {
-  ConfigurationService,
   GenreInterface,
   ReadMoreDirective,
   ShowsService,
