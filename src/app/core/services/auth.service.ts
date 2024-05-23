@@ -3,7 +3,9 @@ import {
   isSignInWithEmailLink,
   sendSignInLinkToEmail,
   signInWithEmailLink,
+  signInWithRedirect,
   signOut,
+  getRedirectResult,
 } from 'firebase/auth';
 import { environment } from '../../../environments/environment.development';
 import { ConfigurationService } from './configuration.service';
@@ -16,12 +18,14 @@ export class AuthService {
   private readonly storageService = inject(StorageService);
   private readonly configService = inject(ConfigurationService);
   private readonly auth = this.configService.auth;
+  private readonly googleProvider = this.configService.googleProvider;
+
   private readonly actionCodeSettings = {
     url: `${environment.baseAppUrl}/login`,
     handleCodeInApp: true,
   };
 
-  public async emailLinkAuth(email: string) {
+  public async loginWithEmail(email: string) {
     return await sendSignInLinkToEmail(
       this.auth,
       email,
@@ -41,6 +45,14 @@ export class AuthService {
     }
 
     return;
+  }
+
+  public async loginWithGoogle() {
+    return signInWithRedirect(this.auth, this.googleProvider);
+  }
+
+  public async getRedirectResult() {
+    return getRedirectResult(this.auth);
   }
 
   public async singOut() {

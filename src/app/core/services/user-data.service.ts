@@ -1,15 +1,18 @@
-import { Injectable, inject, signal } from '@angular/core';
-import { UserLocationResponseInterface } from '../types/user-location-response.interface';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../environments/environment.development';
+import { Injectable, inject, signal } from '@angular/core';
+import { User, onAuthStateChanged } from 'firebase/auth';
 import { tap } from 'rxjs';
-import { User } from 'firebase/auth';
+import { environment } from '../../../environments/environment.development';
+import { UserLocationResponseInterface } from '../types/user-location-response.interface';
+import { ConfigurationService } from './configuration.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserDataService {
   private readonly http = inject(HttpClient);
+  private readonly configService = inject(ConfigurationService);
+  private readonly auth = this.configService.auth;
 
   private readonly state = {
     $userLocation: signal<UserLocationResponseInterface | undefined>(undefined),
@@ -19,8 +22,15 @@ export class UserDataService {
 
   public readonly $currentUser = this.state.$currentUser.asReadonly();
 
-  public setCurrentUser(user: User | null) {
-    this.state.$currentUser.set(user);
+  constructor() {
+    // this.getUserLocation()
+    onAuthStateChanged(this.auth, (user) => {
+      if (user) {
+        this.state.$currentUser.set(user);
+      } else {
+        this.state.$currentUser.set(null);
+      }
+    });
   }
 
   public getUserLocation() {

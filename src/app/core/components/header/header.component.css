@@ -61,6 +61,8 @@
     .mobile-nav {
       a {
         letter-spacing: 1px;
+        text-decoration: none;
+        color: var(--font-color-primary);
         cursor: pointer;
         .bi {
           color: var(--font-color-primary);

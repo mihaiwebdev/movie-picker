@@ -44,14 +44,14 @@ export class AppComponent {
       }
     });
 
-    onAuthStateChanged(this.auth, (user) => {
-      if (user) {
-        this.userDataService.setCurrentUser(user);
-      } else {
-        this.userDataService.setCurrentUser(null);
-      }
+    // onAuthStateChanged(this.auth, (user) => {
+    //   if (user) {
+    //     this.userDataService.setCurrentUser(user);
+    //   } else {
+    //     this.userDataService.setCurrentUser(null);
+    //   }
 
-      console.log(this.userDataService.$currentUser());
-    });
+    //   console.log(this.userDataService.$currentUser());
+    // });
   }
 }

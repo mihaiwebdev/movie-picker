@@ -1,10 +1,10 @@
 <header
   class="header"
   [class.black-header]="$isMoviePage()"
-  [class.hidden]="$isMoviePage() && deviceWith < 1200"
+  [class.hidden]="($isMoviePage() && deviceWith < 1200) || $isNavHidden()"
 >
   <nav class="navbar">
-    <div class="logo" [routerLink]="['/app']">
+    <div class="logo" routerLink="/app">
       <img src="../../../assets/logo-squaree.png" alt="movie picker logo" />
       <span class="app-title">Movie</span>
       <span class="app-title-suffix">Picker</span>
@@ -12,7 +12,7 @@
 
     <div class="desktop-nav">
       @if (!$currentUser()) {
-        <a pRipple class="nav-link-desktop"
+        <a routerLink="/app/login" pRipple class="nav-link-desktop"
           ><i class="bi bi-box-arrow-in-right"></i> Login
         </a>
       }
@@ -42,7 +42,7 @@
 
       <div class="nav-links">
         @if (!$currentUser()) {
-          <a pRipple class="nav-link login-btn"
+          <a routerLink="/app/login" pRipple class="nav-link login-btn"
             ><i class="bi bi-box-arrow-in-right"></i> Login</a
           >
         }
