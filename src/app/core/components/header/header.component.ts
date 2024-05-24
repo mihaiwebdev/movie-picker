@@ -5,6 +5,7 @@ import { RippleModule } from 'primeng/ripple';
 import { AuthService } from '../../services/auth.service';
 import { UserDataService } from '../../services/user-data.service';
 import { MessageService } from 'primeng/api';
+import { LoaderService } from '../../services/loader.service';
 
 @Component({
   selector: 'app-header',
@@ -18,10 +19,12 @@ export class HeaderComponent {
   private readonly authService = inject(AuthService);
   private readonly userDataService = inject(UserDataService);
   private readonly messageService = inject(MessageService);
+  private readonly loaderService = inject(LoaderService);
 
   public readonly $currentUser = this.userDataService.$currentUser;
   public readonly $isMoviePage = signal(false);
   public readonly $isNavHidden = signal(false);
+  public readonly $isLoading = signal(false);
   public readonly deviceWith = window.innerWidth;
 
   ngOnInit() {
@@ -34,10 +37,13 @@ export class HeaderComponent {
   }
 
   public async signOut() {
+    this.loaderService.setIsLoading(true);
     try {
       await this.authService.singOut();
+      this.loaderService.setIsLoading(false);
       this.router.navigateByUrl('/app');
     } catch (error) {
+      this.loaderService.setIsLoading(false);
       this.messageService.add({
         severity: 'error',
         summary: 'Error',

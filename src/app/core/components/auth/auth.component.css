@@ -8,7 +8,19 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color: var(--bg-dark);
 
+  .email-sent {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    background-color: var(--font-color-secondary);
+    color: var(--bg-dark);
+    font-weight: 600;
+    padding: 0.5rem 0.5rem;
+    border-radius: 10px;
+    width: 100%;
+    text-align: center;
+  }
   .login-card {
     border-radius: 20px;
     width: 90%;
@@ -135,7 +147,7 @@
         }
         .submit-btn {
           background-color: var(--font-color-secondary);
-          color: var(--bg-dark);
+          background-color: var(--app-blue);
           font-size: 1rem;
           padding: 0.8rem;
           margin-top: 0.8rem;

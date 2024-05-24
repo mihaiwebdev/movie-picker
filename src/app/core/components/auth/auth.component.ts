@@ -1,4 +1,10 @@
-import { Component, effect, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -19,6 +25,7 @@ import { UserDataService } from '../../services/user-data.service';
   imports: [ReactiveFormsModule, RouterLink, RippleModule],
   templateUrl: './auth.component.html',
   styleUrl: './auth.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AuthComponent {
   private readonly router = inject(Router);
@@ -77,9 +84,7 @@ export class AuthComponent {
         this.emailFormControl.value,
       );
       this.$isLoading.set(false);
-      this.$successEmailSent.set(
-        'The magic link was successfully sent on your email!',
-      );
+      this.$successEmailSent.set('Please check your email!');
       this.emailFormControl.reset('');
     } catch (error) {
       this.$isLoading.set(false);
@@ -97,6 +102,25 @@ export class AuthComponent {
 
     try {
       await this.authService.loginWithGoogle();
+
+      this.$isLoading.set(false);
+    } catch (error) {
+      this.$isLoading.set(false);
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail:
+          'Something went wrong! Please try again with another sing in option',
+      });
+    }
+  }
+
+  public async loginWithTwitter() {
+    this.$isLoading.set(true);
+
+    try {
+      await this.authService.loginWithTwitter();
+
       this.$isLoading.set(false);
     } catch (error) {
       this.$isLoading.set(false);
@@ -113,6 +137,7 @@ export class AuthComponent {
     this.$isLoading.set(true);
     try {
       await this.authService.getRedirectResult();
+
       this.$isLoading.set(false);
     } catch (error) {
       this.$isLoading.set(false);
@@ -128,14 +153,10 @@ export class AuthComponent {
   private async checkIsSignInWithEmailLink() {
     this.$isLoading.set(true);
     try {
-      const response = await this.authService.checkIsSingInWithEmailLink();
+      await this.authService.checkIsSingInWithEmailLink();
 
+      this.storageService.removeFromLocalStorage(environment.email);
       this.$isLoading.set(false);
-
-      if (response) {
-        this.storageService.removeFromLocalStorage(environment.email);
-        this.router.navigateByUrl('/app');
-      }
     } catch (error) {
       this.$isLoading.set(false);
 

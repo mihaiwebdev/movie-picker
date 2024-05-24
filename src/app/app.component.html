@@ -1,13 +1,15 @@
 @if (!$isAppVisible()) {
-  <div class="container landing-page-container">
+  <div class="landing-page-container">
     <router-outlet></router-outlet>
   </div>
 } @else {
-  <div class="container app-container">
+  <div class="app-container">
     <p-toast position="top-center" styleClass="toastr" />
 
     <app-header></app-header>
 
     <router-outlet></router-outlet>
+
+    <app-loader></app-loader>
   </div>
 }

@@ -8,6 +8,7 @@ export { ConfigurationService } from './services/configuration.service';
 export { ShowsService } from './services/shows.service';
 export { StorageService } from './services/storage.service';
 export { UserDataService } from './services/user-data.service';
+export { LoaderService } from './services/loader.service';
 
 // Enumes
 export { ShowTypesEnum } from './enums/show-types.enum';
@@ -28,3 +29,4 @@ export { ReadMoreDirective } from './directives/read-more.directive';
 export { HeaderComponent } from './components/header/header.component';
 export { tmdbApiAuthInterceptor } from './interceptors/tmdb-api-auth.interceptor';
 export { AuthComponent } from './components/auth/auth.component';
+export { LoaderComponent } from './components/loader/loader.component';

@@ -1,11 +1,14 @@
 import { Injectable, inject } from '@angular/core';
 import {
+  GoogleAuthProvider,
+  TwitterAuthProvider,
+  getAuth,
+  getRedirectResult,
   isSignInWithEmailLink,
   sendSignInLinkToEmail,
   signInWithEmailLink,
   signInWithRedirect,
   signOut,
-  getRedirectResult,
 } from 'firebase/auth';
 import { environment } from '../../../environments/environment.development';
 import { ConfigurationService } from './configuration.service';
@@ -17,23 +20,22 @@ import { StorageService } from './storage.service';
 export class AuthService {
   private readonly storageService = inject(StorageService);
   private readonly configService = inject(ConfigurationService);
-  private readonly auth = this.configService.auth;
-  private readonly googleProvider = this.configService.googleProvider;
+
+  private readonly googleProvider = new GoogleAuthProvider();
+  private readonly twitterProvider = new TwitterAuthProvider();
+
+  public readonly auth = getAuth(this.configService.firebaseApp);
 
   private readonly actionCodeSettings = {
     url: `${environment.baseAppUrl}/login`,
     handleCodeInApp: true,
   };
 
-  public async loginWithEmail(email: string) {
-    return await sendSignInLinkToEmail(
-      this.auth,
-      email,
-      this.actionCodeSettings,
-    );
+  public loginWithEmail(email: string) {
+    return sendSignInLinkToEmail(this.auth, email, this.actionCodeSettings);
   }
 
-  public async checkIsSingInWithEmailLink() {
+  public checkIsSingInWithEmailLink() {
     if (isSignInWithEmailLink(this.auth, window.location.href)) {
       let email = this.storageService.getFromLocalStorage(environment.email);
 
@@ -41,21 +43,25 @@ export class AuthService {
         email = window.prompt('Please provide your email for confirmation');
       }
 
-      return await signInWithEmailLink(this.auth, email, window.location.href);
+      return signInWithEmailLink(this.auth, email, window.location.href);
     }
 
     return;
   }
 
-  public async loginWithGoogle() {
+  public loginWithGoogle() {
     return signInWithRedirect(this.auth, this.googleProvider);
   }
 
-  public async getRedirectResult() {
+  public loginWithTwitter() {
+    return signInWithRedirect(this.auth, this.twitterProvider);
+  }
+
+  public getRedirectResult() {
     return getRedirectResult(this.auth);
   }
 
-  public async singOut() {
-    return await signOut(this.auth);
+  public singOut() {
+    return signOut(this.auth);
   }
 }

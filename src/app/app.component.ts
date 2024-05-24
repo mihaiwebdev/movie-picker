@@ -6,11 +6,10 @@ import {
   signal,
 } from '@angular/core';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
-import { onAuthStateChanged } from 'firebase/auth';
 import { MessageService } from 'primeng/api';
 import { StyleClassModule } from 'primeng/styleclass';
 import { ToastModule } from 'primeng/toast';
-import { ConfigurationService, HeaderComponent, UserDataService } from './core';
+import { HeaderComponent, LoaderComponent } from './core';
 import { ShowsComponent } from './shows';
 
 @Component({
@@ -23,6 +22,7 @@ import { ShowsComponent } from './shows';
     HeaderComponent,
     StyleClassModule,
     ToastModule,
+    LoaderComponent,
   ],
   providers: [MessageService],
   templateUrl: './app.component.html',
@@ -31,10 +31,6 @@ import { ShowsComponent } from './shows';
 })
 export class AppComponent {
   private readonly router = inject(Router);
-  private readonly configService = inject(ConfigurationService);
-  private readonly userDataService = inject(UserDataService);
-  private readonly auth = this.configService.auth;
-
   public readonly $isAppVisible = signal(true);
 
   ngOnInit() {
@@ -43,15 +39,5 @@ export class AppComponent {
         this.$isAppVisible.set(res.urlAfterRedirects.includes('/app'));
       }
     });
-
-    // onAuthStateChanged(this.auth, (user) => {
-    //   if (user) {
-    //     this.userDataService.setCurrentUser(user);
-    //   } else {
-    //     this.userDataService.setCurrentUser(null);
-    //   }
-
-    //   console.log(this.userDataService.$currentUser());
-    // });
   }
 }
