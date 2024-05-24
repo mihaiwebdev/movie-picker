@@ -2,7 +2,6 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
 import { forkJoin, map, tap } from 'rxjs';
 import {
-  ConfigurationService,
   GenreInterface,
   ShowInterface,
   ShowResponseInterface,
@@ -10,13 +9,14 @@ import {
   StreamingPlatformsInterface,
 } from '../';
 import { environment } from '../../../environments/environment.development';
+import { UserDataService } from './user-data.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ShowsService {
   private readonly http = inject(HttpClient);
-  private readonly configurationService = inject(ConfigurationService);
+  private readonly userDataService = inject(UserDataService);
   private readonly tmdbApi = environment.tmdbApiUrl;
 
   private readonly state = {
@@ -25,7 +25,7 @@ export class ShowsService {
     $selectedPlatforms: signal<StreamingPlatformsInterface[]>([]),
     $selectedGenres: signal<GenreInterface[]>([]),
     $selectedShowType: signal<ShowTypesEnum>(ShowTypesEnum.movie),
-    $userLocation: this.configurationService.$userLocation,
+    $userLocation: this.userDataService.$userLocation,
   };
   public readonly $selectedShow = this.state.$selectedShow.asReadonly();
   public readonly $selectedPlatforms =

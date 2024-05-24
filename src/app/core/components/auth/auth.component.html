@@ -1,0 +1,66 @@
+<div class="auth-container content-container">
+  <div class="login-card">
+    @if ($successEmailSent()) {
+      <p class="email-sent">{{ $successEmailSent() }}</p>
+    }
+    <div class="logo" routerLink="/app">
+      <img src="../../../assets/logo-squaree.png" alt="movie picker logo" />
+      <span class="app-title">Movie</span>
+      <span class="app-title-suffix">Picker</span>
+    </div>
+
+    <div class="welcome">
+      <p>Welcome! 👋</p>
+      <p>Login to get the full experience of our app!</p>
+    </div>
+
+    <button
+      (click)="loginWithGoogle()"
+      [disabled]="$isLoading()"
+      pRipple
+      class="google-auth"
+    >
+      <img src="../../../../assets/icons/google-logo.svg" alt="google-logo" />
+      Login with Google
+    </button>
+    <button
+      (click)="loginWithTwitter()"
+      pRipple
+      [disabled]="$isLoading()"
+      class="twitter-auth"
+    >
+      <img src="../../../../assets/icons/x-logo.svg" alt="twitter-logo" />
+      Login with Twitter
+    </button>
+
+    <div class="form-separator">
+      @if ($isLoading()) {
+        <span class="loader"></span>
+      } @else {
+        <div class="line"></div>
+        <span>OR</span>
+        <div class="line"></div>
+      }
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="loginWithEmail()" class="auth-form">
+      <div class="form-control">
+        <input
+          type="email"
+          placeholder="Enter your email"
+          formControlName="email"
+        />
+        @if (
+          emailFormControl.dirty &&
+          emailFormControl.invalid &&
+          emailFormControl.touched
+        ) {
+          <small class="invalid-control">Please enter a valid email!</small>
+        }
+        <button [disabled]="$isLoading()" pRipple class="submit-btn">
+          Login with Magic Link
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

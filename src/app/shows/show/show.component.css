@@ -6,47 +6,19 @@
   height: 100dvh;
   position: relative;
 
-  .action-buttons {
-    padding: 1em;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-
-    .bi-arrow-left-short {
-      font-size: 2rem;
-    }
-
-    .bi-bookmark {
-      font-size: 1.1rem;
-    }
-
-    button {
-      padding: 0;
-      width: 3.8em;
-      height: 3.8em;
-      border: none;
-      border-radius: 50%;
-      cursor: pointer;
-
-      &.bookmark-btn {
-        background: var(--light-dark);
-        opacity: 0.9;
-      }
-
-      &.back-btn {
-        background: var(--light-dark);
-        opacity: 0.9;
-      }
-    }
-  }
-
   #poster-image {
     width: 100%;
     height: 40%;
     object-fit: cover;
+    background-color: var(--bg-dark);
+    transform: scale(0.5);
+    opacity: 0;
+    transition: all 0.3s ease;
+
+    &.loaded {
+      transform: scale(1);
+      opacity: 1;
+    }
   }
 
   .gradient-overlay {
@@ -57,6 +29,45 @@
     flex-direction: column;
     justify-content: space-around;
     height: 60%;
+    z-index: 1;
+
+    .action-buttons {
+      padding: 1em;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+
+      .bi-arrow-left-short {
+        font-size: 2rem;
+      }
+
+      .bi-bookmark {
+        font-size: 1.1rem;
+      }
+
+      button {
+        padding: 0;
+        width: 3.8em;
+        height: 3.8em;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        color: var(--font-color-primary);
+
+        &.bookmark-btn {
+          background: var(--light-dark);
+          opacity: 0.9;
+        }
+
+        &.back-btn {
+          background: var(--light-dark);
+          opacity: 0.9;
+        }
+      }
+    }
 
     .show-poster {
       display: none;
@@ -127,6 +138,7 @@
 
           &.already-watched {
             background: var(--light-dark);
+            color: var(--font-color-primary);
           }
 
           &.watched-it {
@@ -151,18 +163,21 @@
 
     .show-description-box {
       margin: 1rem 0;
+      margin-bottom: 2rem;
       max-height: 180px;
       overflow-y: auto;
+
       .show-description {
         margin: 0.5em 0;
         color: var(--very-light-gray);
         margin-right: 0.3rem;
+        display: inline;
       }
     }
 
     .choose-btn {
       display: flex;
-      padding-bottom: 2em;
+
       margin-top: auto;
 
       button {
@@ -176,6 +191,8 @@
         display: block;
         align-items: center;
         line-height: 1;
+        color: var(--font-color-primary);
+        font-weight: 600;
 
         .bi-arrow-left-circle {
           margin-right: 0.5em;
@@ -230,37 +247,36 @@
 
 @media screen and (min-width: 1200px) {
   .found-movie-page {
-    .action-buttons {
-      max-width: 80%;
-      left: 50%;
-      transform: translateX(-50%);
-      button.back-btn,
-      button.bookmark-btn {
-        opacity: 1;
-      }
-    }
+    position: unset;
+    min-height: 100dvh;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 0;
+    position: relative;
 
     #poster-image {
       height: 100%;
       position: absolute;
       top: 0;
       left: 0;
-      z-index: -1;
+      object-fit: cover;
     }
 
     .gradient-overlay {
       box-shadow: 0px 0px 25px 9px #000;
-      backdrop-filter: blur(10px);
-      backdrop-filter: brightness(30%);
       background-color: unset;
       position: relative;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+      margin-top: 87px;
+
       width: 50%;
       max-width: 50%;
       border-radius: 18px;
-      height: 80%;
+      height: auto;
+      padding-top: 5rem;
+
+      z-index: 1;
 
       &::before {
         content: "";
@@ -269,8 +285,21 @@
         left: 0;
         width: 100%;
         height: 100%;
-        z-index: -1;
         border-radius: 18px;
+        background-color: var(--bg-dark);
+        opacity: 0.7;
+        z-index: -1;
+      }
+
+      .action-buttons {
+        button.back-btn,
+        button.bookmark-btn {
+          opacity: 1;
+
+          &:hover {
+            opacity: 0.9;
+          }
+        }
       }
 
       .show-overview {
@@ -278,14 +307,28 @@
           h1 {
             font-size: 3rem;
           }
+          .display-genres {
+            align-items: flex-end;
+            padding: 0;
+            .genre-card {
+              color: #fff;
+              font-weight: 600;
+            }
+          }
         }
 
         .show-overview-right {
           margin-right: 1em;
 
           button {
-            font-size: 0.7rem;
+            font-size: 0.9rem;
             padding: 0.9em;
+            text-wrap: nowrap;
+            margin-top: auto;
+
+            &:hover {
+              opacity: 0.9;
+            }
           }
 
           .rating {
@@ -298,25 +341,31 @@
         }
       }
 
-      .show-overview,
       .show-description-box {
-        width: 100%;
-        max-width: 100%;
+        width: 65%;
+        max-height: 260px;
 
         .show-description {
           font-size: 1.2rem;
+          margin: 0 auto;
+          color: #fff;
         }
       }
 
       .choose-btn {
-        width: 100%;
-        max-width: 100%;
+        width: 80%;
+        max-width: 80%;
         padding-left: 1.5em;
         padding-right: 1.5em;
         padding-bottom: 0;
+        margin: 3rem auto;
 
         button {
           width: 40%;
+
+          &:hover {
+            opacity: 0.9;
+          }
         }
       }
     }

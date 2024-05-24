@@ -8,10 +8,11 @@ import {
 import { Router, RouterLink } from '@angular/router';
 import { RippleModule } from 'primeng/ripple';
 import {
-  ConfigurationService,
   GenreInterface,
   ReadMoreDirective,
   ShowsService,
+  movieGenres,
+  tvGenres,
 } from '../../core';
 
 @Component({
@@ -24,13 +25,9 @@ import {
 })
 export class ShowComponent {
   private readonly showsService = inject(ShowsService);
-  private readonly configService = inject(ConfigurationService);
   private readonly router = inject(Router);
 
-  private readonly allGenres = [
-    ...this.configService.getMovieGenres(),
-    ...this.configService.getTvGenres(),
-  ];
+  private readonly allGenres = [...movieGenres, ...tvGenres];
   private readonly nextShowClosureFn = this.showsService.nextShow();
 
   public readonly imgBaseUrl = 'https://image.tmdb.org/t/p/original';
@@ -42,12 +39,17 @@ export class ShowComponent {
   );
   public readonly $isWatched = signal(false);
   public readonly $showIdx = signal(0);
+  public readonly $isImgLoading = signal(true);
 
   ngOnInit(): void {
     if (!this.$selectedShow()) {
-      this.router.navigate(['/']);
+      this.router.navigate(['/', 'app']);
       return;
     }
+  }
+
+  public onImageLoad() {
+    this.$isImgLoading.set(false);
   }
 
   public toggleWatched() {
@@ -55,6 +57,8 @@ export class ShowComponent {
   }
 
   public nextShow(prev: boolean, next: boolean) {
+    this.$isImgLoading.set(true);
+
     let idx = this.nextShowClosureFn(prev, next);
 
     this.$showIdx.set(idx || 0);

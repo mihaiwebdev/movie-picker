@@ -6,11 +6,11 @@ import {
   signal,
 } from '@angular/core';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
-import { MessageService, PrimeNGConfig } from 'primeng/api';
+import { MessageService } from 'primeng/api';
 import { StyleClassModule } from 'primeng/styleclass';
-import { FooterComponent, HeaderComponent } from './core';
-import { ShowsComponent } from './shows';
 import { ToastModule } from 'primeng/toast';
+import { HeaderComponent, LoaderComponent } from './core';
+import { ShowsComponent } from './shows';
 
 @Component({
   selector: 'app-root',
@@ -20,9 +20,9 @@ import { ToastModule } from 'primeng/toast';
     RouterOutlet,
     ShowsComponent,
     HeaderComponent,
-    FooterComponent,
     StyleClassModule,
     ToastModule,
+    LoaderComponent,
   ],
   providers: [MessageService],
   templateUrl: './app.component.html',
@@ -30,18 +30,13 @@ import { ToastModule } from 'primeng/toast';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent {
-  private readonly primengConfig = inject(PrimeNGConfig);
   private readonly router = inject(Router);
-  public readonly $isNavHidden = signal(false);
+  public readonly $isAppVisible = signal(true);
 
   ngOnInit() {
-    this.primengConfig.ripple = true;
-
     this.router.events.subscribe((res) => {
-      if (res instanceof NavigationEnd && res.url === '/movie') {
-        this.$isNavHidden.set(true);
-      } else {
-        this.$isNavHidden.set(false);
+      if (res instanceof NavigationEnd) {
+        this.$isAppVisible.set(res.urlAfterRedirects.includes('/app'));
       }
     });
   }

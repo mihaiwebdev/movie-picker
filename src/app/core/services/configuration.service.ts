@@ -1,47 +1,22 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable, inject, signal } from '@angular/core';
-import { tap } from 'rxjs';
-import {
-  UserLocationResponseInterface,
-  movieGenres,
-  streamingPlatforms,
-  tvGenres,
-} from '../';
+import { Injectable, inject } from '@angular/core';
+
+import { initializeApp } from 'firebase/app';
+import { getFirestore } from 'firebase/firestore';
+import { PrimeNGConfig } from 'primeng/api';
 import { environment } from '../../../environments/environment.development';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ConfigurationService {
-  private readonly http = inject(HttpClient);
-
-  private readonly state = {
-    $userLocation: signal<UserLocationResponseInterface | undefined>(undefined),
-  };
-  public readonly $userLocation = this.state.$userLocation.asReadonly();
+  private readonly primengConfig = inject(PrimeNGConfig);
+  // Firebase Config
+  private readonly firebaseConfig = environment.firebaseConfig;
+  public readonly firebaseApp = initializeApp(this.firebaseConfig);
+  // private readonly analytics = getAnalytics(this.firebaseApp)
+  public readonly db = getFirestore(this.firebaseApp);
 
   constructor() {
-    // this.getUserLocation();
-  }
-
-  public getStreamingPlatforms() {
-    return streamingPlatforms;
-  }
-
-  public getUserLocation() {
-    this.http
-      .get<UserLocationResponseInterface>(
-        `${environment.ipInfoUrl}?token=${environment.ipInfoToken}`,
-      )
-      .pipe(tap((userLocation) => this.state.$userLocation.set(userLocation)))
-      .subscribe();
-  }
-
-  public getMovieGenres() {
-    return movieGenres;
-  }
-
-  public getTvGenres() {
-    return tvGenres;
+    this.primengConfig.ripple = true;
   }
 }

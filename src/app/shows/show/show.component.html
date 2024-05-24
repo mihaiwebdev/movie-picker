@@ -1,21 +1,23 @@
 @if ($selectedShow()) {
   <div class="found-movie-page">
-    <div class="action-buttons">
-      <button pRipple class="back-btn" [routerLink]="['/']">
-        <i class="bi bi-arrow-left-short"></i>
-      </button>
-      <button pRipple class="bookmark-btn">
-        <i class="bi bi-bookmark"></i>
-      </button>
-    </div>
-
     <img
       id="poster-image"
       [src]="imgBaseUrl + $selectedShow()?.backdrop_path"
       alt="poster"
+      (load)="onImageLoad()"
+      [class.loaded]="!$isImgLoading()"
     />
 
     <div class="gradient-overlay">
+      <div class="action-buttons">
+        <button pRipple class="back-btn" [routerLink]="['/app']">
+          <i class="bi bi-arrow-left-short"></i>
+        </button>
+        <button pRipple class="bookmark-btn">
+          <i class="bi bi-bookmark"></i>
+        </button>
+      </div>
+
       <div class="show-poster">
         <img
           [src]="imgBaseUrl + $selectedShow()?.poster_path"
@@ -74,14 +76,14 @@
       </div>
 
       <div class="show-description-box">
-        <span
+        <p
           class="show-description"
           appReadMore
-          [maxLength]="380"
+          [maxLength]="250"
           [text]="$selectedShow()?.overview || ''"
         >
           {{ $selectedShow()?.overview }}
-        </span>
+        </p>
       </div>
 
       <div class="choose-btn">

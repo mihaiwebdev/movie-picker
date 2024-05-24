@@ -14,10 +14,11 @@ import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ChipsModule } from 'primeng/chips';
 import { register } from 'swiper/element/bundle';
 import {
-  ConfigurationService,
   GenreInterface,
+  movieGenres,
   ShowsService,
   ShowTypesEnum,
+  tvGenres,
 } from '../../core';
 
 @Component({
@@ -30,18 +31,13 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ShowGenresComponent implements AfterViewInit, OnInit {
-  private readonly configurationService = inject(ConfigurationService);
   private readonly showsService = inject(ShowsService);
   private readonly formBuilder = inject(FormBuilder);
   private isFirstChange = true;
 
   public readonly iconBasePath = '../../../assets/icons/';
-  public readonly $movieGenres = signal<GenreInterface[]>(
-    this.configurationService.getMovieGenres(),
-  );
-  public readonly $showGenres = signal<GenreInterface[]>(
-    this.configurationService.getTvGenres(),
-  );
+  public readonly $movieGenres = signal<GenreInterface[]>(movieGenres);
+  public readonly $showGenres = signal<GenreInterface[]>(tvGenres);
   public readonly $selectedShowType = this.showsService.$selectedShowType;
 
   private get selectedGenresControl() {

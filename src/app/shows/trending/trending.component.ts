@@ -5,10 +5,8 @@ import {
   CUSTOM_ELEMENTS_SCHEMA,
   effect,
   ElementRef,
-  HostListener,
   inject,
   input,
-  signal,
   ViewChild,
 } from '@angular/core';
 import { Router } from '@angular/router';
@@ -38,7 +36,7 @@ export class TrendingComponent {
   );
   public readonly $areTrendingShowsLoading = input(true);
   public readonly imgBaseUrl = 'https://image.tmdb.org/t/p/w342';
-  public readonly $screenWidth = signal(NaN);
+  public readonly screenWidth = window.innerWidth;
 
   constructor() {
     effect(() => {
@@ -55,23 +53,12 @@ export class TrendingComponent {
 
   @ViewChild('mySwiper') mySwiper?: ElementRef;
 
-  ngOnInit() {
-    this.$screenWidth.set(window.innerWidth);
-  }
-
-  @HostListener('window:resize', ['$event'])
-  onResize(event: any) {
-    this.mySwiper?.nativeElement.initialize();
-
-    this.$screenWidth.set(window.innerWidth);
-  }
-
   public onShowClick(show: ShowInterface) {
     if (this.$trendingShows()) {
       this.showsService.setShowsResults(this.$trendingShows()!);
     }
 
     this.showsService.setSelectedShow(show);
-    this.router.navigate(['/', 'movie']);
+    this.router.navigateByUrl('/app/movie');
   }
 }
