@@ -1,14 +1,22 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, inject, signal } from '@angular/core';
-import { forkJoin, map, tap } from 'rxjs';
+import { Injectable, inject } from '@angular/core';
 import {
-  GenreInterface,
+  collection,
+  deleteDoc,
+  doc,
+  getDoc,
+  getDocs,
+  setDoc,
+} from 'firebase/firestore';
+import { concatMap, filter, forkJoin, from, map, switchMap, tap } from 'rxjs';
+import { ConfigurationService, ShowsStore } from '..';
+import { environment } from '../../../environments/environment.development';
+import {
   ShowInterface,
   ShowResponseInterface,
   ShowTypesEnum,
-  StreamingPlatformsInterface,
-} from '../';
-import { environment } from '../../../environments/environment.development';
+} from '../../shared';
+import { ShowBookmarkInterface } from '../../shared/types/show-bookmark.interface';
 import { UserDataService } from './user-data.service';
 
 @Injectable({
@@ -17,66 +25,12 @@ import { UserDataService } from './user-data.service';
 export class ShowsService {
   private readonly http = inject(HttpClient);
   private readonly userDataService = inject(UserDataService);
+  private readonly showsStore = inject(ShowsStore);
+  private readonly configService = inject(ConfigurationService);
+
   private readonly tmdbApi = environment.tmdbApiUrl;
-
-  private readonly state = {
-    $showsResults: signal<ShowInterface[] | null>(null),
-    $selectedShow: signal<ShowInterface | null>(null),
-    $selectedPlatforms: signal<StreamingPlatformsInterface[]>([]),
-    $selectedGenres: signal<GenreInterface[]>([]),
-    $selectedShowType: signal<ShowTypesEnum>(ShowTypesEnum.movie),
-    $userLocation: this.userDataService.$userLocation,
-  };
-  public readonly $selectedShow = this.state.$selectedShow.asReadonly();
-  public readonly $selectedPlatforms =
-    this.state.$selectedPlatforms.asReadonly();
-  public readonly $selectedGenres = this.state.$selectedGenres.asReadonly();
-  public readonly $selectedShowType = this.state.$selectedShowType.asReadonly();
-  public readonly $showsResults = this.state.$showsResults.asReadonly();
-
-  public setSelectedShow(show: ShowInterface) {
-    this.state.$selectedShow.set(show);
-  }
-
-  public setStreamingPlatforms(platforms: StreamingPlatformsInterface[]) {
-    this.state.$selectedPlatforms.set(platforms);
-  }
-
-  public setShowsResults(showResults: ShowInterface[]) {
-    this.state.$showsResults.set(showResults);
-  }
-
-  public setSelectedGenres(genres: GenreInterface[]) {
-    this.state.$selectedGenres.set(genres);
-  }
-
-  public setSelectedShowType(showType: ShowTypesEnum) {
-    this.state.$selectedShowType.set(showType);
-  }
-
-  public nextShow() {
-    let idx = 0;
-    if (this.$selectedShow()) {
-      idx = this.$showsResults()?.indexOf(this.$selectedShow()!) || 0;
-    }
-
-    return (prev: boolean, next: boolean) => {
-      if (!this.$showsResults()) return;
-
-      if (next && idx < this.$showsResults()!.length - 1) {
-        idx++;
-
-        this.state.$selectedShow.set(this.$showsResults()![idx]);
-      }
-
-      if (prev && idx > 0) {
-        idx--;
-        this.state.$selectedShow.set(this.$showsResults()![idx]);
-      }
-
-      return idx;
-    };
-  }
+  private readonly db = this.configService.db;
+  private readonly watchedShowsCollection = 'watched_shows';
 
   public getShows() {
     const observables = [];
@@ -88,8 +42,8 @@ export class ShowsService {
     return forkJoin(observables).pipe(
       map((res) => res.flat()),
       tap((res) => {
-        this.state.$showsResults.set(res);
-        this.setSelectedShow(res[0]);
+        this.showsStore.setShowsResults(res);
+        this.showsStore.setSelectedShow(res[0]);
       }),
     );
   }
@@ -100,20 +54,59 @@ export class ShowsService {
     );
   }
 
+  public addToWatchlist(showId: number) {
+    const show: ShowBookmarkInterface = {
+      userId: this.userDataService.$currentUser()?.uid,
+      showId,
+    };
+
+    return from(
+      setDoc(
+        doc(this.db, this.watchedShowsCollection, showId.toString()),
+        show,
+      ),
+    );
+  }
+
+  public removeFromWatchlist(showId: string) {
+    return from(deleteDoc(doc(this.db, this.watchedShowsCollection, showId)));
+  }
+
+  public getAllFromWatchlist() {
+    return from(getDocs(collection(this.db, this.watchedShowsCollection)));
+  }
+
+  public getFromWatchlist(showId: string) {
+    return from(getDoc(doc(this.db, this.watchedShowsCollection, showId)));
+  }
+
   private getShowsObservable(page: number) {
-    const watchProviders = this.$selectedPlatforms()
+    const watchProviders = this.showsStore
+      .$selectedPlatforms()
       .map((platform) => platform.provider_id)
       .join('|');
-    const genresIds = this.$selectedGenres().map((genre) => genre.id);
+    const genresIds = this.showsStore
+      .$selectedGenres()
+      .map((genre) => genre.id);
     const joinedGenres = genresIds.join(',');
 
     return this.http
       .get<ShowResponseInterface>(
-        `${this.tmdbApi}/discover/${this.$selectedShowType()}?language=en-US&page=${page}&sort_by=vote_count.desc&watch_region=${this.state.$userLocation()?.country || 'US'}&with_genres=${joinedGenres}&with_watch_providers=${watchProviders}`,
+        `${this.tmdbApi}/discover/${this.showsStore.$selectedShowType()}?language=en-US&page=${page}&sort_by=vote_count.desc&watch_region=${this.userDataService.$userLocation()?.country || 'US'}&with_genres=${joinedGenres}&with_watch_providers=${watchProviders}`,
       )
       .pipe(
+        map((res) => res.results),
+        switchMap((res) => {
+          return this.getAllFromWatchlist().pipe(
+            map((watchedShows) => {
+              watchedShows.forEach((doc) => {});
+
+              return res;
+            }),
+          );
+        }),
         map((res) => {
-          res.results.sort((a, b) => {
+          res.sort((a, b) => {
             const aScore = this.calculateWeightedWilsonScore(
               a.vote_count,
               a.vote_average,
@@ -126,9 +119,9 @@ export class ShowsService {
             return bScore - aScore;
           });
 
-          res.results = this.filterAnimations(genresIds, res.results);
+          res = this.filterAnimations(genresIds, res);
 
-          return res.results;
+          return res;
         }),
       );
   }
@@ -172,8 +165,9 @@ export class ShowsService {
     }
   }
 
-  // TODO:
-  private filterWatchedShows() {}
+  private async filterWatchedShows(results: ShowInterface[]) {
+    // return await this.getAllFromWatchlist();
+  }
 
   // TODO:
   private filterSavedShows() {}

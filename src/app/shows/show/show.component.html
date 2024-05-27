@@ -63,14 +63,22 @@
             </p>
           </div>
 
-          @if ($isWatched()) {
-            <button pRipple class="already-watched" (click)="toggleWatched()">
-              <i class="bi bi-check2-all"></i> Watched
-            </button>
+          @if ($isWatchlistLoading()) {
+            <span class="loader"></span>
           } @else {
-            <button pRipple class="watched-it" (click)="toggleWatched()">
-              Watched ?
-            </button>
+            @if ($isWatched()) {
+              <button
+                pRipple
+                class="already-watched"
+                (click)="removeFromWatchlsit()"
+              >
+                <i class="bi bi-check2-all"></i> Watched
+              </button>
+            } @else {
+              <button pRipple class="watched-it" (click)="addToWatchlist()">
+                Watched ?
+              </button>
+            }
           }
         </div>
       </div>

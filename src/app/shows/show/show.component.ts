@@ -7,13 +7,11 @@ import {
 } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { RippleModule } from 'primeng/ripple';
-import {
-  GenreInterface,
-  ReadMoreDirective,
-  ShowsService,
-  movieGenres,
-  tvGenres,
-} from '../../core';
+import { ShowsService, movieGenres, tvGenres } from '../../core';
+import { ShowsStore } from '../../core/store/shows.store';
+import { GenreInterface, ReadMoreDirective } from '../../shared';
+import { MessageService } from 'primeng/api';
+import { catchError, finalize, of, tap } from 'rxjs';
 
 @Component({
   selector: 'app-show',
@@ -24,36 +22,113 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ShowComponent {
-  private readonly showsService = inject(ShowsService);
   private readonly router = inject(Router);
+  private readonly showsStore = inject(ShowsStore);
+  private readonly showsService = inject(ShowsService);
+  private readonly messageService = inject(MessageService);
 
   private readonly allGenres = [...movieGenres, ...tvGenres];
-  private readonly nextShowClosureFn = this.showsService.nextShow();
+  private readonly nextShowClosureFn = this.showsStore.nextShow();
 
   public readonly imgBaseUrl = 'https://image.tmdb.org/t/p/original';
-
-  public readonly $selectedShow = this.showsService.$selectedShow;
-  public readonly $showsResults = this.showsService.$showsResults;
+  public readonly $selectedShow = this.showsStore.$selectedShow;
+  public readonly $showsResults = this.showsStore.$showsResults;
   public readonly $showGenres = computed(
     () => this.$selectedShow()?.genre_ids && this.getShowGenres(),
   );
   public readonly $isWatched = signal(false);
   public readonly $showIdx = signal(0);
   public readonly $isImgLoading = signal(true);
+  public readonly $isWatchlistLoading = signal(false);
 
   ngOnInit(): void {
     if (!this.$selectedShow()) {
       this.router.navigate(['/', 'app']);
       return;
     }
+
+    this.checkIsShowWatched();
   }
 
   public onImageLoad() {
     this.$isImgLoading.set(false);
   }
 
-  public toggleWatched() {
-    this.$isWatched.update((isWatched) => !isWatched);
+  public async addToWatchlist() {
+    if (!this.$selectedShow()?.id) return;
+
+    this.$isWatchlistLoading.set(true);
+
+    this.showsService
+      .addToWatchlist(this.$selectedShow()!.id)
+      .pipe(
+        tap(() => {
+          this.$isWatched.set(true);
+        }),
+
+        catchError((error) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Could not add to watchlist',
+          });
+          return of(error);
+        }),
+        finalize(() => {
+          this.$isWatchlistLoading.set(false);
+        }),
+      )
+      .subscribe();
+  }
+
+  public async removeFromWatchlsit() {
+    if (!this.$selectedShow()?.id) return;
+
+    this.$isWatchlistLoading.set(true);
+
+    this.showsService
+      .removeFromWatchlist(this.$selectedShow()!.id.toString())
+      .pipe(
+        tap(() => this.$isWatched.set(false)),
+        catchError((error) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Could not remove from watchlist',
+          });
+          return of(error);
+        }),
+        finalize(() => this.$isWatchlistLoading.set(false)),
+      )
+      .subscribe();
+  }
+
+  public async checkIsShowWatched() {
+    if (!this.$selectedShow()?.id) return;
+    this.$isWatchlistLoading.set(true);
+
+    this.showsService
+      .getFromWatchlist(this.$selectedShow()!.id.toString())
+      .pipe(
+        tap((response) => {
+          if (response.data()) {
+            this.$isWatched.set(true);
+          } else {
+            this.$isWatched.set(false);
+          }
+        }),
+        catchError((error) => {
+          this.$isWatched.set(false);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Could not check if show is watched!',
+          });
+          return of(error);
+        }),
+        finalize(() => this.$isWatchlistLoading.set(false)),
+      )
+      .subscribe();
   }
 
   public nextShow(prev: boolean, next: boolean) {
@@ -62,6 +137,8 @@ export class ShowComponent {
     let idx = this.nextShowClosureFn(prev, next);
 
     this.$showIdx.set(idx || 0);
+
+    this.checkIsShowWatched();
   }
 
   private getShowGenres(): GenreInterface[] {

@@ -17,7 +17,8 @@ import {
   ShowTypeComponent,
   TrendingComponent,
 } from '.';
-import { ShowInterface, ShowTypesEnum, ShowsService } from '../core';
+import { ShowsService, ShowsStore } from '../core';
+import { ShowInterface, ShowTypesEnum } from '../shared';
 
 @Component({
   selector: 'app-shows',
@@ -37,6 +38,7 @@ import { ShowInterface, ShowTypesEnum, ShowsService } from '../core';
 })
 export class ShowsComponent {
   private readonly showsService = inject(ShowsService);
+  private readonly showsStore = inject(ShowsStore);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private readonly messageService = inject(MessageService);
@@ -44,7 +46,7 @@ export class ShowsComponent {
   public readonly $isGetShowLoading = signal(false);
   public readonly $areTrendingShowsLoading = signal(false);
   public readonly $trendingShows = signal<ShowInterface[] | null>(null);
-  public readonly $selectedGenres = this.showsService.$selectedGenres;
+  public readonly $selectedGenres = this.showsStore.$selectedGenres;
 
   public getShows() {
     this.$isGetShowLoading.set(true);

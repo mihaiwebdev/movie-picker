@@ -3,7 +3,7 @@ import { Injectable, inject, signal } from '@angular/core';
 import { User, onAuthStateChanged } from 'firebase/auth';
 import { tap } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
-import { UserLocationResponseInterface } from '../types/user-location-response.interface';
+import { UserLocationResponseInterface } from '../../shared/types/user-location-response.interface';
 import { AuthService } from './auth.service';
 import { LoaderService } from './loader.service';
 
@@ -30,6 +30,7 @@ export class UserDataService {
 
   public getCurrentUser() {
     this.loaderService.setIsLoading(true);
+
     onAuthStateChanged(this.auth, (user) => {
       if (user) {
         this.state.$currentUser.set(user);

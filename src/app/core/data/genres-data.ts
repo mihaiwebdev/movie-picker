@@ -1,4 +1,4 @@
-import { GenreInterface } from '../types/genres-response.interface';
+import { GenreInterface } from '../../shared/types/genres-response.interface';
 
 export const movieGenres: GenreInterface[] = [
   {
