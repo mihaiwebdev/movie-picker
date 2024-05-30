@@ -1,4 +1,5 @@
 :root {
+  --bg-black: #000;
   --bg-dark: #131a24;
   --light-dark: #323031;
   --bg-red: #a31c2e;
@@ -14,6 +15,7 @@
   --font-color-secondary: #ffc100;
   --very-light-gray: #ece6e6;
   --light-gray: #a5a4a4e7;
+  --dark-gray: #777777e7;
   --text-font: "Raleway", sans-serif;
 
   --swiper-pagination-top: 100%;
