@@ -113,17 +113,7 @@ export class ShowsService {
       )
       .pipe(
         map((res) => res.results),
-        switchMap((res) => {
-          return this.getAllFromWatchlist().pipe(
-            map((watchedShows) => {
-              watchedShows.forEach((doc) => {
-                console.log(doc);
-              });
-
-              return res;
-            }),
-          );
-        }),
+        switchMap((res) => this.filterWatchedShows(res)),
         map((res) => {
           res.sort((a, b) => {
             const aScore = this.calculateWeightedWilsonScore(
@@ -188,8 +178,16 @@ export class ShowsService {
     }
   }
 
-  private async filterWatchedShows(results: ShowInterface[]) {
-    // return await this.getAllFromWatchlist();
+  private filterWatchedShows(res: ShowInterface[]) {
+    return this.getAllFromWatchlist().pipe(
+      map((watchedShows) => {
+        const watchedShowsIds = new Set();
+
+        watchedShows.forEach((doc) => watchedShowsIds.add(doc.data()['id']));
+
+        return res.filter((show) => !watchedShowsIds.has(show.id));
+      }),
+    );
   }
 
   // TODO:
