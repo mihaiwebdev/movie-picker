@@ -16,6 +16,7 @@ export class ShowsStore {
     $selectedGenres: signal<GenreInterface[]>([]),
     $selectedShowType: signal<ShowTypesEnum>(ShowTypesEnum.movie),
     $watchedShows: signal<ShowBookmarkInterface[]>([]),
+    $resultPages: signal(0),
   };
   public readonly $selectedShow = this.state.$selectedShow.asReadonly();
   public readonly $selectedPlatforms =
@@ -24,6 +25,7 @@ export class ShowsStore {
   public readonly $selectedShowType = this.state.$selectedShowType.asReadonly();
   public readonly $showsResults = this.state.$showsResults.asReadonly();
   public readonly $watchedShows = this.state.$watchedShows.asReadonly();
+  public readonly $resultsPages = this.state.$resultPages.asReadonly();
 
   public setSelectedShow(show: ShowInterface) {
     this.state.$selectedShow.set(show);
@@ -34,6 +36,12 @@ export class ShowsStore {
   public setShowsResults(showResults: ShowInterface[]) {
     this.state.$showsResults.set(showResults);
   }
+  public updateShowsResults(showResults: ShowInterface[]) {
+    this.state.$showsResults.update((value) => [
+      ...(value || []),
+      ...showResults,
+    ]);
+  }
   public setSelectedGenres(genres: GenreInterface[]) {
     this.state.$selectedGenres.set(genres);
   }
@@ -43,28 +51,7 @@ export class ShowsStore {
   public setWatchedShows(watchedShows: ShowBookmarkInterface[]) {
     this.state.$watchedShows.set(watchedShows);
   }
-
-  public nextShow() {
-    let idx = 0;
-    if (this.$selectedShow()) {
-      idx = this.$showsResults()?.indexOf(this.$selectedShow()!) || 0;
-    }
-
-    return (prev: boolean, next: boolean) => {
-      if (!this.$showsResults()) return;
-
-      if (next && idx < this.$showsResults()!.length - 1) {
-        idx++;
-
-        this.state.$selectedShow.set(this.$showsResults()![idx]);
-      }
-
-      if (prev && idx > 0) {
-        idx--;
-        this.state.$selectedShow.set(this.$showsResults()![idx]);
-      }
-
-      return idx;
-    };
+  public setResultPages(pages: number) {
+    this.state.$resultPages.set(pages);
   }
 }

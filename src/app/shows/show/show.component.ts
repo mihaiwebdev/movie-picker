@@ -9,7 +9,13 @@ import { Router, RouterLink } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { RippleModule } from 'primeng/ripple';
 import { catchError, finalize, of, tap } from 'rxjs';
-import { ShowsService, movieGenres, tvGenres } from '../../core';
+import {
+  LoaderService,
+  ShowsService,
+  UserDataService,
+  movieGenres,
+  tvGenres,
+} from '../../core';
 import { ShowsStore } from '../../core/store/shows.store';
 import { GenreInterface, ReadMoreDirective } from '../../shared';
 
@@ -26,20 +32,30 @@ export class ShowComponent {
   private readonly showsStore = inject(ShowsStore);
   private readonly showsService = inject(ShowsService);
   private readonly messageService = inject(MessageService);
-
+  private readonly userDataService = inject(UserDataService);
+  private readonly loaderService = inject(LoaderService);
   private readonly allGenres = [...movieGenres, ...tvGenres];
-  private readonly nextShowClosureFn = this.showsStore.nextShow();
 
   public readonly imgBaseUrl = 'https://image.tmdb.org/t/p/original';
   public readonly $selectedShow = this.showsStore.$selectedShow;
   public readonly $showsResults = this.showsStore.$showsResults;
+  public readonly $resultsPages = this.showsStore.$resultsPages;
   public readonly $showGenres = computed(
     () => this.$selectedShow()?.genre_ids && this.getShowGenres(),
   );
   public readonly $isWatched = signal(false);
-  public readonly $showIdx = signal(0);
   public readonly $isImgLoading = signal(true);
   public readonly $isWatchlistLoading = signal(false);
+  public readonly $currentUser = this.userDataService.$currentUser;
+  public readonly $page = signal(1);
+  public readonly $showIdx = signal(0);
+  public readonly $isPrevBtn = computed(() => this.$showIdx() > 0);
+  public readonly $isNextBtn = computed(() =>
+    this.$showsResults()
+      ? this.$showIdx() !== this.$showsResults()!.length - 1 ||
+        this.$page() !== this.$resultsPages()
+      : false,
+  );
 
   ngOnInit(): void {
     if (!this.$selectedShow()) {
@@ -56,6 +72,11 @@ export class ShowComponent {
 
   public async addToWatchlist() {
     if (!this.$selectedShow()?.id || !this.$selectedShow()) return;
+
+    if (!this.$currentUser()) {
+      this.router.navigate(['/app/login']);
+      return;
+    }
 
     this.$isWatchlistLoading.set(true);
 
@@ -86,7 +107,7 @@ export class ShowComponent {
   }
 
   public async removeFromWatchlsit() {
-    if (!this.$selectedShow()?.id) return;
+    if (!this.$selectedShow()?.id || !this.$currentUser()?.uid) return;
 
     this.$isWatchlistLoading.set(true);
 
@@ -108,7 +129,7 @@ export class ShowComponent {
   }
 
   public async checkIsShowWatched() {
-    if (!this.$selectedShow()?.id) return;
+    if (!this.$selectedShow()?.id || !this.$currentUser()?.uid) return;
     this.$isWatchlistLoading.set(true);
 
     this.showsService
@@ -136,11 +157,36 @@ export class ShowComponent {
   }
 
   public nextShow(prev: boolean, next: boolean) {
+    if (!this.$showsResults()) {
+      return;
+    }
     this.$isImgLoading.set(true);
 
-    let idx = this.nextShowClosureFn(prev, next);
+    if (prev) this.$showIdx.update((val) => --val);
+    if (next) this.$showIdx.update((val) => ++val);
 
-    this.$showIdx.set(idx || 0);
+    if (
+      this.$showIdx() === this.$showsResults()!.length &&
+      this.$page() < this.$resultsPages()
+    ) {
+      this.loaderService.setIsLoading(true);
+      this.$page.update((val) => ++val);
+
+      this.showsService
+        .getShows(this.$page())
+        .pipe(
+          tap((res) => {
+            this.showsStore.setSelectedShow(res[0]);
+            this.showsStore.updateShowsResults(res);
+          }),
+          finalize(() => {
+            this.loaderService.setIsLoading(false);
+          }),
+        )
+        .subscribe();
+    } else {
+      this.showsStore.setSelectedShow(this.$showsResults()![this.$showIdx()]);
+    }
 
     this.checkIsShowWatched();
   }

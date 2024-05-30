@@ -8,7 +8,7 @@ import {
   getDocs,
   setDoc,
 } from 'firebase/firestore';
-import { from, map, switchMap, tap } from 'rxjs';
+import { from, map, of, switchMap, tap } from 'rxjs';
 import { ConfigurationService, ShowsStore } from '..';
 import { environment } from '../../../environments/environment.development';
 import {
@@ -97,14 +97,21 @@ export class ShowsService {
     );
   }
 
+  public filterWatchedShows(res: ShowInterface[]) {
+    return this.getAllFromWatchlist().pipe(
+      map((watchedShows) => {
+        const watchedShowsIds = new Set();
+
+        watchedShows.forEach((doc) => watchedShowsIds.add(doc.data()['id']));
+
+        return res.filter((show) => !watchedShowsIds.has(show.id));
+      }),
+    );
+  }
+
   public getShows(page: number) {
-    const watchProviders = this.showsStore
-      .$selectedPlatforms()
-      .map((platform) => platform.provider_id)
-      .join('|');
-    const genresIds = this.showsStore
-      .$selectedGenres()
-      .map((genre) => genre.id);
+    const watchProviders = this.getWatchProviders();
+    const genresIds = this.getGenreIds();
     const joinedGenres = genresIds.join(',');
 
     return this.http
@@ -112,8 +119,13 @@ export class ShowsService {
         `${this.tmdbApi}/discover/${this.showsStore.$selectedShowType()}?language=en-US&page=${page}&sort_by=vote_count.desc&watch_region=${this.$userLocation()?.country || 'US'}&with_genres=${joinedGenres}&with_watch_providers=${watchProviders}`,
       )
       .pipe(
+        tap((res) => this.showsStore.setResultPages(res.total_pages)),
         map((res) => res.results),
-        switchMap((res) => this.filterWatchedShows(res)),
+        switchMap((res) => {
+          return this.$currentUser()?.uid
+            ? this.filterWatchedShows(res)
+            : of(res);
+        }),
         map((res) => {
           res.sort((a, b) => {
             const aScore = this.calculateWeightedWilsonScore(
@@ -129,14 +141,20 @@ export class ShowsService {
           });
 
           res = this.filterAnimations(genresIds, res);
-
           return res;
         }),
-        tap((res) => {
-          this.showsStore.setShowsResults(res);
-          this.showsStore.setSelectedShow(res[0]);
-        }),
       );
+  }
+
+  private getWatchProviders() {
+    return this.showsStore
+      .$selectedPlatforms()
+      .map((platform) => platform.provider_id)
+      .join('|');
+  }
+
+  private getGenreIds() {
+    return this.showsStore.$selectedGenres().map((genre) => genre.id);
   }
 
   private calculateWeightedWilsonScore(
@@ -170,24 +188,15 @@ export class ShowsService {
     return weightedWilsonScore;
   }
 
+  // private sortShows
+  // }
+
   private filterAnimations(genres: number[], results: ShowInterface[]) {
     if (!genres.includes(16)) {
       return results.filter((result) => !result.genre_ids.includes(16));
     } else {
       return results;
     }
-  }
-
-  private filterWatchedShows(res: ShowInterface[]) {
-    return this.getAllFromWatchlist().pipe(
-      map((watchedShows) => {
-        const watchedShowsIds = new Set();
-
-        watchedShows.forEach((doc) => watchedShowsIds.add(doc.data()['id']));
-
-        return res.filter((show) => !watchedShowsIds.has(show.id));
-      }),
-    );
   }
 
   // TODO:

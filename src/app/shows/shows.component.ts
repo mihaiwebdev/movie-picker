@@ -54,10 +54,14 @@ export class ShowsComponent {
       .getShows(1)
       .pipe(
         takeUntilDestroyed(this.destroyRef),
-        tap(() => {
+        tap((res) => {
           this.router.navigateByUrl('/app/movie');
+          this.showsStore.setShowsResults(res);
+          this.showsStore.setSelectedShow(res[0]);
         }),
         catchError((err) => {
+          console.log(err);
+
           this.messageService.add({
             severity: 'error',
             summary: 'Error',

@@ -94,19 +94,21 @@
         </p>
       </div>
 
-      <div class="choose-btn">
-        @if ($showIdx() > 0) {
-          <button (click)="nextShow(true, false)" pRipple class="previous">
-            <i class="bi bi-arrow-left-circle"></i> Prev
-          </button>
-        }
+      @if ($showsResults()) {
+        <div class="choose-btn">
+          @if ($isPrevBtn()) {
+            <button (click)="nextShow(true, false)" pRipple class="previous">
+              <i class="bi bi-arrow-left-circle"></i> Prev
+            </button>
+          }
 
-        @if ($showIdx() < $showsResults()!.length - 1) {
-          <button (click)="nextShow(false, true)" pRipple class="next">
-            Next <i class="bi bi-arrow-right-circle"></i>
-          </button>
-        }
-      </div>
+          @if ($isNextBtn()) {
+            <button (click)="nextShow(false, true)" pRipple class="next">
+              Next <i class="bi bi-arrow-right-circle"></i>
+            </button>
+          }
+        </div>
+      }
     </div>
   </div>
 }
