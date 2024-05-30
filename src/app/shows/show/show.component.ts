@@ -6,12 +6,12 @@ import {
   signal,
 } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
+import { MessageService } from 'primeng/api';
 import { RippleModule } from 'primeng/ripple';
+import { catchError, finalize, of, tap } from 'rxjs';
 import { ShowsService, movieGenres, tvGenres } from '../../core';
 import { ShowsStore } from '../../core/store/shows.store';
 import { GenreInterface, ReadMoreDirective } from '../../shared';
-import { MessageService } from 'primeng/api';
-import { catchError, finalize, of, tap } from 'rxjs';
 
 @Component({
   selector: 'app-show',
@@ -55,12 +55,16 @@ export class ShowComponent {
   }
 
   public async addToWatchlist() {
-    if (!this.$selectedShow()?.id) return;
+    if (!this.$selectedShow()?.id || !this.$selectedShow()) return;
 
     this.$isWatchlistLoading.set(true);
 
     this.showsService
-      .addToWatchlist(this.$selectedShow()!.id)
+      .addToWatchlist(
+        String(this.$selectedShow()!.id),
+
+        this.$selectedShow()!,
+      )
       .pipe(
         tap(() => {
           this.$isWatched.set(true);
@@ -87,7 +91,7 @@ export class ShowComponent {
     this.$isWatchlistLoading.set(true);
 
     this.showsService
-      .removeFromWatchlist(this.$selectedShow()!.id.toString())
+      .removeFromWatchlist(String(this.$selectedShow()!.id))
       .pipe(
         tap(() => this.$isWatched.set(false)),
         catchError((error) => {
@@ -108,7 +112,7 @@ export class ShowComponent {
     this.$isWatchlistLoading.set(true);
 
     this.showsService
-      .getFromWatchlist(this.$selectedShow()!.id.toString())
+      .getFromWatchlist(String(this.$selectedShow()!.id))
       .pipe(
         tap((response) => {
           if (response.data()) {

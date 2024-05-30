@@ -51,7 +51,7 @@ export class ShowsComponent {
   public getShows() {
     this.$isGetShowLoading.set(true);
     this.showsService
-      .getShows()
+      .getShows(1)
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         tap(() => {

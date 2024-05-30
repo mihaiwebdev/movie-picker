@@ -8,7 +8,7 @@ import {
   getDocs,
   setDoc,
 } from 'firebase/firestore';
-import { concatMap, filter, forkJoin, from, map, switchMap, tap } from 'rxjs';
+import { from, map, switchMap, tap } from 'rxjs';
 import { ConfigurationService, ShowsStore } from '..';
 import { environment } from '../../../environments/environment.development';
 import {
@@ -16,7 +16,6 @@ import {
   ShowResponseInterface,
   ShowTypesEnum,
 } from '../../shared';
-import { ShowBookmarkInterface } from '../../shared/types/show-bookmark.interface';
 import { UserDataService } from './user-data.service';
 
 @Injectable({
@@ -30,23 +29,11 @@ export class ShowsService {
 
   private readonly tmdbApi = environment.tmdbApiUrl;
   private readonly db = this.configService.db;
-  private readonly watchedShowsCollection = 'watched_shows';
+  private readonly watchedShowsCollection = 'watchedShows';
+  private readonly usersCollection = 'users';
 
-  public getShows() {
-    const observables = [];
-
-    for (let i = 1; i <= 3; i++) {
-      observables.push(this.getShowsObservable(i));
-    }
-
-    return forkJoin(observables).pipe(
-      map((res) => res.flat()),
-      tap((res) => {
-        this.showsStore.setShowsResults(res);
-        this.showsStore.setSelectedShow(res[0]);
-      }),
-    );
-  }
+  private readonly $userLocation = this.userDataService.$userLocation;
+  private readonly $currentUser = this.userDataService.$currentUser;
 
   public getTrendingShows(showType: ShowTypesEnum) {
     return this.http.get<ShowResponseInterface>(
@@ -54,33 +41,63 @@ export class ShowsService {
     );
   }
 
-  public addToWatchlist(showId: number) {
-    const show: ShowBookmarkInterface = {
-      userId: this.userDataService.$currentUser()?.uid,
-      showId,
-    };
-
+  public addToWatchlist(showId: string, showData: ShowInterface) {
     return from(
       setDoc(
-        doc(this.db, this.watchedShowsCollection, showId.toString()),
-        show,
+        doc(
+          this.db,
+          this.usersCollection,
+          this.$currentUser()?.uid || '',
+          this.watchedShowsCollection,
+          showId,
+        ),
+        showData,
       ),
     );
   }
 
   public removeFromWatchlist(showId: string) {
-    return from(deleteDoc(doc(this.db, this.watchedShowsCollection, showId)));
+    return from(
+      deleteDoc(
+        doc(
+          this.db,
+          this.usersCollection,
+          this.$currentUser()?.uid || '',
+          this.watchedShowsCollection,
+          showId,
+        ),
+      ),
+    );
   }
 
   public getAllFromWatchlist() {
-    return from(getDocs(collection(this.db, this.watchedShowsCollection)));
+    return from(
+      getDocs(
+        collection(
+          this.db,
+          this.usersCollection,
+          this.userDataService.$currentUser()?.uid || '',
+          this.watchedShowsCollection,
+        ),
+      ),
+    );
   }
 
   public getFromWatchlist(showId: string) {
-    return from(getDoc(doc(this.db, this.watchedShowsCollection, showId)));
+    return from(
+      getDoc(
+        doc(
+          this.db,
+          this.usersCollection,
+          this.$currentUser()?.uid || '',
+          this.watchedShowsCollection,
+          showId,
+        ),
+      ),
+    );
   }
 
-  private getShowsObservable(page: number) {
+  public getShows(page: number) {
     const watchProviders = this.showsStore
       .$selectedPlatforms()
       .map((platform) => platform.provider_id)
@@ -92,14 +109,16 @@ export class ShowsService {
 
     return this.http
       .get<ShowResponseInterface>(
-        `${this.tmdbApi}/discover/${this.showsStore.$selectedShowType()}?language=en-US&page=${page}&sort_by=vote_count.desc&watch_region=${this.userDataService.$userLocation()?.country || 'US'}&with_genres=${joinedGenres}&with_watch_providers=${watchProviders}`,
+        `${this.tmdbApi}/discover/${this.showsStore.$selectedShowType()}?language=en-US&page=${page}&sort_by=vote_count.desc&watch_region=${this.$userLocation()?.country || 'US'}&with_genres=${joinedGenres}&with_watch_providers=${watchProviders}`,
       )
       .pipe(
         map((res) => res.results),
         switchMap((res) => {
           return this.getAllFromWatchlist().pipe(
             map((watchedShows) => {
-              watchedShows.forEach((doc) => {});
+              watchedShows.forEach((doc) => {
+                console.log(doc);
+              });
 
               return res;
             }),
@@ -122,6 +141,10 @@ export class ShowsService {
           res = this.filterAnimations(genresIds, res);
 
           return res;
+        }),
+        tap((res) => {
+          this.showsStore.setShowsResults(res);
+          this.showsStore.setSelectedShow(res[0]);
         }),
       );
   }
