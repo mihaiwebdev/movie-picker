@@ -192,9 +192,6 @@ export class ShowsService {
     return weightedWilsonScore;
   }
 
-  // private sortShows
-  // }
-
   private filterAnimations(genres: number[], results: ShowInterface[]) {
     if (!genres.includes(16)) {
       return results.filter((result) => !result.genre_ids.includes(16));
