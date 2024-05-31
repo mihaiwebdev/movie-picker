@@ -57,6 +57,7 @@ export class TrendingComponent {
   public onShowClick(show: ShowInterface) {
     if (this.$trendingShows()) {
       this.showsStore.setShowsResults(this.$trendingShows()!);
+      this.showsStore.setResultPages(1);
     }
 
     this.showsStore.setSelectedShow(show);

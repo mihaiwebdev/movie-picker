@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, computed, signal } from '@angular/core';
 import { ShowTypesEnum } from '../../shared/enums/show-types.enum';
 import { GenreInterface } from '../../shared/types/genres-response.interface';
 import { StreamingPlatformsInterface } from '../../shared/types/show-platforms.interface';
@@ -26,6 +26,11 @@ export class ShowsStore {
   public readonly $showsResults = this.state.$showsResults.asReadonly();
   public readonly $watchedShows = this.state.$watchedShows.asReadonly();
   public readonly $resultsPages = this.state.$resultPages.asReadonly();
+  public readonly $currentShowIndex = computed(() =>
+    this.$showsResults()?.indexOf(
+      this.$selectedShow() || ({} as ShowInterface),
+    ),
+  );
 
   public setSelectedShow(show: ShowInterface) {
     this.state.$selectedShow.set(show);

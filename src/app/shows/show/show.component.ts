@@ -50,7 +50,7 @@ export class ShowComponent {
   public readonly $isWatchlistLoading = signal(false);
   public readonly $currentUser = this.userDataService.$currentUser;
   public readonly $page = signal(1);
-  public readonly $showIdx = signal(0);
+  public readonly $showIdx = signal(this.showsStore.$currentShowIndex() || 0);
   public readonly $isPrevBtn = computed(() => this.$showIdx() > 0);
   public readonly $isNextBtn = computed(() =>
     this.$showsResults()
