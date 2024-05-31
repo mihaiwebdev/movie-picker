@@ -72,6 +72,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   text-wrap: nowrap;
+  font-size: 1.1rem;
 }
 
 /* P Card */
@@ -81,9 +82,10 @@
   background-color: var(--bg-dark);
 }
 .p-card {
-  margin: 1rem 0;
+  margin: 1rem auto;
   border-radius: 10px;
   position: relative;
+  max-width: 240px;
 }
 .p-card .p-card-content {
   padding: 0;

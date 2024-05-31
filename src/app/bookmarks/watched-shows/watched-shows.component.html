@@ -1,4 +1,9 @@
-<p-dataView #dv [value]="$watchedShows()" [rows]="$rows()" [paginator]="true">
+<p-dataView
+  [value]="$watchedShows()"
+  [rows]="$rows()"
+  [paginator]="true"
+  (onPage)="setImageLoading()"
+>
   <ng-template pTemplate="list" let-shows>
     @if ($isGetShowsLoading()) {
       @for (row of $rowsArray(); track row) {

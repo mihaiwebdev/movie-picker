@@ -54,7 +54,7 @@ export class WatchedShowsComponent {
           : 5,
   );
   public readonly $rowsArray = computed(() => Array(this.$rows()));
-  public readonly imgBaseUrl = 'https://image.tmdb.org/t/p/original';
+  public readonly imgBaseUrl = 'https://image.tmdb.org/t/p/w342';
 
   ngOnInit() {
     this.getAllWatchedShows();
@@ -97,6 +97,9 @@ export class WatchedShowsComponent {
 
   public onImageLoad() {
     this.$isImgLoading.set(false);
+  }
+  public setImageLoading() {
+    this.$isImgLoading.set(true);
   }
 
   private getAllWatchedShows() {

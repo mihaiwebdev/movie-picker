@@ -18,6 +18,11 @@
   top: 0.5rem;
   right: 0.5rem;
   z-index: 2;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.7;
+  }
 
   .loader {
     height: 16px;
@@ -30,4 +35,12 @@
   height: 560px;
   width: 100%;
   margin-bottom: 1rem;
+}
+
+.card {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  &:hover {
+    transform: scale(0.98);
+  }
 }
