@@ -41,13 +41,17 @@ export class ShowsService {
     );
   }
 
-  public addToWatchlist(showId: string, showData: ShowInterface) {
+  public addToWatchedShows(
+    showId: string,
+    showData: ShowInterface,
+    userId: string,
+  ) {
     return from(
       setDoc(
         doc(
           this.db,
           this.usersCollection,
-          this.$currentUser()?.uid || '',
+          userId,
           this.watchedShowsCollection,
           showId,
         ),
@@ -56,13 +60,13 @@ export class ShowsService {
     );
   }
 
-  public removeFromWatchlist(showId: string) {
+  public removeFromWatchedShows(showId: string, userId: string) {
     return from(
       deleteDoc(
         doc(
           this.db,
           this.usersCollection,
-          this.$currentUser()?.uid || '',
+          userId,
           this.watchedShowsCollection,
           showId,
         ),
@@ -70,26 +74,26 @@ export class ShowsService {
     );
   }
 
-  public getAllFromWatchlist() {
+  public getAllWatchedShows(userId: string) {
     return from(
       getDocs(
         collection(
           this.db,
           this.usersCollection,
-          this.userDataService.$currentUser()?.uid || '',
+          userId,
           this.watchedShowsCollection,
         ),
       ),
     );
   }
 
-  public getFromWatchlist(showId: string) {
+  public getFromWatchedShows(showId: string, userId: string) {
     return from(
       getDoc(
         doc(
           this.db,
           this.usersCollection,
-          this.$currentUser()?.uid || '',
+          userId,
           this.watchedShowsCollection,
           showId,
         ),
@@ -98,7 +102,7 @@ export class ShowsService {
   }
 
   public filterWatchedShows(res: ShowInterface[]) {
-    return this.getAllFromWatchlist().pipe(
+    return this.getAllWatchedShows(this.$currentUser()!.uid).pipe(
       map((watchedShows) => {
         const watchedShowsIds = new Set();
 

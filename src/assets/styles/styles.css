@@ -3,6 +3,7 @@
 
 @import "primeng/resources/themes/arya-orange/theme.css";
 @import "primeng/resources/primeng.min.css";
+@import "primeicons/primeicons.css";
 
 @import "./theme/variables.css";
 @import "./theme/primeng-clases.css";

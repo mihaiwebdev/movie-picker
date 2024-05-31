@@ -1,0 +1,33 @@
+<p-dataView #dv [value]="$watchedShows()" [rows]="5" [paginator]="true">
+  <ng-template pTemplate="list" let-shows>
+    @if ($isGetShowsLoading()) {
+      <p-skeleton class="card-skeleton" />
+    } @else {
+      @for (show of shows; track show.id) {
+        <p-card (click)="openShow(show)" [header]="show.title || show.name">
+          <ng-template pTemplate="header">
+            <button
+              pRipple
+              (click)="removeFromWatchedShows($event, show.id)"
+              [disabled]="$isGetShowsLoading()"
+              class="remove-show"
+            >
+              @if ($isGetShowsLoading()) {
+                <span class="loader"></span>
+              } @else {
+                <i class="pi pi-times"></i>
+              }
+            </button>
+            <img
+              class="show-image"
+              alt="show-image"
+              [src]="imgBaseUrl + show.poster_path"
+              (load)="onImageLoad()"
+              [class.loaded]="!$isImgLoading()"
+            />
+          </ng-template>
+        </p-card>
+      }
+    }
+  </ng-template>
+</p-dataView>

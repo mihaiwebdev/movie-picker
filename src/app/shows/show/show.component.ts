@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -34,6 +35,7 @@ export class ShowComponent {
   private readonly messageService = inject(MessageService);
   private readonly userDataService = inject(UserDataService);
   private readonly loaderService = inject(LoaderService);
+  private readonly location = inject(Location);
   private readonly allGenres = [...movieGenres, ...tvGenres];
 
   public readonly imgBaseUrl = 'https://image.tmdb.org/t/p/original';
@@ -70,10 +72,14 @@ export class ShowComponent {
     this.$isImgLoading.set(false);
   }
 
-  public async addToWatchlist() {
+  goBack() {
+    this.location.back();
+  }
+
+  public addToWatchedShows() {
     if (!this.$selectedShow()?.id || !this.$selectedShow()) return;
 
-    if (!this.$currentUser()) {
+    if (!this.$currentUser()?.uid) {
       this.router.navigate(['/app/login']);
       return;
     }
@@ -81,10 +87,10 @@ export class ShowComponent {
     this.$isWatchlistLoading.set(true);
 
     this.showsService
-      .addToWatchlist(
+      .addToWatchedShows(
         String(this.$selectedShow()!.id),
-
         this.$selectedShow()!,
+        this.$currentUser()!.uid,
       )
       .pipe(
         tap(() => {
@@ -106,13 +112,16 @@ export class ShowComponent {
       .subscribe();
   }
 
-  public async removeFromWatchlsit() {
+  public removeFromWatchedShows() {
     if (!this.$selectedShow()?.id || !this.$currentUser()?.uid) return;
 
     this.$isWatchlistLoading.set(true);
 
     this.showsService
-      .removeFromWatchlist(String(this.$selectedShow()!.id))
+      .removeFromWatchedShows(
+        String(this.$selectedShow()!.id),
+        this.$currentUser()!.uid,
+      )
       .pipe(
         tap(() => this.$isWatched.set(false)),
         catchError((error) => {
@@ -128,12 +137,15 @@ export class ShowComponent {
       .subscribe();
   }
 
-  public async checkIsShowWatched() {
+  public checkIsShowWatched() {
     if (!this.$selectedShow()?.id || !this.$currentUser()?.uid) return;
     this.$isWatchlistLoading.set(true);
 
     this.showsService
-      .getFromWatchlist(String(this.$selectedShow()!.id))
+      .getFromWatchedShows(
+        String(this.$selectedShow()!.id),
+        this.$currentUser()!.uid,
+      )
       .pipe(
         tap((response) => {
           if (response.data()) {

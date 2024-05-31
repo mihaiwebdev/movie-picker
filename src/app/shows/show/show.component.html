@@ -10,7 +10,7 @@
 
     <div class="gradient-overlay">
       <div class="action-buttons">
-        <button pRipple class="back-btn" [routerLink]="['/app']">
+        <button pRipple class="back-btn" (click)="goBack()">
           <i class="bi bi-arrow-left-short"></i>
         </button>
         <button pRipple class="bookmark-btn">
@@ -70,12 +70,12 @@
               <button
                 pRipple
                 class="already-watched"
-                (click)="removeFromWatchlsit()"
+                (click)="removeFromWatchedShows()"
               >
                 <i class="bi bi-check2-all"></i> Watched
               </button>
             } @else {
-              <button pRipple class="watched-it" (click)="addToWatchlist()">
+              <button pRipple class="watched-it" (click)="addToWatchedShows()">
                 Watched ?
               </button>
             }

@@ -65,7 +65,7 @@ export class AuthComponent {
     this.checkRedirectResult();
   }
 
-  public async loginWithEmail() {
+  public loginWithEmail() {
     if (this.emailFormControl.invalid) {
       this.messageService.add({
         severity: 'error',
@@ -103,7 +103,7 @@ export class AuthComponent {
       .subscribe();
   }
 
-  public async loginWithGoogle() {
+  public loginWithGoogle() {
     this.$isLoading.set(true);
 
     this.authService
@@ -124,7 +124,7 @@ export class AuthComponent {
       .subscribe();
   }
 
-  public async loginWithTwitter() {
+  public loginWithTwitter() {
     this.$isLoading.set(true);
 
     this.authService
@@ -144,7 +144,7 @@ export class AuthComponent {
       .subscribe();
   }
 
-  private async checkRedirectResult() {
+  private checkRedirectResult() {
     this.$isLoading.set(true);
 
     this.authService
@@ -164,7 +164,7 @@ export class AuthComponent {
       .subscribe();
   }
 
-  private async checkIsSignInWithEmailLink() {
+  private checkIsSignInWithEmailLink() {
     this.$isLoading.set(true);
 
     this.authService

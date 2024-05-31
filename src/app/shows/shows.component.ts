@@ -60,8 +60,6 @@ export class ShowsComponent {
           this.showsStore.setSelectedShow(res[0]);
         }),
         catchError((err) => {
-          console.log(err);
-
           this.messageService.add({
             severity: 'error',
             summary: 'Error',

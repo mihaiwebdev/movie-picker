@@ -1,0 +1,18 @@
+<p-tabView
+  [activeIndex]="$activeIndex()"
+  (activeIndexChange)="changeTabIndex($event)"
+>
+  <p-tabPanel header="Watchlist">
+    <p>Lorem ipsum dolor sit amet...</p>
+  </p-tabPanel>
+  <p-tabPanel header="Watched">
+    @defer (on viewport) {
+      <app-watched-shows></app-watched-shows>
+    } @placeholder {
+      <span class="loader"></span>
+    }
+  </p-tabPanel>
+  <p-tabPanel header="Liked">
+    <p>At vero eos et accusamus et iusto odio dignissimos...</p>
+  </p-tabPanel>
+</p-tabView>
