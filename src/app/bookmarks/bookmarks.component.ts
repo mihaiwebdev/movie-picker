@@ -13,6 +13,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   standalone: true,
   imports: [TabViewModule, WatchedShowsComponent],
   templateUrl: './bookmarks.component.html',
+  styleUrls: ['./bookmarks.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BookmarksComponent {

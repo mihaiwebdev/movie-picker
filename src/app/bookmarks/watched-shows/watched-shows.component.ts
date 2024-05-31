@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   inject,
   signal,
 } from '@angular/core';
@@ -37,11 +38,22 @@ export class WatchedShowsComponent {
   private readonly router = inject(Router);
   private readonly userDataService = inject(UserDataService);
   private readonly $currentUser = this.userDataService.$currentUser;
+  private readonly $width = signal(window.innerWidth);
 
   public readonly $watchedShows = signal<ShowInterface[]>([]);
   public readonly $isGetShowsLoading = signal(false);
   public readonly $isRemoveLoading = signal(false);
   public readonly $isImgLoading = signal(true);
+  public readonly $rows = computed(() =>
+    this.$width() >= 1200
+      ? 12
+      : this.$width() >= 1024
+        ? 9
+        : this.$width() >= 768
+          ? 6
+          : 5,
+  );
+  public readonly $rowsArray = computed(() => Array(this.$rows()));
   public readonly imgBaseUrl = 'https://image.tmdb.org/t/p/original';
 
   ngOnInit() {

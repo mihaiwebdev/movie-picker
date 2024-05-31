@@ -1,10 +1,16 @@
-<p-dataView #dv [value]="$watchedShows()" [rows]="5" [paginator]="true">
+<p-dataView #dv [value]="$watchedShows()" [rows]="$rows()" [paginator]="true">
   <ng-template pTemplate="list" let-shows>
     @if ($isGetShowsLoading()) {
-      <p-skeleton class="card-skeleton" />
+      @for (row of $rowsArray(); track row) {
+        <p-skeleton class="card-skeleton" />
+      }
     } @else {
       @for (show of shows; track show.id) {
-        <p-card (click)="openShow(show)" [header]="show.title || show.name">
+        <p-card
+          (click)="openShow(show)"
+          [header]="show.title || show.name"
+          [title]="show.title || show.name"
+        >
           <ng-template pTemplate="header">
             <button
               pRipple
