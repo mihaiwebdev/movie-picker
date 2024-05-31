@@ -1,4 +1,4 @@
-import { StreamingPlatformsInterface } from '../';
+import { StreamingPlatformsInterface } from '../../shared';
 
 export const streamingPlatforms: StreamingPlatformsInterface[] = [
   {

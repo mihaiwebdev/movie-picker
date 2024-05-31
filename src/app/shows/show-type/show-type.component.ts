@@ -7,7 +7,8 @@ import {
 import { MenuItem } from 'primeng/api';
 import { RippleModule } from 'primeng/ripple';
 import { TabMenuModule } from 'primeng/tabmenu';
-import { ShowTypesEnum, ShowsService } from '../../core';
+import { ShowsStore } from '../../core';
+import { ShowTypesEnum } from '../../shared';
 
 @Component({
   selector: 'app-show-type',
@@ -18,11 +19,11 @@ import { ShowTypesEnum, ShowsService } from '../../core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ShowTypeComponent {
-  private readonly showsService = inject(ShowsService);
+  private readonly showsStore = inject(ShowsStore);
   private isFirstChange = true;
 
   public readonly showTypesEnum = ShowTypesEnum;
-  public readonly $showType = this.showsService.$selectedShowType;
+  public readonly $showType = this.showsStore.$selectedShowType;
   public readonly $selectShowTypeOutput = output<ShowTypesEnum>();
   public readonly showTypeItems: MenuItem[] = [
     { label: 'Movies' },
@@ -35,11 +36,11 @@ export class ShowTypeComponent {
 
   public selectShowType(show: ShowTypesEnum) {
     if (!this.isFirstChange) {
-      this.showsService.setSelectedGenres([]);
+      this.showsStore.setSelectedGenres([]);
     }
     this.isFirstChange = false;
 
-    this.showsService.setSelectedShowType(show);
+    this.showsStore.setSelectedShowType(show);
     this.$selectShowTypeOutput.emit(show);
   }
 

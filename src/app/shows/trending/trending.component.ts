@@ -10,7 +10,8 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Router } from '@angular/router';
-import { ShowInterface, ShowsService, ShowTypesEnum } from '../../core';
+import { ShowsStore } from '../../core';
+import { ShowInterface, ShowTypesEnum } from '../../shared';
 
 @Component({
   selector: 'app-trending',
@@ -22,7 +23,7 @@ import { ShowInterface, ShowsService, ShowTypesEnum } from '../../core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TrendingComponent {
-  private readonly showsService = inject(ShowsService);
+  private readonly showsStore = inject(ShowsStore);
   private readonly router = inject(Router);
   private readonly swiperParams = {
     slideToClickedSlide: true,
@@ -30,7 +31,7 @@ export class TrendingComponent {
 
   public readonly $trendingShows = input<ShowInterface[] | null>(null);
   public readonly $selectedShowType = computed(() =>
-    this.showsService.$selectedShowType() === ShowTypesEnum.tv
+    this.showsStore.$selectedShowType() === ShowTypesEnum.tv
       ? 'TV Series'
       : 'Movies',
   );
@@ -55,10 +56,10 @@ export class TrendingComponent {
 
   public onShowClick(show: ShowInterface) {
     if (this.$trendingShows()) {
-      this.showsService.setShowsResults(this.$trendingShows()!);
+      this.showsStore.setShowsResults(this.$trendingShows()!);
     }
 
-    this.showsService.setSelectedShow(show);
+    this.showsStore.setSelectedShow(show);
     this.router.navigateByUrl('/app/movie');
   }
 }

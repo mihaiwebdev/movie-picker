@@ -1,0 +1,33 @@
+.show-image {
+  border-radius: 10px 10px 0 0;
+  transform: scale(0.5);
+  opacity: 0;
+  transition: all 0.3s ease;
+
+  &.loaded {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.remove-show {
+  border: none;
+  background-color: var(--bg-light-red);
+  border-radius: 50%;
+  padding: 0.2rem 0.3rem;
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 2;
+
+  .loader {
+    height: 16px;
+    width: 16px;
+  }
+}
+
+.card-skeleton {
+  display: block;
+  height: 560px;
+  width: 100%;
+  margin-bottom: 1rem;
+}

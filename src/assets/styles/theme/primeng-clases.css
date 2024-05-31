@@ -55,3 +55,36 @@
 .toastr {
   padding: 0 20px;
 }
+
+/* Tab View */
+.p-tabview .p-tabview-panels {
+  background: var(--bg-dark);
+}
+.p-tabview .p-tabview-nav li .p-tabview-nav-link {
+  background: var(--bg-dark);
+}
+.p-tabview-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* P Card */
+.p-dataview .p-dataview-content {
+  width: 90%;
+  margin: 0 auto;
+  background-color: var(--bg-dark);
+}
+.p-card {
+  margin: 1rem 0;
+  border-radius: 10px;
+  position: relative;
+}
+.p-card .p-card-content {
+  padding: 0;
+}
+
+/* Skeleton */
+.p-skeleton {
+  height: 100% !important;
+}

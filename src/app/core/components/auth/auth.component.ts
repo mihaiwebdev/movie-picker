@@ -14,6 +14,7 @@ import {
 import { Router, RouterLink } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { RippleModule } from 'primeng/ripple';
+import { catchError, finalize, of, tap } from 'rxjs';
 import { environment } from '../../../../environments/environment.development';
 import { AuthService } from '../../services/auth.service';
 import { StorageService } from '../../services/storage.service';
@@ -64,7 +65,7 @@ export class AuthComponent {
     this.checkRedirectResult();
   }
 
-  public async loginWithEmail() {
+  public loginWithEmail() {
     if (this.emailFormControl.invalid) {
       this.messageService.add({
         severity: 'error',
@@ -76,98 +77,115 @@ export class AuthComponent {
 
     this.$isLoading.set(true);
 
-    try {
-      await this.authService.loginWithEmail(this.emailFormControl.value);
+    this.authService
+      .loginWithEmail(this.emailFormControl.value)
+      .pipe(
+        tap(() => {
+          this.storageService.setToLocalStorage(
+            environment.email,
+            this.emailFormControl.value,
+          );
 
-      this.storageService.setToLocalStorage(
-        environment.email,
-        this.emailFormControl.value,
-      );
-      this.$isLoading.set(false);
-      this.$successEmailSent.set('Please check your email!');
-      this.emailFormControl.reset('');
-    } catch (error) {
-      this.$isLoading.set(false);
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Error',
-        detail:
-          'Something went wrong! Please try again with another sing in option',
-      });
-    }
+          this.$successEmailSent.set('Please check your email!');
+          this.emailFormControl.reset('');
+        }),
+        catchError((error) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail:
+              'Something went wrong! Please try again with another sing in option',
+          });
+          return of(error);
+        }),
+        finalize(() => this.$isLoading.set(false)),
+      )
+      .subscribe();
   }
 
-  public async loginWithGoogle() {
+  public loginWithGoogle() {
     this.$isLoading.set(true);
 
-    try {
-      await this.authService.loginWithGoogle();
+    this.authService
+      .loginWithGoogle()
+      .pipe(
+        catchError((error) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail:
+              'Something went wrong! Please try again with another sing in option',
+          });
 
-      this.$isLoading.set(false);
-    } catch (error) {
-      this.$isLoading.set(false);
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Error',
-        detail:
-          'Something went wrong! Please try again with another sing in option',
-      });
-    }
+          return of(error);
+        }),
+        finalize(() => this.$isLoading.set(false)),
+      )
+      .subscribe();
   }
 
-  public async loginWithTwitter() {
+  public loginWithTwitter() {
     this.$isLoading.set(true);
 
-    try {
-      await this.authService.loginWithTwitter();
-
-      this.$isLoading.set(false);
-    } catch (error) {
-      this.$isLoading.set(false);
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Error',
-        detail:
-          'Something went wrong! Please try again with another sing in option',
-      });
-    }
+    this.authService
+      .loginWithTwitter()
+      .pipe(
+        catchError((error) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail:
+              'Something went wrong! Please try again with another sing in option',
+          });
+          return of(error);
+        }),
+        finalize(() => this.$isLoading.set(false)),
+      )
+      .subscribe();
   }
 
-  private async checkRedirectResult() {
+  private checkRedirectResult() {
     this.$isLoading.set(true);
-    try {
-      await this.authService.getRedirectResult();
 
-      this.$isLoading.set(false);
-    } catch (error) {
-      this.$isLoading.set(false);
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Error',
-        detail:
-          'Something went wrong! Please try again with another sing in option',
-      });
-    }
+    this.authService
+      .getRedirectResult()
+      .pipe(
+        catchError((error) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail:
+              'Something went wrong! Please try again with another sing in option',
+          });
+          return of(error);
+        }),
+        finalize(() => this.$isLoading.set(false)),
+      )
+      .subscribe();
   }
 
-  private async checkIsSignInWithEmailLink() {
+  private checkIsSignInWithEmailLink() {
     this.$isLoading.set(true);
-    try {
-      await this.authService.checkIsSingInWithEmailLink();
 
-      this.storageService.removeFromLocalStorage(environment.email);
-      this.$isLoading.set(false);
-    } catch (error) {
-      this.$isLoading.set(false);
-
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Error',
-        detail:
-          'Something went wrong! Please try again with another sing in option',
-      });
-      this.router.navigateByUrl('/app/login');
-    }
+    this.authService
+      .checkIsSingInWithEmailLink()
+      ?.pipe(
+        tap(() =>
+          this.storageService.removeFromLocalStorage(environment.email),
+        ),
+        catchError((error) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail:
+              'Something went wrong! Please try again with another sing in option',
+          });
+          this.router.navigateByUrl('/app/login');
+          return of(error);
+        }),
+        finalize(() => this.$isLoading.set(false)),
+      )
+      .subscribe();
   }
 }
 
