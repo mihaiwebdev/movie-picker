@@ -58,6 +58,7 @@ export class ShowComponent {
         this.$page() !== this.$resultsPages()
       : false,
   );
+  public readonly $isLoginVisibile = signal(false);
 
   ngOnInit(): void {
     if (!this.$selectedShow()) {
@@ -72,15 +73,26 @@ export class ShowComponent {
     this.$isImgLoading.set(false);
   }
 
-  goBack() {
+  public goBack() {
     this.location.back();
   }
 
-  public addToWatchedShows() {
-    if (!this.$selectedShow()?.id || !this.$selectedShow()) return;
+  public addToWatchlist() {
+    if (!this.$selectedShow()?.id) return;
 
     if (!this.$currentUser()?.uid) {
-      this.router.navigate(['/app/login']);
+      this.$isLoginVisibile.set(true);
+      return;
+    }
+
+    this.$isWatchlistLoading.set(true);
+  }
+
+  public addToWatchedShows() {
+    if (!this.$selectedShow()?.id) return;
+
+    if (!this.$currentUser()?.uid) {
+      this.$isLoginVisibile.set(true);
       return;
     }
 
@@ -172,6 +184,7 @@ export class ShowComponent {
     if (!this.$showsResults()) {
       return;
     }
+    this.$isLoginVisibile.set(false);
     this.$isImgLoading.set(true);
 
     if (prev) this.$showIdx.update((val) => --val);
@@ -184,23 +197,27 @@ export class ShowComponent {
       this.loaderService.setIsLoading(true);
       this.$page.update((val) => ++val);
 
-      this.showsService
-        .getShows(this.$page())
-        .pipe(
-          tap((res) => {
-            this.showsStore.setSelectedShow(res[0]);
-            this.showsStore.updateShowsResults(res);
-          }),
-          finalize(() => {
-            this.loaderService.setIsLoading(false);
-          }),
-        )
-        .subscribe();
+      this.getShows();
     } else {
       this.showsStore.setSelectedShow(this.$showsResults()![this.$showIdx()]);
     }
 
     this.checkIsShowWatched();
+  }
+
+  private getShows() {
+    this.showsService
+      .getShows(this.$page())
+      .pipe(
+        tap((res) => {
+          this.showsStore.setSelectedShow(res[0]);
+          this.showsStore.updateShowsResults(res);
+        }),
+        finalize(() => {
+          this.loaderService.setIsLoading(false);
+        }),
+      )
+      .subscribe();
   }
 
   private getShowGenres(): GenreInterface[] {

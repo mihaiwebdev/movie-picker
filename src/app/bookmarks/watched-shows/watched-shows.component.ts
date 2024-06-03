@@ -39,6 +39,7 @@ export class WatchedShowsComponent {
   private readonly userDataService = inject(UserDataService);
   private readonly $currentUser = this.userDataService.$currentUser;
   private readonly $width = signal(window.innerWidth);
+  private currentPage = 0;
 
   public readonly $watchedShows = signal<ShowInterface[]>([]);
   public readonly $isGetShowsLoading = signal(false);
@@ -98,7 +99,10 @@ export class WatchedShowsComponent {
   public onImageLoad() {
     this.$isImgLoading.set(false);
   }
-  public setImageLoading() {
+  public setImageLoading(event: any) {
+    if (this.currentPage === event.first) return;
+
+    this.currentPage = event.first;
     this.$isImgLoading.set(true);
   }
 

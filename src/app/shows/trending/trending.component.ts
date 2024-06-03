@@ -61,6 +61,6 @@ export class TrendingComponent {
     }
 
     this.showsStore.setSelectedShow(show);
-    this.router.navigateByUrl('/app/movie');
+    this.router.navigateByUrl(`/app/movie`);
   }
 }

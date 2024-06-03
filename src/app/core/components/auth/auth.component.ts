@@ -52,7 +52,13 @@ export class AuthComponent {
   constructor() {
     effect(() => {
       if (this.$currentUser()) {
-        this.router.navigateByUrl('/app');
+        const query = this.router.url.split('?')[1];
+
+        if (query) {
+          this.router.navigateByUrl(`/app?${query}`);
+        } else {
+          this.router.navigateByUrl(`/app`);
+        }
       }
     });
   }

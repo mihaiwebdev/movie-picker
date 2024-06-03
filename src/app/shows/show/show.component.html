@@ -66,18 +66,35 @@
           @if ($isWatchlistLoading()) {
             <span class="loader"></span>
           } @else {
-            @if ($isWatched()) {
-              <button
-                pRipple
-                class="already-watched"
-                (click)="removeFromWatchedShows()"
-              >
-                <i class="bi bi-check2-all"></i> Watched
-              </button>
+            @if (!$isLoginVisibile()) {
+              @if ($isWatched()) {
+                <button
+                  pRipple
+                  class="already-watched"
+                  (click)="removeFromWatchedShows()"
+                >
+                  <i class="bi bi-check2-all"></i> Watched
+                </button>
+              } @else {
+                <button
+                  pRipple
+                  class="watched-it"
+                  (click)="addToWatchedShows()"
+                >
+                  Watched ?
+                </button>
+              }
             } @else {
-              <button pRipple class="watched-it" (click)="addToWatchedShows()">
-                Watched ?
-              </button>
+              <span
+                pRipple
+                routerLink="/app/login"
+                [queryParams]="{
+                  watched: $selectedShow()?.title || $selectedShow()?.name,
+                  movie: $selectedShow()?.title ? true : ''
+                }"
+                class="login-btn"
+                >Login to get full the experience!</span
+              >
             }
           }
         </div>

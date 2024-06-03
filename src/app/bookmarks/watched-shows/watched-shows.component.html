@@ -2,7 +2,7 @@
   [value]="$watchedShows()"
   [rows]="$rows()"
   [paginator]="true"
-  (onPage)="setImageLoading()"
+  (onPage)="setImageLoading($event)"
 >
   <ng-template pTemplate="list" let-shows>
     @if ($isGetShowsLoading()) {
