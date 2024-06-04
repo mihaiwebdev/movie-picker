@@ -14,9 +14,9 @@ section.how-it-works {
     svg {
       position: absolute;
       height: 1rem;
-      width: 20rem;
+      width: 60%;
       top: 15%;
-      left: 35%;
+      text-align: center;
     }
 
     h1.highlight {

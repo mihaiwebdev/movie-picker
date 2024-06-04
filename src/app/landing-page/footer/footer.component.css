@@ -7,7 +7,7 @@
     margin-bottom: 5rem;
 
     h1 {
-      font-size: 5rem;
+      font-size: 4rem;
     }
 
     .subscription {
@@ -52,15 +52,19 @@
 
   .footer-box {
     padding: 1rem;
-    border-top: 1px solid var(--very-light-gray);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    background-color: var(--bg-black);
+    /* border-top: 1px solid var(--very-light-gray); */
+    .content-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
     p.rights {
       margin-left: 2rem;
       font-size: 0.9rem;
-      color: var(--dark-gray);
+      /* color: var(--dark-gray); */
+      color: var(--font-color-primary);
     }
 
     .twitter {
@@ -72,10 +76,12 @@
         margin-left: 1rem;
         display: flex;
         flex-direction: column;
+        line-height: 1.5;
 
         a.name {
           text-decoration: none;
-          color: var(--dark-gray);
+          /* color: var(--dark-gray); */
+          color: var(--font-color-primary);
           font-size: 0.9rem;
 
           &:hover {
@@ -86,6 +92,7 @@
 
       i {
         font-size: 1.5rem;
+        color: var(--font-color-primary);
       }
     }
   }

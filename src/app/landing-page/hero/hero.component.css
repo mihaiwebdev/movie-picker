@@ -6,9 +6,9 @@ section.hero {
     width: 40%;
 
     img {
-      height: 600px;
-      padding: 2rem;
       border-radius: 80px;
+      width: 65%;
+      margin-top: 2.5rem;
       /* box-shadow: 5px 5px 10px 1px #000000; */
     }
   }
