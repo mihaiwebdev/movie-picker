@@ -2,6 +2,10 @@
   h1.team-title {
     text-align: center;
     font-size: 3.75rem;
+    /* background-image: var(--yellow-gradient);
+    background-clip: text;
+    -webkit-text-fill-color: transparent; */
+    /* color: var(--font-color-secondary); */
   }
 
   p.team-subtitle {
@@ -42,14 +46,15 @@
       }
 
       img {
+        background: var(--yellow-gradient);
         width: 25rem;
         height: 25rem;
-        border-radius: 50%;
-        box-shadow:
+        border-radius: 20%;
+        /* box-shadow:
           0 0.7961918735236395px 2.3885756205709185px -0.625px #0000000d,
           0 2.414506143104518px 7.2435184293135535px -1.25px #0000000d,
           0 6.382653521484461px 19.147960564453385px -1.875px #0000000d,
-          0 20px 60px -2.5px #000;
+          0 20px 60px -2.5px #000; */
       }
     }
 
@@ -78,14 +83,15 @@
       }
 
       img {
+        background: var(--yellow-gradient);
         width: 25rem;
         height: 25rem;
-        border-radius: 50%;
-        box-shadow:
+        border-radius: 20%;
+        /* box-shadow:
           0 0.7961918735236395px 2.3885756205709185px -0.625px #0000000d,
           0 2.414506143104518px 7.2435184293135535px -1.25px #0000000d,
           0 6.382653521484461px 19.147960564453385px -1.875px #0000000d,
-          0 20px 60px -2.5px #000;
+          0 20px 60px -2.5px #000; */
       }
     }
   }

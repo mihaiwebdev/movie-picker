@@ -1,5 +1,6 @@
 .testimonials {
   h1.testimonials-title {
+    /* color: var(--font-color-secondary); */
     text-align: center;
     font-size: 3.75rem;
     margin-bottom: 0;

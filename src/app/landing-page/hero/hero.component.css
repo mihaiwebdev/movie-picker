@@ -9,6 +9,7 @@ section.hero {
       height: 600px;
       padding: 2rem;
       border-radius: 80px;
+      /* box-shadow: 5px 5px 10px 1px #000000; */
     }
   }
 
@@ -26,7 +27,10 @@ section.hero {
         font-size: 4rem;
 
         &.suffix {
-          color: var(--font-color-secondary);
+          /* color: var(--font-color-secondary); */
+          background-image: var(--yellow-gradient);
+          background-clip: text;
+          -webkit-text-fill-color: transparent;
         }
       }
     }
@@ -45,19 +49,31 @@ section.hero {
     }
 
     button.get-started {
-      padding: 1.1rem 2rem;
-      font-size: 1rem;
+      padding: 1.2rem 2.8rem;
+      font-size: 1.1rem;
       font-weight: 600;
       background-color: var(--bg-black);
       border: none;
       border-radius: 16px;
-      box-shadow: 0px 5px 14px 0px var(--bg-black);
-      transition: transform 0.3s ease;
 
       &:hover {
         cursor: pointer;
-        transform: scale(1.1);
+        -webkit-animation: pulse 2s infinite;
+        animation: pulse512 1.5s infinite;
       }
     }
+  }
+}
+@keyframes pulse512 {
+  0% {
+    box-shadow: 0 0 0 0 var(--bg-black);
+  }
+
+  70% {
+    box-shadow: 0 0 0 10px rgb(218 103 68 / 0%);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgb(218 103 68 / 0%);
   }
 }

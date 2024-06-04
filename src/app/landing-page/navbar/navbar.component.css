@@ -45,12 +45,36 @@
       font-weight: 600;
       font-size: 0.9rem;
       padding: 0.5rem 1.5rem 0.5rem 1.5rem;
-      transition: transform 0.3s ease;
 
       &:hover {
         color: var(--font-color-secondary);
-        transform: scale(1.1);
+      }
+
+      &.navbar-link-lp-right {
+        border: none;
+        border-radius: 20px;
+        color: var(--bg-black);
+        background: var(--font-color-secondary);
+
+        &:hover {
+          -webkit-animation: pulse 2s infinite;
+          animation: pulse512 1.5s infinite;
+        }
       }
     }
+  }
+}
+
+@keyframes pulse512 {
+  0% {
+    box-shadow: 0 0 0 0 var(--font-color-secondary);
+  }
+
+  70% {
+    box-shadow: 0 0 0 10px rgb(218 103 68 / 0%);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgb(218 103 68 / 0%);
   }
 }
