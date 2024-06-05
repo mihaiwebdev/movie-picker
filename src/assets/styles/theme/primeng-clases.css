@@ -90,6 +90,9 @@
 .p-card .p-card-content {
   padding: 0;
 }
+.p-card-body {
+  font-family: var(--text-font);
+}
 
 /* Skeleton */
 .p-skeleton {

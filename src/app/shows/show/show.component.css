@@ -28,7 +28,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    height: 60%;
+    height: auto;
     z-index: 1;
 
     .action-buttons {
@@ -47,6 +47,9 @@
       .bi-bookmark {
         font-size: 1.1rem;
       }
+      .bi-bookmark-check-fill {
+        font-size: 1.3rem;
+      }
 
       button {
         padding: 0;
@@ -56,15 +59,19 @@
         border-radius: 50%;
         cursor: pointer;
         color: var(--font-color-primary);
+        font-family: var(--text-font);
+        background: var(--light-dark);
+        opacity: 0.9;
 
-        &.bookmark-btn {
-          background: var(--light-dark);
-          opacity: 0.9;
-        }
-
-        &.back-btn {
-          background: var(--light-dark);
-          opacity: 0.9;
+        &.login-btn {
+          color: var(--font-color-secondary);
+          border-radius: 10px;
+          font-weight: 600;
+          padding: 0 1rem;
+          width: auto;
+          &:hover {
+            opacity: 0.8;
+          }
         }
       }
     }
@@ -147,6 +154,19 @@
             font-weight: 700;
           }
         }
+
+        .login-btn {
+          margin-top: auto;
+          color: var(--font-color-secondary);
+          font-weight: 600;
+          text-decoration: underline;
+          cursor: pointer;
+
+          &:hover {
+            opacity: 0.8;
+          }
+        }
+
         p.rating {
           font-size: 0.8rem;
           color: var(--font-color-secondary);
@@ -218,7 +238,13 @@
 
     .gradient-overlay {
       height: 55%;
-      .show-overview,
+
+      .show-overview {
+        width: 100%;
+        max-width: 100%;
+        margin: 1rem auto;
+      }
+
       .show-description-box {
         width: 80%;
         max-width: 80%;
@@ -226,20 +252,9 @@
       }
 
       .choose-btn {
-        width: 80%;
-        max-width: 80%;
+        width: 100%;
+        max-width: 100%;
         margin: auto;
-      }
-    }
-  }
-}
-
-@media screen and (min-width: 1024px) {
-  .found-movie-page {
-    .gradient-overlay {
-      .show-description-box {
-        width: 60%;
-        max-width: 60%;
       }
     }
   }
@@ -342,7 +357,7 @@
       }
 
       .show-description-box {
-        width: 65%;
+        width: 80%;
         max-height: 260px;
 
         .show-description {

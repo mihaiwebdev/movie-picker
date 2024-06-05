@@ -22,14 +22,9 @@ import { UserDataService } from '../../core/services/user-data.service';
 import { ShowInterface } from '../../shared';
 
 @Component({
-  selector: 'app-watched-shows',
+  selector: 'app-watchlist',
   standalone: true,
   imports: [
-    DataViewModule,
-    CardModule,
-    ButtonModule,
-    RippleModule,
-    SkeletonModule,
     DataViewModule,
     CardModule,
     ButtonModule,
@@ -39,11 +34,11 @@ import { ShowInterface } from '../../shared';
     InputTextModule,
     FloatLabelModule,
   ],
-  templateUrl: './watched-shows.component.html',
-  styleUrl: './watched-shows.component.css',
+  templateUrl: './watchlist.component.html',
+  styleUrl: './watchlist.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class WatchedShowsComponent {
+export class WatchlistComponent {
   private readonly showsService = inject(ShowsService);
   private readonly showsStore = inject(ShowsStore);
   private readonly messageService = inject(MessageService);
@@ -54,8 +49,8 @@ export class WatchedShowsComponent {
   private currentPage = 0;
 
   public readonly $searchValue = model<string>('');
-  public readonly $watchedShows = signal<ShowInterface[]>([]);
-  public readonly $filteredWatchedShows = computed(() =>
+  public readonly $watchlist = signal<ShowInterface[]>([]);
+  public readonly $filteredWatchlist = computed(() =>
     this.filterWatchlist(this.$searchValue()),
   );
   public readonly $isGetShowsLoading = signal(false);
@@ -74,33 +69,33 @@ export class WatchedShowsComponent {
   public readonly imgBaseUrl = 'https://image.tmdb.org/t/p/w342';
 
   ngOnInit() {
-    this.getAllWatchedShows();
+    this.getWatchlist();
   }
 
   public filterWatchlist(value: string) {
     if (value.length > 0) {
-      return this.$watchedShows().filter((show) =>
+      return this.$watchlist().filter((show) =>
         (show.title || show.name || '')
           .trim()
           .toLowerCase()
           .includes(value.trim().toLowerCase()),
       );
     } else {
-      return this.$watchedShows();
+      return this.$watchlist();
     }
   }
 
-  public removeFromWatchedShows($event: Event, showId: number) {
+  public removeFromWatchlist($event: Event, showId: number) {
     $event.stopPropagation();
     if (!this.$currentUser()?.uid) return;
 
     this.$isRemoveLoading.set(true);
 
     this.showsService
-      .removeFromWatchedShows(String(showId), this.$currentUser()!.uid)
+      .removeFromWatchlist(String(showId), this.$currentUser()!.uid)
       .pipe(
         tap(() => {
-          this.$watchedShows.update((shows) =>
+          this.$watchlist.update((shows) =>
             shows.filter((show) => show.id !== showId),
           );
         }),
@@ -135,17 +130,17 @@ export class WatchedShowsComponent {
     this.$isImgLoading.set(true);
   }
 
-  private getAllWatchedShows() {
+  private getWatchlist() {
     if (!this.$currentUser()?.uid) return;
 
     this.$isGetShowsLoading.set(true);
     this.showsService
-      .getAllWatchedShows(this.$currentUser()!.uid)
+      .getAllFromWatchlist(this.$currentUser()!.uid)
       .pipe(
         tap((res) => {
           let shows: ShowInterface[] = [];
           res.forEach((show) => shows.push(show.data() as ShowInterface));
-          this.$watchedShows.set(shows);
+          this.$watchlist.set(shows);
         }),
         catchError((err) => {
           this.messageService.add({
