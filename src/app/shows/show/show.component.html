@@ -13,9 +13,39 @@
         <button pRipple class="back-btn" (click)="goBack()">
           <i class="bi bi-arrow-left-short"></i>
         </button>
-        <button pRipple class="bookmark-btn">
-          <i class="bi bi-bookmark"></i>
-        </button>
+        @if ($isLoginVisibile()) {
+          <button
+            routerLink="/app/login"
+            [queryParams]="{
+              watchlist: $selectedShow()?.name || $selectedShow()?.title,
+              movie: $selectedShow()?.title ? true : ''
+            }"
+            pRipple
+            class="login-btn"
+          >
+            Login
+          </button>
+        } @else {
+          @if ($isWatchlistLoading()) {
+            <div>
+              <span class="loader bookmark-loader"></span>
+            </div>
+          } @else {
+            @if ($isInWatchlist()) {
+              <button
+                pRipple
+                class="bookmark-btn"
+                (click)="removeFromWatchlist()"
+              >
+                <i class="bi bi-bookmark-check-fill"></i>
+              </button>
+            } @else {
+              <button pRipple class="bookmark-btn" (click)="addToWatchlist()">
+                <i class="bi bi-bookmark"></i>
+              </button>
+            }
+          }
+        }
       </div>
 
       <div class="show-poster">
@@ -63,7 +93,7 @@
             </p>
           </div>
 
-          @if ($isWatchlistLoading()) {
+          @if ($isWatchedLoading()) {
             <span class="loader"></span>
           } @else {
             @if (!$isLoginVisibile()) {

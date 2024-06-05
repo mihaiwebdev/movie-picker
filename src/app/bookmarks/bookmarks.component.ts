@@ -7,11 +7,12 @@ import {
 import { TabViewModule } from 'primeng/tabview';
 import { WatchedShowsComponent } from './watched-shows/watched-shows.component';
 import { ActivatedRoute, Router } from '@angular/router';
+import { WatchlistComponent } from './watchlist/watchlist.component';
 
 @Component({
   selector: 'app-bookmarks',
   standalone: true,
-  imports: [TabViewModule, WatchedShowsComponent],
+  imports: [TabViewModule, WatchedShowsComponent, WatchlistComponent],
   templateUrl: './bookmarks.component.html',
   styleUrls: ['./bookmarks.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,

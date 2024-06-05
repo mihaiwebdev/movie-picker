@@ -36,13 +36,6 @@ export class ShowsService {
   private readonly $userLocation = this.userDataService.$userLocation;
   private readonly $currentUser = this.userDataService.$currentUser;
 
-  // Get trending shows
-  public getTrendingShows(showType: ShowTypesEnum) {
-    return this.http.get<ShowResponseInterface>(
-      `${this.tmdbApi}/trending/${showType}/day?language=en-US`,
-    );
-  }
-
   // Saved Shows / Watchlist
   public addToWatchlist(
     showId: string,
@@ -85,6 +78,20 @@ export class ShowsService {
           this.usersCollection,
           userId,
           this.watchlistCollection,
+        ),
+      ),
+    );
+  }
+
+  public getFromWatchlist(showId: string, userId: string) {
+    return from(
+      getDoc(
+        doc(
+          this.db,
+          this.usersCollection,
+          userId,
+          this.watchlistCollection,
+          showId,
         ),
       ),
     );
@@ -151,13 +158,20 @@ export class ShowsService {
     );
   }
 
-  // Get Shows Algo
+  // Get trending shows
+  public getTrendingShows(showType: ShowTypesEnum) {
+    return this.http.get<ShowResponseInterface>(
+      `${this.tmdbApi}/trending/${showType}/day?language=en-US`,
+    );
+  }
+
   public getShow(showType: string, showName: string) {
     return this.http.get<ShowResponseInterface>(
       `${this.tmdbApi}/search/${showType}?query=${showName}`,
     );
   }
 
+  // Get Shows Algo
   public getShows(page: number): Observable<ShowInterface[]> {
     const watchProviders = this.getWatchProviders();
     const genresIds = this.getGenreIds();
@@ -175,14 +189,19 @@ export class ShowsService {
             ? this.filterWatchedShows(res)
             : of(res);
         }),
-        map(this.mapShows.bind(this)),
+        switchMap((res) => {
+          return this.$currentUser()?.uid
+            ? this.filterSavedShows(res)
+            : of(res);
+        }),
+        map(this.sortShowsByScore.bind(this)),
         switchMap((res) => {
           return res.length < 1 ? this.getShows(page + 1) : of(res);
         }),
       );
   }
 
-  private mapShows(res: ShowInterface[]) {
+  private sortShowsByScore(res: ShowInterface[]) {
     const genresIds = this.getGenreIds();
 
     res.sort((a, b) => {
@@ -266,6 +285,15 @@ export class ShowsService {
     }
   }
 
-  // TODO:
-  private filterSavedShows() {}
+  private filterSavedShows(res: ShowInterface[]) {
+    return this.getAllFromWatchlist(this.$currentUser()!.uid).pipe(
+      map((watchlist) => {
+        const watchListShowIds = new Set();
+
+        watchlist.forEach((doc) => watchListShowIds.add(doc.data()['id']));
+
+        return res.filter((show) => !watchListShowIds.has(show.id));
+      }),
+    );
+  }
 }
