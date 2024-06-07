@@ -147,14 +147,14 @@
         }
         .submit-btn {
           background-color: var(--font-color-secondary);
-          background-color: var(--app-blue);
+          color: var(--bg-dark);
+          font-weight: 700;
           font-size: 1rem;
           padding: 0.8rem;
           margin-top: 0.8rem;
           border: none;
           border-radius: 10px;
           width: 100%;
-          font-weight: 600;
           font-family: var(--font-family);
           cursor: pointer;
         }

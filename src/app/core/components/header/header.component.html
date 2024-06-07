@@ -19,6 +19,10 @@
           class="nav-link-desktop"
           ><i class="bi bi-box-arrow-in-right"></i> Login
         </a>
+
+        <a pRipple (click)="closeNav(navCheckbox)" class="nav-link-desktop">
+          <i class="bi bi-chat-dots"></i> Talk with us</a
+        >
       }
 
       @if ($currentUser()) {
@@ -32,6 +36,10 @@
           <i pRipple class="bi bi-bookmark"></i>
           Bookmarks
         </a>
+
+        <a pRipple (click)="closeNav(navCheckbox)" class="nav-link-desktop">
+          <i class="bi bi-chat-dots"></i> Talk with us</a
+        >
 
         <a pRipple (click)="signOut()" class="nav-link-desktop"
           ><i class="bi bi-box-arrow-left"></i> Logout
@@ -52,12 +60,13 @@
           <a routerLink="/app/login" pRipple class="nav-link login-btn"
             ><i class="bi bi-box-arrow-in-right"></i> Login</a
           >
+
+          <a pRipple (click)="closeNav(navCheckbox)" class="nav-link">
+            <i class="bi bi-chat-dots"></i> Talk with us</a
+          >
         }
 
         @if ($currentUser()) {
-          <a pRipple (click)="closeNav(navCheckbox)" class="nav-link"
-            ><i class="bi bi-person"></i> Profile</a
-          >
           <a
             pRipple
             routerLink="/app/bookmarks"
@@ -66,6 +75,10 @@
             class="nav-link"
           >
             <i class="bi bi-bookmark"></i> Bookmarks</a
+          >
+
+          <a pRipple (click)="closeNav(navCheckbox)" class="nav-link">
+            <i class="bi bi-chat-dots"></i> Talk with us</a
           >
 
           <a (click)="signOut()" pRipple class="nav-link"
