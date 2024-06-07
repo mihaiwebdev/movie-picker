@@ -19,6 +19,7 @@ import {
 } from '../../core';
 import { ShowsStore } from '../../core/store/shows.store';
 import { GenreInterface, ReadMoreDirective } from '../../shared';
+import { BookmarksEnum } from '../../bookmarks/bookmarks.enum';
 
 @Component({
   selector: 'app-show',
@@ -50,6 +51,8 @@ export class ShowComponent {
   public readonly $isWatchedLoading = signal(false);
   public readonly $isInWatchlist = signal(false);
   public readonly $isWatchlistLoading = signal(false);
+  public readonly $isHidden = signal(false);
+  public readonly $isHiddenLoading = signal(false);
   public readonly $currentUser = this.userDataService.$currentUser;
   public readonly $page = signal(1);
   public readonly $showIdx = signal(this.showsStore.$currentShowIndex() || 0);
@@ -61,6 +64,7 @@ export class ShowComponent {
       : false,
   );
   public readonly $isLoginVisibile = signal(false);
+  public readonly bookmarksTypeEnum = BookmarksEnum;
 
   ngOnInit(): void {
     if (!this.$selectedShow()) {
@@ -68,8 +72,9 @@ export class ShowComponent {
       return;
     }
 
-    this.checkIsShowWatched();
-    this.checkIsShowInWatchlist();
+    this.checkShowBookmark(BookmarksEnum.hidden);
+    this.checkShowBookmark(BookmarksEnum.watched);
+    this.checkShowBookmark(BookmarksEnum.watchlist);
   }
 
   public onImageLoad() {
@@ -80,126 +85,91 @@ export class ShowComponent {
     this.location.back();
   }
 
-  public addToWatchlist() {
-    if (!this.$selectedShow() || !this.$selectedShow()?.id) return;
-
-    if (!this.$currentUser()?.uid) {
-      this.$isLoginVisibile.set(true);
-      return;
-    }
-
-    this.$isWatchlistLoading.set(true);
-    this.showsService
-      .addToWatchlist(
-        String(this.$selectedShow()!.id),
-        this.$selectedShow()!,
-        this.$currentUser()!.uid,
-      )
-      .pipe(
-        tap(() => this.$isInWatchlist.set(true)),
-        catchError((error) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Could not add to watchlist',
-          });
-          return of(error);
-        }),
-        finalize(() => {
-          this.$isWatchlistLoading.set(false);
-        }),
-      )
-      .subscribe();
-  }
-
-  public removeFromWatchlist() {
-    if (!this.$selectedShow() || !this.$selectedShow()?.id) return;
-
-    if (!this.$currentUser()?.uid) {
-      this.$isLoginVisibile.set(true);
-      return;
-    }
-
-    this.$isWatchlistLoading.set(true);
-    this.showsService
-      .removeFromWatchlist(
-        String(this.$selectedShow()!.id),
-        this.$currentUser()!.uid,
-      )
-      .pipe(
-        tap(() => this.$isInWatchlist.set(false)),
-        catchError((error) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Could not remove from watchlist',
-          });
-          return of(error);
-        }),
-        finalize(() => {
-          this.$isWatchlistLoading.set(false);
-        }),
-      )
-      .subscribe();
-  }
-
-  public addToWatchedShows() {
-    if (!this.$selectedShow() || !this.$selectedShow()?.id) return;
-
-    if (!this.$currentUser()?.uid) {
-      this.$isLoginVisibile.set(true);
-      return;
-    }
-
-    this.$isWatchedLoading.set(true);
-
-    this.showsService
-      .addToWatchedShows(
-        String(this.$selectedShow()!.id),
-        this.$selectedShow()!,
-        this.$currentUser()!.uid,
-      )
-      .pipe(
-        tap(() => {
-          this.$isWatched.set(true);
-        }),
-
-        catchError((error) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Could not add to watched list',
-          });
-          return of(error);
-        }),
-        finalize(() => {
-          this.$isWatchedLoading.set(false);
-        }),
-      )
-      .subscribe();
-  }
-
-  public removeFromWatchedShows() {
+  public removeFromBookmarks(bookmarkType: BookmarksEnum) {
     if (!this.$selectedShow()?.id || !this.$currentUser()?.uid) return;
 
-    this.$isWatchedLoading.set(true);
+    if (bookmarkType === BookmarksEnum.watchlist) {
+      this.$isWatchlistLoading.set(true);
+    }
+    if (bookmarkType === BookmarksEnum.watched) {
+      this.$isWatchedLoading.set(true);
+    }
+    if (bookmarkType === BookmarksEnum.hidden) {
+      this.$isHiddenLoading.set(true);
+    }
 
-    this.showsService
-      .removeFromWatchedShows(
-        String(this.$selectedShow()!.id),
-        this.$currentUser()!.uid,
-      )
+    this.removeFromBookmark(bookmarkType)
       .pipe(
-        tap(() => this.$isWatched.set(false)),
+        tap(() => {
+          bookmarkType === BookmarksEnum.watchlist
+            ? this.$isInWatchlist.set(false)
+            : bookmarkType === BookmarksEnum.watched
+              ? this.$isWatched.set(false)
+              : this.$isHidden.set(false);
+        }),
         catchError((error) => {
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
-            detail: 'Could not remove from watched list',
+            detail: `Could not remove from ${bookmarkType}`,
           });
           return of(error);
         }),
-        finalize(() => this.$isWatchedLoading.set(false)),
+        finalize(() => {
+          this.$isWatchlistLoading.set(false);
+          this.$isWatchedLoading.set(false);
+          this.$isHiddenLoading.set(false);
+        }),
+      )
+      .subscribe();
+  }
+
+  public addShowToBookmarks(bookmarkType: BookmarksEnum) {
+    if (!this.$selectedShow()?.id || !this.$currentUser()?.uid) return;
+    if (bookmarkType === BookmarksEnum.watchlist) {
+      this.$isWatchlistLoading.set(true);
+    }
+    if (bookmarkType === BookmarksEnum.watched) {
+      this.$isWatchedLoading.set(true);
+    }
+    if (bookmarkType === BookmarksEnum.hidden) {
+      this.$isHiddenLoading.set(true);
+    }
+    const listName =
+      bookmarkType === BookmarksEnum.hidden
+        ? 'black list'
+        : bookmarkType === BookmarksEnum.watched
+          ? 'watched list'
+          : 'watch list';
+
+    this.addToBookmark(bookmarkType)
+      .pipe(
+        tap(() => {
+          bookmarkType === BookmarksEnum.watchlist
+            ? this.$isInWatchlist.set(true)
+            : bookmarkType === BookmarksEnum.watched
+              ? this.$isWatched.set(true)
+              : this.$isHidden.set(true);
+
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: `Show was added in the ${listName}!`,
+          });
+        }),
+        catchError((error) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: `Could not add to ${bookmarkType}`,
+          });
+          return of(error);
+        }),
+        finalize(() => {
+          this.$isWatchlistLoading.set(false);
+          this.$isWatchedLoading.set(false);
+          this.$isHiddenLoading.set(false);
+        }),
       )
       .subscribe();
   }
@@ -226,70 +196,115 @@ export class ShowComponent {
       this.showsStore.setSelectedShow(this.$showsResults()![this.$showIdx()]);
     }
 
-    this.checkIsShowWatched();
-    this.checkIsShowInWatchlist();
+    this.checkShowBookmark(BookmarksEnum.hidden);
+    this.checkShowBookmark(BookmarksEnum.watched);
+    this.checkShowBookmark(BookmarksEnum.watchlist);
   }
 
-  private checkIsShowWatched() {
+  private checkShowBookmark(bookmarkType: BookmarksEnum) {
     if (!this.$selectedShow()?.id || !this.$currentUser()?.uid) return;
-    this.$isWatchedLoading.set(true);
+    if (bookmarkType === BookmarksEnum.watchlist) {
+      this.$isWatchlistLoading.set(true);
+    }
+    if (bookmarkType === BookmarksEnum.watched) {
+      this.$isWatchedLoading.set(true);
+    }
+    if (bookmarkType === BookmarksEnum.hidden) {
+      this.$isHiddenLoading.set(true);
+    }
 
-    this.showsService
-      .getFromWatchedShows(
-        String(this.$selectedShow()!.id),
-        this.$currentUser()!.uid,
-      )
+    this.getFromBookmarks(bookmarkType)
       .pipe(
         tap((response) => {
           if (response.data()) {
-            this.$isWatched.set(true);
+            bookmarkType === BookmarksEnum.watchlist
+              ? this.$isInWatchlist.set(true)
+              : bookmarkType === BookmarksEnum.watched
+                ? this.$isWatched.set(true)
+                : this.$isHidden.set(true);
           } else {
-            this.$isWatched.set(false);
+            bookmarkType === BookmarksEnum.watchlist
+              ? this.$isInWatchlist.set(false)
+              : bookmarkType === BookmarksEnum.watched
+                ? this.$isWatched.set(false)
+                : this.$isHidden.set(false);
           }
         }),
         catchError((error) => {
-          this.$isWatched.set(false);
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
-            detail: 'Could not check if show is watched!',
+            detail: `Could not check if show is in the ${bookmarkType} collection`,
           });
           return of(error);
         }),
-        finalize(() => this.$isWatchedLoading.set(false)),
+        finalize(() => {
+          this.$isWatchlistLoading.set(false);
+          this.$isWatchedLoading.set(false);
+          this.$isHiddenLoading.set(false);
+        }),
       )
       .subscribe();
   }
 
-  private checkIsShowInWatchlist() {
-    if (!this.$selectedShow()?.id || !this.$currentUser()?.uid) return;
-    this.$isWatchlistLoading.set(true);
+  private addToBookmark(bookmarkType: BookmarksEnum) {
+    if (bookmarkType === BookmarksEnum.watchlist) {
+      return this.showsService.addToWatchlist(
+        String(this.$selectedShow()!.id),
+        this.$selectedShow()!,
+        this.$currentUser()!.uid,
+      );
+    }
+    if (bookmarkType === BookmarksEnum.watched) {
+      return this.showsService.addToWatchedShows(
+        String(this.$selectedShow()!.id),
+        this.$selectedShow()!,
+        this.$currentUser()!.uid,
+      );
+    }
+    return this.showsService.addToHidden(
+      String(this.$selectedShow()!.id),
+      this.$selectedShow()!,
+      this.$currentUser()!.uid,
+    );
+  }
 
-    this.showsService
-      .getFromWatchlist(
+  private removeFromBookmark(bookmarkType: BookmarksEnum) {
+    if (bookmarkType === BookmarksEnum.watchlist) {
+      return this.showsService.removeFromWatchlist(
         String(this.$selectedShow()!.id),
         this.$currentUser()!.uid,
-      )
-      .pipe(
-        tap((response) => {
-          if (response.data()) {
-            this.$isInWatchlist.set(true);
-          } else {
-            this.$isInWatchlist.set(false);
-          }
-        }),
-        catchError((error) => {
-          this.$isInWatchlist.set(false);
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Could not check if show is watched!',
-          });
-          return of(error);
-        }),
-        finalize(() => this.$isWatchlistLoading.set(false)),
-      )
-      .subscribe();
+      );
+    }
+    if (bookmarkType === BookmarksEnum.watched) {
+      return this.showsService.removeFromWatchedShows(
+        String(this.$selectedShow()!.id),
+        this.$currentUser()!.uid,
+      );
+    }
+    return this.showsService.removeFromHidden(
+      String(this.$selectedShow()!.id),
+      this.$currentUser()!.uid,
+    );
+  }
+
+  private getFromBookmarks(bookmarkType: BookmarksEnum) {
+    if (bookmarkType === BookmarksEnum.watchlist) {
+      return this.showsService.getFromWatchlist(
+        String(this.$selectedShow()!.id),
+        this.$currentUser()!.uid,
+      );
+    }
+    if (bookmarkType === BookmarksEnum.watched) {
+      return this.showsService.getFromWatchedShows(
+        String(this.$selectedShow()!.id),
+        this.$currentUser()!.uid,
+      );
+    }
+    return this.showsService.getFromHidden(
+      String(this.$selectedShow()!.id),
+      this.$currentUser()!.uid,
+    );
   }
 
   private getShows() {

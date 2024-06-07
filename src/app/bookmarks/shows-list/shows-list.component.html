@@ -6,7 +6,7 @@
 </div>
 
 <p-dataView
-  [value]="$filteredWatchedShows()"
+  [value]="$filteredShows()"
   [rows]="$rows()"
   [paginator]="true"
   (onPage)="setImageLoading($event)"
@@ -27,7 +27,7 @@
           <ng-template pTemplate="header">
             <button
               pRipple
-              (click)="removeFromWatchedShows($event, show.id)"
+              (click)="removeShow($event, show.id)"
               [disabled]="$isGetShowsLoading()"
               class="remove-show"
             >

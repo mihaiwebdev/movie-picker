@@ -3,11 +3,13 @@ import {
   Component,
   computed,
   inject,
+  input,
   model,
   signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { DocumentData, QuerySnapshot } from 'firebase/firestore';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -16,13 +18,14 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { RippleModule } from 'primeng/ripple';
 import { SkeletonModule } from 'primeng/skeleton';
-import { catchError, finalize, of, tap } from 'rxjs';
+import { Observable, catchError, finalize, of, tap } from 'rxjs';
 import { ShowsService, ShowsStore } from '../../core';
 import { UserDataService } from '../../core/services/user-data.service';
 import { ShowInterface } from '../../shared';
+import { BookmarksEnum } from '../bookmarks.enum';
 
 @Component({
-  selector: 'app-watched-shows',
+  selector: 'app-shows-list',
   standalone: true,
   imports: [
     DataViewModule,
@@ -39,11 +42,11 @@ import { ShowInterface } from '../../shared';
     InputTextModule,
     FloatLabelModule,
   ],
-  templateUrl: './watched-shows.component.html',
-  styleUrl: './watched-shows.component.css',
+  templateUrl: './shows-list.component.html',
+  styleUrl: './shows-list.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class WatchedShowsComponent {
+export class ShowsListComponent {
   private readonly showsService = inject(ShowsService);
   private readonly showsStore = inject(ShowsStore);
   private readonly messageService = inject(MessageService);
@@ -53,10 +56,11 @@ export class WatchedShowsComponent {
   private readonly $width = signal(window.innerWidth);
   private currentPage = 0;
 
+  public readonly $bookmarkType = input.required<BookmarksEnum>();
   public readonly $searchValue = model<string>('');
-  public readonly $watchedShows = signal<ShowInterface[]>([]);
-  public readonly $filteredWatchedShows = computed(() =>
-    this.filterWatchlist(this.$searchValue()),
+  public readonly $shows = signal<ShowInterface[]>([]);
+  public readonly $filteredShows = computed(() =>
+    this.filterShows(this.$searchValue()),
   );
   public readonly $isGetShowsLoading = signal(false);
   public readonly $isRemoveLoading = signal(false);
@@ -74,33 +78,32 @@ export class WatchedShowsComponent {
   public readonly imgBaseUrl = 'https://image.tmdb.org/t/p/w342';
 
   ngOnInit() {
-    this.getAllWatchedShows();
+    this.getAllShows();
   }
 
-  public filterWatchlist(value: string) {
+  public filterShows(value: string) {
     if (value.length > 0) {
-      return this.$watchedShows().filter((show) =>
+      return this.$shows().filter((show) =>
         (show.title || show.name || '')
           .trim()
           .toLowerCase()
           .includes(value.trim().toLowerCase()),
       );
     } else {
-      return this.$watchedShows();
+      return this.$shows();
     }
   }
 
-  public removeFromWatchedShows($event: Event, showId: number) {
+  public removeShow($event: Event, showId: number) {
     $event.stopPropagation();
     if (!this.$currentUser()?.uid) return;
 
     this.$isRemoveLoading.set(true);
 
-    this.showsService
-      .removeFromWatchedShows(String(showId), this.$currentUser()!.uid)
+    this.removeShowRequest(showId)
       .pipe(
         tap(() => {
-          this.$watchedShows.update((shows) =>
+          this.$shows.update((shows) =>
             shows.filter((show) => show.id !== showId),
           );
         }),
@@ -135,17 +138,16 @@ export class WatchedShowsComponent {
     this.$isImgLoading.set(true);
   }
 
-  private getAllWatchedShows() {
+  private getAllShows() {
     if (!this.$currentUser()?.uid) return;
 
     this.$isGetShowsLoading.set(true);
-    this.showsService
-      .getAllWatchedShows(this.$currentUser()!.uid)
+    this.getAllShowsRequest()
       .pipe(
         tap((res) => {
           let shows: ShowInterface[] = [];
           res.forEach((show) => shows.push(show.data() as ShowInterface));
-          this.$watchedShows.set(shows);
+          this.$shows.set(shows);
         }),
         catchError((err) => {
           this.messageService.add({
@@ -158,5 +160,40 @@ export class WatchedShowsComponent {
         finalize(() => this.$isGetShowsLoading.set(false)),
       )
       .subscribe();
+  }
+
+  private getAllShowsRequest(): Observable<
+    QuerySnapshot<DocumentData, DocumentData>
+  > {
+    if (this.$bookmarkType() === BookmarksEnum.watched) {
+      return this.showsService.getAllWatchedShows(this.$currentUser()!.uid);
+    }
+
+    if (this.$bookmarkType() === BookmarksEnum.hidden) {
+      return this.showsService.getAllHidden(this.$currentUser()!.uid);
+    }
+
+    return this.showsService.getAllFromWatchlist(this.$currentUser()!.uid);
+  }
+
+  private removeShowRequest(showId: number): Observable<void> {
+    if (this.$bookmarkType() === BookmarksEnum.watched) {
+      return this.showsService.removeFromWatchedShows(
+        String(showId),
+        this.$currentUser()!.uid,
+      );
+    }
+
+    if (this.$bookmarkType() === BookmarksEnum.hidden) {
+      return this.showsService.removeFromHidden(
+        String(showId),
+        this.$currentUser()!.uid,
+      );
+    }
+
+    return this.showsService.removeFromWatchlist(
+      String(showId),
+      this.$currentUser()!.uid,
+    );
   }
 }
