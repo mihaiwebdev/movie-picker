@@ -135,6 +135,12 @@
           background: rgba(0, 0, 0, 0.1);
         }
 
+        .bookmarks-buttons {
+          display: flex;
+          align-items: center;
+          justify-content: flex-start;
+        }
+
         button {
           font-family: var(--text-font);
           font-size: 0.7rem;
@@ -146,12 +152,24 @@
           &.already-watched {
             background: var(--light-dark);
             color: var(--font-color-primary);
+            font-weight: 700;
+            i {
+              font-size: 1.2rem;
+            }
           }
 
           &.watched-it {
             background-color: var(--font-color-secondary);
             color: #333;
             font-weight: 700;
+            i {
+              font-size: 1.2rem;
+            }
+          }
+
+          &.thumbs-down {
+            margin-left: 1rem;
+            background-color: var(--bg-light-red);
           }
         }
 

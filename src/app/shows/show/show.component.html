@@ -35,12 +35,16 @@
               <button
                 pRipple
                 class="bookmark-btn"
-                (click)="removeFromWatchlist()"
+                (click)="removeFromBookmarks(bookmarksTypeEnum.watchlist)"
               >
                 <i class="bi bi-bookmark-check-fill"></i>
               </button>
             } @else {
-              <button pRipple class="bookmark-btn" (click)="addToWatchlist()">
+              <button
+                pRipple
+                class="bookmark-btn"
+                (click)="addShowToBookmarks(bookmarksTypeEnum.watchlist)"
+              >
                 <i class="bi bi-bookmark"></i>
               </button>
             }
@@ -57,7 +61,9 @@
 
       <div class="show-overview">
         <div class="show-overview-left">
-          <h1>{{ $selectedShow()?.title || $selectedShow()?.name }}</h1>
+          <h1>
+            {{ $selectedShow()?.title || $selectedShow()?.name }}
+          </h1>
 
           <div class="display-genres">
             @for (genre of $showGenres(); track genre.id) {
@@ -93,39 +99,62 @@
             </p>
           </div>
 
-          @if ($isWatchedLoading()) {
-            <span class="loader"></span>
-          } @else {
-            @if (!$isLoginVisibile()) {
-              @if ($isWatched()) {
-                <button
-                  pRipple
-                  class="already-watched"
-                  (click)="removeFromWatchedShows()"
-                >
-                  <i class="bi bi-check2-all"></i> Watched
-                </button>
+          @if (!$isLoginVisibile()) {
+            <div class="bookmarks-buttons">
+              @if ($isWatchedLoading()) {
+                <span class="loader"></span>
               } @else {
-                <button
-                  pRipple
-                  class="watched-it"
-                  (click)="addToWatchedShows()"
-                >
-                  Watched ?
-                </button>
+                @if ($isWatched()) {
+                  <button
+                    pRipple
+                    class="already-watched"
+                    (click)="removeFromBookmarks(bookmarksTypeEnum.watched)"
+                  >
+                    <i class="pi pi-eye-slash"></i>
+                  </button>
+                } @else {
+                  <button
+                    pRipple
+                    class="watched-it"
+                    (click)="addShowToBookmarks(bookmarksTypeEnum.watched)"
+                  >
+                    <i class="pi pi-eye"></i>
+                  </button>
+                }
               }
-            } @else {
-              <span
-                pRipple
-                routerLink="/app/login"
-                [queryParams]="{
-                  watched: $selectedShow()?.title || $selectedShow()?.name,
-                  movie: $selectedShow()?.title ? true : ''
-                }"
-                class="login-btn"
-                >Login to get full the experience!</span
-              >
-            }
+              @if ($isHiddenLoading()) {
+                <span class="loader"></span>
+              } @else {
+                @if ($isHidden()) {
+                  <button
+                    pRipple
+                    (click)="removeFromBookmarks(bookmarksTypeEnum.hidden)"
+                    class="thumbs-down"
+                  >
+                    <i class="pi pi-thumbs-down-fill"></i>
+                  </button>
+                } @else {
+                  <button
+                    pRipple
+                    class="thumbs-down"
+                    (click)="addShowToBookmarks(bookmarksTypeEnum.hidden)"
+                  >
+                    <i class="pi pi-thumbs-down"></i>
+                  </button>
+                }
+              }
+            </div>
+          } @else {
+            <span
+              pRipple
+              routerLink="/app/login"
+              [queryParams]="{
+                watched: $selectedShow()?.title || $selectedShow()?.name,
+                movie: $selectedShow()?.title ? true : ''
+              }"
+              class="login-btn"
+              >Login to get full the experience!</span
+            >
           }
         </div>
       </div>

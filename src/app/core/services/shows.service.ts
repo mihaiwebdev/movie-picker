@@ -29,9 +29,10 @@ export class ShowsService {
 
   private readonly tmdbApi = environment.tmdbApiUrl;
   private readonly db = this.configService.db;
-  private readonly watchedShowsCollection = 'watched-shows';
   private readonly usersCollection = 'users';
+  private readonly watchedShowsCollection = 'watched-shows';
   private readonly watchlistCollection = 'watchlist';
+  private readonly hiddenCollection = 'hidden';
 
   private readonly $userLocation = this.userDataService.$userLocation;
   private readonly $currentUser = this.userDataService.$currentUser;
@@ -158,6 +159,63 @@ export class ShowsService {
     );
   }
 
+  // Hidden shows
+  public addToHidden(showId: string, showData: ShowInterface, userId: string) {
+    return from(
+      setDoc(
+        doc(
+          this.db,
+          this.usersCollection,
+          userId,
+          this.hiddenCollection,
+          showId,
+        ),
+        showData,
+      ),
+    );
+  }
+
+  public removeFromHidden(showId: string, userId: string) {
+    return from(
+      deleteDoc(
+        doc(
+          this.db,
+          this.usersCollection,
+          userId,
+          this.hiddenCollection,
+          showId,
+        ),
+      ),
+    );
+  }
+
+  public getAllHidden(userId: string) {
+    return from(
+      getDocs(
+        collection(
+          this.db,
+          this.usersCollection,
+          userId,
+          this.hiddenCollection,
+        ),
+      ),
+    );
+  }
+
+  public getFromHidden(showId: string, userId: string) {
+    return from(
+      getDoc(
+        doc(
+          this.db,
+          this.usersCollection,
+          userId,
+          this.hiddenCollection,
+          showId,
+        ),
+      ),
+    );
+  }
+
   // Get trending shows
   public getTrendingShows(showType: ShowTypesEnum) {
     return this.http.get<ShowResponseInterface>(
@@ -192,6 +250,11 @@ export class ShowsService {
         switchMap((res) => {
           return this.$currentUser()?.uid
             ? this.filterSavedShows(res)
+            : of(res);
+        }),
+        switchMap((res) => {
+          return this.$currentUser()?.uid
+            ? this.filterHiddenShows(res)
             : of(res);
         }),
         map(this.sortShowsByScore.bind(this)),
@@ -277,12 +340,16 @@ export class ShowsService {
     );
   }
 
-  private filterAnimations(genres: number[], results: ShowInterface[]) {
-    if (!genres.includes(16)) {
-      return results.filter((result) => !result.genre_ids.includes(16));
-    } else {
-      return results;
-    }
+  private filterHiddenShows(res: ShowInterface[]) {
+    return this.getAllHidden(this.$currentUser()!.uid).pipe(
+      map((hiddenShow) => {
+        const hiddenShowsIds = new Set();
+
+        hiddenShow.forEach((doc) => hiddenShowsIds.add(doc.data()['id']));
+
+        return res.filter((show) => !hiddenShowsIds.has(show.id));
+      }),
+    );
   }
 
   private filterSavedShows(res: ShowInterface[]) {
@@ -295,5 +362,13 @@ export class ShowsService {
         return res.filter((show) => !watchListShowIds.has(show.id));
       }),
     );
+  }
+
+  private filterAnimations(genres: number[], results: ShowInterface[]) {
+    if (!genres.includes(16)) {
+      return results.filter((result) => !result.genre_ids.includes(16));
+    } else {
+      return results;
+    }
   }
 }

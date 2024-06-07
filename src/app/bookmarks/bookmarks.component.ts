@@ -4,15 +4,15 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { TabViewModule } from 'primeng/tabview';
-import { WatchedShowsComponent } from './watched-shows/watched-shows.component';
 import { ActivatedRoute, Router } from '@angular/router';
-import { WatchlistComponent } from './watchlist/watchlist.component';
+import { TabViewModule } from 'primeng/tabview';
+import { BookmarksEnum } from './bookmarks.enum';
+import { ShowsListComponent } from './shows-list/shows-list.component';
 
 @Component({
   selector: 'app-bookmarks',
   standalone: true,
-  imports: [TabViewModule, WatchedShowsComponent, WatchlistComponent],
+  imports: [TabViewModule, ShowsListComponent],
   templateUrl: './bookmarks.component.html',
   styleUrls: ['./bookmarks.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -21,6 +21,7 @@ export class BookmarksComponent {
   public readonly activatedRoute = inject(ActivatedRoute);
   public readonly router = inject(Router);
   public readonly $activeIndex = signal(0);
+  public readonly bookmarksEnum = BookmarksEnum;
 
   ngOnInit() {
     this.activatedRoute.queryParamMap.subscribe((res) => {

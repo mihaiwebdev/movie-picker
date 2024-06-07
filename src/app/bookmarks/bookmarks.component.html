@@ -4,17 +4,21 @@
     (activeIndexChange)="changeTabIndex($event)"
   >
     <p-tabPanel header="Watchlist" class="content-container">
-      <app-watchlist></app-watchlist>
+      <app-shows-list
+        [$bookmarkType]="bookmarksEnum.watchlist"
+      ></app-shows-list>
     </p-tabPanel>
     <p-tabPanel header="Watched" class="content-container">
       @defer (on viewport) {
-        <app-watched-shows></app-watched-shows>
+        <app-shows-list
+          [$bookmarkType]="bookmarksEnum.watched"
+        ></app-shows-list>
       } @placeholder {
         <span class="loader"></span>
       }
     </p-tabPanel>
-    <p-tabPanel header="Liked" class="content-container">
-      <p>At vero eos et accusamus et iusto odio dignissimos...</p>
+    <p-tabPanel header="Blacklist" class="content-container">
+      <app-shows-list [$bookmarkType]="bookmarksEnum.hidden"></app-shows-list>
     </p-tabPanel>
   </p-tabView>
 </div>
