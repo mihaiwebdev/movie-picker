@@ -1,0 +1,33 @@
+<form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="contact-form">
+  <h1>Contact Us</h1>
+  <p class="subheading">
+    If you have any question, issue, feedback, please don't hesitate to contact
+    us! <i class="bi bi-balloon-heart-fill"></i>
+  </p>
+  <p-floatLabel class="float-label">
+    <input formControlName="email" pInputText id="email" />
+
+    <label for="email">Your Email</label>
+  </p-floatLabel>
+
+  <div class="email-body">
+    <p-floatLabel class="float-label">
+      <input formControlName="subject" pInputText id="subject" />
+
+      <label for="subject">Subject</label>
+    </p-floatLabel>
+
+    <p-floatLabel class="float-label">
+      <textarea
+        formControlName="summary"
+        id="float-input"
+        rows="5"
+        cols="30"
+        pInputTextarea
+      ></textarea>
+      <label for="float-input">Summary</label>
+    </p-floatLabel>
+  </div>
+
+  <p-button class="submit-btn" label="Submit" type="submit" />
+</form>

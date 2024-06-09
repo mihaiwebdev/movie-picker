@@ -56,6 +56,11 @@
   padding: 0 20px;
 }
 
+/* P button */
+.p-button .p-button-label {
+  font-weight: 600;
+}
+
 /* Tab View */
 .p-tabview .p-tabview-panels {
   background: var(--bg-dark);

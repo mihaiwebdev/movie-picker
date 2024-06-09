@@ -85,6 +85,12 @@ export class ShowComponent {
     this.location.back();
   }
 
+  public getReleaseDate() {
+    return (
+      this.$selectedShow()?.release_date || this.$selectedShow()?.first_air_date
+    )?.split('-')[0];
+  }
+
   public removeFromBookmarks(bookmarkType: BookmarksEnum) {
     if (!this.$selectedShow()?.id || !this.$currentUser()?.uid) return;
 

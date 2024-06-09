@@ -61,6 +61,9 @@
 
       <div class="show-overview">
         <div class="show-overview-left">
+          <small class="movie-type-chip">{{
+            $selectedShow()?.title ? "Movie" : "TV Series"
+          }}</small>
           <h1>
             {{ $selectedShow()?.title || $selectedShow()?.name }}
           </h1>
@@ -79,11 +82,10 @@
         </div>
 
         <div class="show-overview-right">
-          @if ($selectedShow()?.release_date) {
-            <p class="release-date">
-              {{ ($selectedShow()?.release_date?.split("-"))![0] }}
-            </p>
-          }
+          <p class="release-date">
+            {{ getReleaseDate() }}
+          </p>
+
           <div class="show-rating">
             <p class="rating">TMDb rating</p>
 

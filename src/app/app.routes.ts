@@ -17,6 +17,12 @@ export const appRoutes: Routes = [
     loadComponent: () => import('./bookmarks/bookmarks.component'),
     canActivate: [userAuthGuard],
   },
+
+  {
+    path: 'contact',
+    loadComponent: () => import('./contact-us/contact-us.component'),
+    canActivate: [],
+  },
 ];
 
 export default appRoutes;

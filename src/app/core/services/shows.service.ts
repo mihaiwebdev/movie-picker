@@ -30,9 +30,9 @@ export class ShowsService {
   private readonly tmdbApi = environment.tmdbApiUrl;
   private readonly db = this.configService.db;
   private readonly usersCollection = 'users';
-  private readonly watchedShowsCollection = 'watched-shows';
+  private readonly watchedlistCollection = 'watchedlist';
   private readonly watchlistCollection = 'watchlist';
-  private readonly hiddenCollection = 'hidden';
+  private readonly blacklistCollection = 'blacklist';
 
   private readonly $userLocation = this.userDataService.$userLocation;
   private readonly $currentUser = this.userDataService.$currentUser;
@@ -110,7 +110,7 @@ export class ShowsService {
           this.db,
           this.usersCollection,
           userId,
-          this.watchedShowsCollection,
+          this.watchedlistCollection,
           showId,
         ),
         showData,
@@ -125,7 +125,7 @@ export class ShowsService {
           this.db,
           this.usersCollection,
           userId,
-          this.watchedShowsCollection,
+          this.watchedlistCollection,
           showId,
         ),
       ),
@@ -139,7 +139,7 @@ export class ShowsService {
           this.db,
           this.usersCollection,
           userId,
-          this.watchedShowsCollection,
+          this.watchedlistCollection,
         ),
       ),
     );
@@ -152,7 +152,7 @@ export class ShowsService {
           this.db,
           this.usersCollection,
           userId,
-          this.watchedShowsCollection,
+          this.watchedlistCollection,
           showId,
         ),
       ),
@@ -167,7 +167,7 @@ export class ShowsService {
           this.db,
           this.usersCollection,
           userId,
-          this.hiddenCollection,
+          this.blacklistCollection,
           showId,
         ),
         showData,
@@ -182,7 +182,7 @@ export class ShowsService {
           this.db,
           this.usersCollection,
           userId,
-          this.hiddenCollection,
+          this.blacklistCollection,
           showId,
         ),
       ),
@@ -196,7 +196,7 @@ export class ShowsService {
           this.db,
           this.usersCollection,
           userId,
-          this.hiddenCollection,
+          this.blacklistCollection,
         ),
       ),
     );
@@ -209,7 +209,7 @@ export class ShowsService {
           this.db,
           this.usersCollection,
           userId,
-          this.hiddenCollection,
+          this.blacklistCollection,
           showId,
         ),
       ),
