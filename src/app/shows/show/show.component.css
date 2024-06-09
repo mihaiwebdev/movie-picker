@@ -183,7 +183,7 @@
         }
 
         .login-btn {
-          margin-top: auto;
+          margin-top: 1rem;
           color: var(--font-color-secondary);
           font-weight: 600;
           text-decoration: underline;

@@ -92,7 +92,11 @@ export class ShowComponent {
   }
 
   public removeFromBookmarks(bookmarkType: BookmarksEnum) {
-    if (!this.$selectedShow()?.id || !this.$currentUser()?.uid) return;
+    if (!this.$selectedShow()?.id) return;
+    if (!this.$currentUser()?.uid) {
+      this.$isLoginVisibile.set(true);
+      return;
+    }
 
     if (bookmarkType === BookmarksEnum.watchlist) {
       this.$isWatchlistLoading.set(true);
@@ -131,7 +135,12 @@ export class ShowComponent {
   }
 
   public addShowToBookmarks(bookmarkType: BookmarksEnum) {
-    if (!this.$selectedShow()?.id || !this.$currentUser()?.uid) return;
+    if (!this.$selectedShow()?.id) return;
+    if (!this.$currentUser()?.uid) {
+      this.$isLoginVisibile.set(true);
+      return;
+    }
+
     if (bookmarkType === BookmarksEnum.watchlist) {
       this.$isWatchlistLoading.set(true);
     }
