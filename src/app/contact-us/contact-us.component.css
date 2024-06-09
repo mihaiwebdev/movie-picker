@@ -1,0 +1,74 @@
+.contact-form {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+
+  h1 {
+    font-size: 1.4rem;
+  }
+  .subheading {
+    margin-bottom: 1.8rem;
+    margin-top: 0.4rem;
+    color: var(--light-gray);
+
+    i {
+      color: var(--bg-red);
+      font-size: 1.5rem;
+    }
+  }
+
+  .float-label {
+    font-family: var(--text-font);
+
+    .p-inputtext {
+      padding: 0.8rem 0.8rem;
+      border-radius: 8px;
+      border: 1px solid #383838;
+      width: 100%;
+      background: var(--prime-ng-dark);
+      box-shadow:
+        0 2px 1px -1px rgba(0, 0, 0, 0.2),
+        0 1px 1px 0 rgba(0, 0, 0, 0.14),
+        0 1px 3px 0 rgba(0, 0, 0, 0.12);
+      color: var(--font-color-primary);
+      margin-bottom: 1.3rem;
+
+      &.ng-invalid.ng-dirty {
+        border: 1px solid #ef9a9a;
+      }
+    }
+    .pi-search {
+      margin-left: 0.2rem;
+      margin-right: 0.3rem;
+    }
+  }
+
+  .email-body {
+    margin: 1.8rem 0;
+  }
+
+  .submit-btn {
+    display: block;
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .contact-form {
+    width: 60%;
+    h1 {
+      margin-bottom: 0;
+    }
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .contact-form {
+    width: 50%;
+  }
+}
