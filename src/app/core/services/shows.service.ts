@@ -258,6 +258,7 @@ export class ShowsService {
             : of(res);
         }),
         map(this.sortShowsByScore.bind(this)),
+        map((res) => this.filterAnimations(genresIds, res)),
         switchMap((res) => {
           return res.length < 1 ? this.getShows(page + 1) : of(res);
         }),
@@ -265,8 +266,6 @@ export class ShowsService {
   }
 
   private sortShowsByScore(res: ShowInterface[]) {
-    const genresIds = this.getGenreIds();
-
     res.sort((a, b) => {
       const aScore = this.calculateWeightedWilsonScore(
         a.vote_count,
@@ -280,8 +279,6 @@ export class ShowsService {
 
       return bScore - aScore;
     });
-
-    this.filterAnimations(genresIds, res);
 
     return res;
   }
