@@ -13,13 +13,8 @@ import {
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ChipsModule } from 'primeng/chips';
 import { register } from 'swiper/element/bundle';
-import {
-  GenreInterface,
-  movieGenres,
-  ShowsService,
-  ShowTypesEnum,
-  tvGenres,
-} from '../../core';
+import { movieGenres, ShowsStore, tvGenres } from '../../core';
+import { GenreInterface, ShowTypesEnum } from '../../shared';
 
 @Component({
   selector: 'app-show-genres',
@@ -31,14 +26,14 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ShowGenresComponent implements AfterViewInit, OnInit {
-  private readonly showsService = inject(ShowsService);
+  private readonly showsStore = inject(ShowsStore);
   private readonly formBuilder = inject(FormBuilder);
   private isFirstChange = true;
 
   public readonly iconBasePath = '../../../assets/icons/';
   public readonly $movieGenres = signal<GenreInterface[]>(movieGenres);
   public readonly $showGenres = signal<GenreInterface[]>(tvGenres);
-  public readonly $selectedShowType = this.showsService.$selectedShowType;
+  public readonly $selectedShowType = this.showsStore.$selectedShowType;
 
   private get selectedGenresControl() {
     return this.genresForm.controls['selectedGenres'];
@@ -48,10 +43,10 @@ export class ShowGenresComponent implements AfterViewInit, OnInit {
   }
   public readonly genresForm = this.formBuilder.group({
     selectedGenresNames: this.formBuilder.control<string[] | undefined>(
-      this.showsService.$selectedGenres().map((genre) => genre.name),
+      this.showsStore.$selectedGenres().map((genre) => genre.name),
     ),
     selectedGenres: this.formBuilder.control<GenreInterface[]>(
-      this.showsService.$selectedGenres(),
+      this.showsStore.$selectedGenres(),
     ),
   });
 
@@ -161,7 +156,7 @@ export class ShowGenresComponent implements AfterViewInit, OnInit {
       this.selectedGenresControl.setValue(selectedGenres);
     }
 
-    this.showsService.setSelectedGenres(this.selectedGenresControl.value);
+    this.showsStore.setSelectedGenres(this.selectedGenresControl.value);
   }
 
   public isGenreSelected(genreId: number) {
@@ -179,6 +174,6 @@ export class ShowGenresComponent implements AfterViewInit, OnInit {
 
     this.selectedGenresControl.setValue(filteredGenres);
 
-    this.showsService.setSelectedGenres(this.selectedGenresControl.value);
+    this.showsStore.setSelectedGenres(this.selectedGenresControl.value);
   }
 }

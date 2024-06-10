@@ -10,12 +10,46 @@
 
     <div class="gradient-overlay">
       <div class="action-buttons">
-        <button pRipple class="back-btn" [routerLink]="['/app']">
+        <button pRipple class="back-btn" (click)="goBack()">
           <i class="bi bi-arrow-left-short"></i>
         </button>
-        <button pRipple class="bookmark-btn">
-          <i class="bi bi-bookmark"></i>
-        </button>
+        @if ($isLoginVisibile()) {
+          <button
+            routerLink="/app/login"
+            [queryParams]="{
+              watchlist: $selectedShow()?.name || $selectedShow()?.title,
+              movie: $selectedShow()?.title ? true : ''
+            }"
+            pRipple
+            class="login-btn"
+          >
+            Login
+          </button>
+        } @else {
+          @if ($isWatchlistLoading()) {
+            <div>
+              <span class="loader bookmark-loader"></span>
+            </div>
+          } @else {
+            @if ($isInWatchlist()) {
+              <button
+                pRipple
+                class="bookmark-btn"
+                (click)="removeFromBookmarks(bookmarksTypeEnum.watchlist)"
+              >
+                <i class="bi bi-bookmark-check-fill"></i>
+              </button>
+            } @else {
+              <button
+                pRipple
+                class="bookmark-btn"
+                (click)="addShowToBookmarks(bookmarksTypeEnum.watchlist)"
+              >
+                <i class="bi bi-bookmark"></i>
+              </button>
+            }
+          }
+        }
       </div>
 
       <div class="show-poster">
@@ -27,7 +61,12 @@
 
       <div class="show-overview">
         <div class="show-overview-left">
-          <h1>{{ $selectedShow()?.title || $selectedShow()?.name }}</h1>
+          <small class="movie-type-chip">{{
+            $selectedShow()?.title ? "Movie" : "TV Series"
+          }}</small>
+          <h1>
+            {{ $selectedShow()?.title || $selectedShow()?.name }}
+          </h1>
 
           <div class="display-genres">
             @for (genre of $showGenres(); track genre.id) {
@@ -43,11 +82,10 @@
         </div>
 
         <div class="show-overview-right">
-          @if ($selectedShow()?.release_date) {
-            <p class="release-date">
-              {{ ($selectedShow()?.release_date?.split("-"))![0] }}
-            </p>
-          }
+          <p class="release-date">
+            {{ getReleaseDate() }}
+          </p>
+
           <div class="show-rating">
             <p class="rating">TMDb rating</p>
 
@@ -63,14 +101,62 @@
             </p>
           </div>
 
-          @if ($isWatched()) {
-            <button pRipple class="already-watched" (click)="toggleWatched()">
-              <i class="bi bi-check2-all"></i> Watched
-            </button>
+          @if (!$isLoginVisibile()) {
+            <div class="bookmarks-buttons">
+              @if ($isWatchedLoading()) {
+                <span class="loader"></span>
+              } @else {
+                @if ($isWatched()) {
+                  <button
+                    pRipple
+                    class="already-watched"
+                    (click)="removeFromBookmarks(bookmarksTypeEnum.watched)"
+                  >
+                    <i class="pi pi-eye-slash"></i>
+                  </button>
+                } @else {
+                  <button
+                    pRipple
+                    class="watched-it"
+                    (click)="addShowToBookmarks(bookmarksTypeEnum.watched)"
+                  >
+                    <i class="pi pi-eye"></i>
+                  </button>
+                }
+              }
+              @if ($isHiddenLoading()) {
+                <span class="loader"></span>
+              } @else {
+                @if ($isHidden()) {
+                  <button
+                    pRipple
+                    (click)="removeFromBookmarks(bookmarksTypeEnum.hidden)"
+                    class="thumbs-down"
+                  >
+                    <i class="pi pi-thumbs-down-fill"></i>
+                  </button>
+                } @else {
+                  <button
+                    pRipple
+                    class="thumbs-down"
+                    (click)="addShowToBookmarks(bookmarksTypeEnum.hidden)"
+                  >
+                    <i class="pi pi-thumbs-down"></i>
+                  </button>
+                }
+              }
+            </div>
           } @else {
-            <button pRipple class="watched-it" (click)="toggleWatched()">
-              Watched ?
-            </button>
+            <span
+              pRipple
+              routerLink="/app/login"
+              [queryParams]="{
+                watched: $selectedShow()?.title || $selectedShow()?.name,
+                movie: $selectedShow()?.title ? true : ''
+              }"
+              class="login-btn"
+              >Login to unlock</span
+            >
           }
         </div>
       </div>
@@ -86,19 +172,21 @@
         </p>
       </div>
 
-      <div class="choose-btn">
-        @if ($showIdx() > 0) {
-          <button (click)="nextShow(true, false)" pRipple class="previous">
-            <i class="bi bi-arrow-left-circle"></i> Prev
-          </button>
-        }
+      @if ($showsResults()) {
+        <div class="choose-btn">
+          @if ($isPrevBtn()) {
+            <button (click)="nextShow(true, false)" pRipple class="previous">
+              <i class="bi bi-arrow-left-circle"></i> Prev
+            </button>
+          }
 
-        @if ($showIdx() < $showsResults()!.length - 1) {
-          <button (click)="nextShow(false, true)" pRipple class="next">
-            Next <i class="bi bi-arrow-right-circle"></i>
-          </button>
-        }
-      </div>
+          @if ($isNextBtn()) {
+            <button (click)="nextShow(false, true)" pRipple class="next">
+              Next <i class="bi bi-arrow-right-circle"></i>
+            </button>
+          }
+        </div>
+      }
     </div>
   </div>
 }

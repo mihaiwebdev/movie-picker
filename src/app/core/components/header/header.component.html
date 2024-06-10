@@ -12,19 +12,44 @@
 
     <div class="desktop-nav">
       @if (!$currentUser()) {
-        <a routerLink="/app/login" pRipple class="nav-link-desktop"
+        <a
+          routerLink="/app/login"
+          (click)="closeNav(navCheckbox)"
+          pRipple
+          class="nav-link-desktop"
           ><i class="bi bi-box-arrow-in-right"></i> Login
         </a>
+
+        <a
+          pRipple
+          routerLink="/app/contact"
+          (click)="closeNav(navCheckbox)"
+          class="nav-link-desktop"
+        >
+          <i class="bi bi-chat-dots"></i> Talk with us</a
+        >
       }
 
       @if ($currentUser()) {
-        <a pRipple class="nav-link-desktop"
-          ><i class="bi bi-person"></i> Profile
-        </a>
-        <a pRipple class="nav-link-desktop">
+        <a
+          pRipple
+          routerLink="/app/bookmarks"
+          [queryParams]="{ tab: 0 }"
+          (click)="closeNav(navCheckbox)"
+          class="nav-link-desktop"
+        >
           <i pRipple class="bi bi-bookmark"></i>
           Bookmarks
         </a>
+
+        <a
+          pRipple
+          routerLink="/app/contact"
+          (click)="closeNav(navCheckbox)"
+          class="nav-link-desktop"
+        >
+          <i class="bi bi-chat-dots"></i> Talk with us</a
+        >
 
         <a pRipple (click)="signOut()" class="nav-link-desktop"
           ><i class="bi bi-box-arrow-left"></i> Logout
@@ -33,7 +58,7 @@
     </div>
 
     <div class="mobile-nav">
-      <input class="checkbox" type="checkbox" />
+      <input class="checkbox" type="checkbox" #navCheckbox />
       <button pRipple class="hamburger">
         <span class="line line1"></span>
         <span class="line line2"></span>
@@ -45,12 +70,35 @@
           <a routerLink="/app/login" pRipple class="nav-link login-btn"
             ><i class="bi bi-box-arrow-in-right"></i> Login</a
           >
+
+          <a
+            pRipple
+            routerLink="/app/contact"
+            (click)="closeNav(navCheckbox)"
+            class="nav-link"
+          >
+            <i class="bi bi-chat-dots"></i> Talk with us</a
+          >
         }
 
         @if ($currentUser()) {
-          <a pRipple class="nav-link"><i class="bi bi-person"></i> Profile</a>
-          <a pRipple class="nav-link">
+          <a
+            pRipple
+            routerLink="/app/bookmarks"
+            [queryParams]="{ tab: 0 }"
+            (click)="closeNav(navCheckbox)"
+            class="nav-link"
+          >
             <i class="bi bi-bookmark"></i> Bookmarks</a
+          >
+
+          <a
+            pRipple
+            routerLink="/app/contact"
+            (click)="closeNav(navCheckbox)"
+            class="nav-link"
+          >
+            <i class="bi bi-chat-dots"></i> Talk with us</a
           >
 
           <a (click)="signOut()" pRipple class="nav-link"

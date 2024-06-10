@@ -13,6 +13,7 @@ import {
 import { environment } from '../../../environments/environment.development';
 import { ConfigurationService } from './configuration.service';
 import { StorageService } from './storage.service';
+import { from } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -32,7 +33,9 @@ export class AuthService {
   };
 
   public loginWithEmail(email: string) {
-    return sendSignInLinkToEmail(this.auth, email, this.actionCodeSettings);
+    return from(
+      sendSignInLinkToEmail(this.auth, email, this.actionCodeSettings),
+    );
   }
 
   public checkIsSingInWithEmailLink() {
@@ -43,25 +46,25 @@ export class AuthService {
         email = window.prompt('Please provide your email for confirmation');
       }
 
-      return signInWithEmailLink(this.auth, email, window.location.href);
+      return from(signInWithEmailLink(this.auth, email, window.location.href));
     }
 
     return;
   }
 
   public loginWithGoogle() {
-    return signInWithRedirect(this.auth, this.googleProvider);
+    return from(signInWithRedirect(this.auth, this.googleProvider));
   }
 
   public loginWithTwitter() {
-    return signInWithRedirect(this.auth, this.twitterProvider);
+    return from(signInWithRedirect(this.auth, this.twitterProvider));
   }
 
   public getRedirectResult() {
-    return getRedirectResult(this.auth);
+    return from(getRedirectResult(this.auth));
   }
 
   public singOut() {
-    return signOut(this.auth);
+    return from(signOut(this.auth));
   }
 }

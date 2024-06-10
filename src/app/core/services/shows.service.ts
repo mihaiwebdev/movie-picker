@@ -1,14 +1,21 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, inject, signal } from '@angular/core';
-import { forkJoin, map, tap } from 'rxjs';
+import { Injectable, inject } from '@angular/core';
 import {
-  GenreInterface,
+  collection,
+  deleteDoc,
+  doc,
+  getDoc,
+  getDocs,
+  setDoc,
+} from 'firebase/firestore';
+import { Observable, from, map, of, switchMap, tap } from 'rxjs';
+import { ConfigurationService, ShowsStore } from '..';
+import { environment } from '../../../environments/environment.development';
+import {
   ShowInterface,
   ShowResponseInterface,
   ShowTypesEnum,
-  StreamingPlatformsInterface,
-} from '../';
-import { environment } from '../../../environments/environment.development';
+} from '../../shared';
 import { UserDataService } from './user-data.service';
 
 @Injectable({
@@ -17,120 +24,277 @@ import { UserDataService } from './user-data.service';
 export class ShowsService {
   private readonly http = inject(HttpClient);
   private readonly userDataService = inject(UserDataService);
+  private readonly showsStore = inject(ShowsStore);
+  private readonly configService = inject(ConfigurationService);
+
   private readonly tmdbApi = environment.tmdbApiUrl;
+  private readonly db = this.configService.db;
+  private readonly usersCollection = 'users';
+  private readonly watchedlistCollection = 'watchedlist';
+  private readonly watchlistCollection = 'watchlist';
+  private readonly blacklistCollection = 'blacklist';
 
-  private readonly state = {
-    $showsResults: signal<ShowInterface[] | null>(null),
-    $selectedShow: signal<ShowInterface | null>(null),
-    $selectedPlatforms: signal<StreamingPlatformsInterface[]>([]),
-    $selectedGenres: signal<GenreInterface[]>([]),
-    $selectedShowType: signal<ShowTypesEnum>(ShowTypesEnum.movie),
-    $userLocation: this.userDataService.$userLocation,
-  };
-  public readonly $selectedShow = this.state.$selectedShow.asReadonly();
-  public readonly $selectedPlatforms =
-    this.state.$selectedPlatforms.asReadonly();
-  public readonly $selectedGenres = this.state.$selectedGenres.asReadonly();
-  public readonly $selectedShowType = this.state.$selectedShowType.asReadonly();
-  public readonly $showsResults = this.state.$showsResults.asReadonly();
+  private readonly $userLocation = this.userDataService.$userLocation;
+  private readonly $currentUser = this.userDataService.$currentUser;
 
-  public setSelectedShow(show: ShowInterface) {
-    this.state.$selectedShow.set(show);
-  }
-
-  public setStreamingPlatforms(platforms: StreamingPlatformsInterface[]) {
-    this.state.$selectedPlatforms.set(platforms);
-  }
-
-  public setShowsResults(showResults: ShowInterface[]) {
-    this.state.$showsResults.set(showResults);
-  }
-
-  public setSelectedGenres(genres: GenreInterface[]) {
-    this.state.$selectedGenres.set(genres);
-  }
-
-  public setSelectedShowType(showType: ShowTypesEnum) {
-    this.state.$selectedShowType.set(showType);
-  }
-
-  public nextShow() {
-    let idx = 0;
-    if (this.$selectedShow()) {
-      idx = this.$showsResults()?.indexOf(this.$selectedShow()!) || 0;
-    }
-
-    return (prev: boolean, next: boolean) => {
-      if (!this.$showsResults()) return;
-
-      if (next && idx < this.$showsResults()!.length - 1) {
-        idx++;
-
-        this.state.$selectedShow.set(this.$showsResults()![idx]);
-      }
-
-      if (prev && idx > 0) {
-        idx--;
-        this.state.$selectedShow.set(this.$showsResults()![idx]);
-      }
-
-      return idx;
-    };
-  }
-
-  public getShows() {
-    const observables = [];
-
-    for (let i = 1; i <= 3; i++) {
-      observables.push(this.getShowsObservable(i));
-    }
-
-    return forkJoin(observables).pipe(
-      map((res) => res.flat()),
-      tap((res) => {
-        this.state.$showsResults.set(res);
-        this.setSelectedShow(res[0]);
-      }),
+  // Saved Shows / Watchlist
+  public addToWatchlist(
+    showId: string,
+    showData: ShowInterface,
+    userId: string,
+  ) {
+    return from(
+      setDoc(
+        doc(
+          this.db,
+          this.usersCollection,
+          userId,
+          this.watchlistCollection,
+          showId,
+        ),
+        showData,
+      ),
     );
   }
 
+  public removeFromWatchlist(showId: string, userId: string) {
+    return from(
+      deleteDoc(
+        doc(
+          this.db,
+          this.usersCollection,
+          userId,
+          this.watchlistCollection,
+          showId,
+        ),
+      ),
+    );
+  }
+
+  public getAllFromWatchlist(userId: string) {
+    return from(
+      getDocs(
+        collection(
+          this.db,
+          this.usersCollection,
+          userId,
+          this.watchlistCollection,
+        ),
+      ),
+    );
+  }
+
+  public getFromWatchlist(showId: string, userId: string) {
+    return from(
+      getDoc(
+        doc(
+          this.db,
+          this.usersCollection,
+          userId,
+          this.watchlistCollection,
+          showId,
+        ),
+      ),
+    );
+  }
+
+  // Watched Shows
+  public addToWatchedShows(
+    showId: string,
+    showData: ShowInterface,
+    userId: string,
+  ) {
+    return from(
+      setDoc(
+        doc(
+          this.db,
+          this.usersCollection,
+          userId,
+          this.watchedlistCollection,
+          showId,
+        ),
+        showData,
+      ),
+    );
+  }
+
+  public removeFromWatchedShows(showId: string, userId: string) {
+    return from(
+      deleteDoc(
+        doc(
+          this.db,
+          this.usersCollection,
+          userId,
+          this.watchedlistCollection,
+          showId,
+        ),
+      ),
+    );
+  }
+
+  public getAllWatchedShows(userId: string) {
+    return from(
+      getDocs(
+        collection(
+          this.db,
+          this.usersCollection,
+          userId,
+          this.watchedlistCollection,
+        ),
+      ),
+    );
+  }
+
+  public getFromWatchedShows(showId: string, userId: string) {
+    return from(
+      getDoc(
+        doc(
+          this.db,
+          this.usersCollection,
+          userId,
+          this.watchedlistCollection,
+          showId,
+        ),
+      ),
+    );
+  }
+
+  // Hidden shows
+  public addToHidden(showId: string, showData: ShowInterface, userId: string) {
+    return from(
+      setDoc(
+        doc(
+          this.db,
+          this.usersCollection,
+          userId,
+          this.blacklistCollection,
+          showId,
+        ),
+        showData,
+      ),
+    );
+  }
+
+  public removeFromHidden(showId: string, userId: string) {
+    return from(
+      deleteDoc(
+        doc(
+          this.db,
+          this.usersCollection,
+          userId,
+          this.blacklistCollection,
+          showId,
+        ),
+      ),
+    );
+  }
+
+  public getAllHidden(userId: string) {
+    return from(
+      getDocs(
+        collection(
+          this.db,
+          this.usersCollection,
+          userId,
+          this.blacklistCollection,
+        ),
+      ),
+    );
+  }
+
+  public getFromHidden(showId: string, userId: string) {
+    return from(
+      getDoc(
+        doc(
+          this.db,
+          this.usersCollection,
+          userId,
+          this.blacklistCollection,
+          showId,
+        ),
+      ),
+    );
+  }
+
+  // Get trending shows
   public getTrendingShows(showType: ShowTypesEnum) {
     return this.http.get<ShowResponseInterface>(
       `${this.tmdbApi}/trending/${showType}/day?language=en-US`,
     );
   }
 
-  private getShowsObservable(page: number) {
-    const watchProviders = this.$selectedPlatforms()
-      .map((platform) => platform.provider_id)
-      .join('|');
-    const genresIds = this.$selectedGenres().map((genre) => genre.id);
+  public getShow(showType: string, showName: string) {
+    return this.http.get<ShowResponseInterface>(
+      `${this.tmdbApi}/search/${showType}?query=${showName}`,
+    );
+  }
+
+  // Get Shows Algo
+  public getShows(page: number): Observable<ShowInterface[]> {
+    const watchProviders = this.getWatchProviders();
+    const genresIds = this.getGenreIds();
     const joinedGenres = genresIds.join(',');
 
     return this.http
       .get<ShowResponseInterface>(
-        `${this.tmdbApi}/discover/${this.$selectedShowType()}?language=en-US&page=${page}&sort_by=vote_count.desc&watch_region=${this.state.$userLocation()?.country || 'US'}&with_genres=${joinedGenres}&with_watch_providers=${watchProviders}`,
+        `${this.tmdbApi}/discover/${this.showsStore.$selectedShowType()}?language=en-US&page=${page}&sort_by=vote_count.desc&watch_region=${this.$userLocation()?.country || 'US'}&with_genres=${joinedGenres}&with_watch_providers=${watchProviders}`,
       )
       .pipe(
-        map((res) => {
-          res.results.sort((a, b) => {
-            const aScore = this.calculateWeightedWilsonScore(
-              a.vote_count,
-              a.vote_average,
-            );
-            const bScore = this.calculateWeightedWilsonScore(
-              b.vote_count,
-              b.vote_average,
-            );
-
-            return bScore - aScore;
-          });
-
-          res.results = this.filterAnimations(genresIds, res.results);
-
-          return res.results;
+        tap((res) => this.showsStore.setResultPages(res.total_pages)),
+        map((res) => res.results),
+        switchMap((res) => {
+          return this.$currentUser()?.uid
+            ? this.filterWatchedShows(res)
+            : of(res);
+        }),
+        switchMap((res) => {
+          return this.$currentUser()?.uid
+            ? this.filterSavedShows(res)
+            : of(res);
+        }),
+        switchMap((res) => {
+          return this.$currentUser()?.uid
+            ? this.filterHiddenShows(res)
+            : of(res);
+        }),
+        map(this.sortShowsByScore.bind(this)),
+        switchMap((res) => {
+          return res.length < 1 ? this.getShows(page + 1) : of(res);
         }),
       );
+  }
+
+  private sortShowsByScore(res: ShowInterface[]) {
+    const genresIds = this.getGenreIds();
+
+    res.sort((a, b) => {
+      const aScore = this.calculateWeightedWilsonScore(
+        a.vote_count,
+        a.vote_average,
+      );
+
+      const bScore = this.calculateWeightedWilsonScore(
+        b.vote_count,
+        b.vote_average,
+      );
+
+      return bScore - aScore;
+    });
+
+    this.filterAnimations(genresIds, res);
+
+    return res;
+  }
+
+  private getWatchProviders() {
+    return this.showsStore
+      .$selectedPlatforms()
+      .map((platform) => platform.provider_id)
+      .join('|');
+  }
+
+  private getGenreIds() {
+    return this.showsStore.$selectedGenres().map((genre) => genre.id);
   }
 
   private calculateWeightedWilsonScore(
@@ -164,6 +328,42 @@ export class ShowsService {
     return weightedWilsonScore;
   }
 
+  private filterWatchedShows(res: ShowInterface[]) {
+    return this.getAllWatchedShows(this.$currentUser()!.uid).pipe(
+      map((watchedShows) => {
+        const watchedShowsIds = new Set();
+
+        watchedShows.forEach((doc) => watchedShowsIds.add(doc.data()['id']));
+
+        return res.filter((show) => !watchedShowsIds.has(show.id));
+      }),
+    );
+  }
+
+  private filterHiddenShows(res: ShowInterface[]) {
+    return this.getAllHidden(this.$currentUser()!.uid).pipe(
+      map((hiddenShow) => {
+        const hiddenShowsIds = new Set();
+
+        hiddenShow.forEach((doc) => hiddenShowsIds.add(doc.data()['id']));
+
+        return res.filter((show) => !hiddenShowsIds.has(show.id));
+      }),
+    );
+  }
+
+  private filterSavedShows(res: ShowInterface[]) {
+    return this.getAllFromWatchlist(this.$currentUser()!.uid).pipe(
+      map((watchlist) => {
+        const watchListShowIds = new Set();
+
+        watchlist.forEach((doc) => watchListShowIds.add(doc.data()['id']));
+
+        return res.filter((show) => !watchListShowIds.has(show.id));
+      }),
+    );
+  }
+
   private filterAnimations(genres: number[], results: ShowInterface[]) {
     if (!genres.includes(16)) {
       return results.filter((result) => !result.genre_ids.includes(16));
@@ -171,10 +371,4 @@ export class ShowsService {
       return results;
     }
   }
-
-  // TODO:
-  private filterWatchedShows() {}
-
-  // TODO:
-  private filterSavedShows() {}
 }
