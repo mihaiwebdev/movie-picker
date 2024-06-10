@@ -217,9 +217,9 @@ export class ShowsService {
   }
 
   // Get trending shows
-  public getTrendingShows(showType: ShowTypesEnum) {
+  public getTrendingShows(showType: ShowTypesEnum, page: number = 1) {
     return this.http.get<ShowResponseInterface>(
-      `${this.tmdbApi}/trending/${showType}/day?language=en-US`,
+      `${this.tmdbApi}/trending/${showType}/day?language=en-US&page=${page}`,
     );
   }
 

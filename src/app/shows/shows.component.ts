@@ -23,7 +23,7 @@ import {
   ShowsStore,
   UserDataService,
 } from '../core';
-import { ShowInterface, ShowTypesEnum } from '../shared';
+import { ShowInterface } from '../shared';
 
 @Component({
   selector: 'app-shows',
@@ -102,17 +102,6 @@ export class ShowsComponent {
       .subscribe();
   }
 
-  private getAddToCollectionObs(
-    showId: string,
-    showData: ShowInterface,
-    userId: string,
-    watchlistParam: string | null,
-  ) {
-    return watchlistParam
-      ? this.showsService.addToWatchlist(showId, showData, userId)
-      : this.showsService.addToWatchedShows(showId, showData, userId);
-  }
-
   public getShows() {
     this.$isGetShowLoading.set(true);
     this.showsService
@@ -139,30 +128,15 @@ export class ShowsComponent {
       .subscribe();
   }
 
-  public onSelectShowTypeOutput(showType: ShowTypesEnum) {
-    // Get trending shows
-    this.$areTrendingShowsLoading.set(true);
-    this.showsService
-      .getTrendingShows(showType)
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        map((res) => res.results),
-        tap((res) => {
-          this.$trendingShows.set(res);
-        }),
-        catchError((err) => {
-          console.log(err);
-
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Could not get the trending shows',
-          });
-          return of(err);
-        }),
-        finalize(() => this.$areTrendingShowsLoading.set(false)),
-      )
-      .subscribe();
+  private getAddToCollectionObs(
+    showId: string,
+    showData: ShowInterface,
+    userId: string,
+    watchlistParam: string | null,
+  ) {
+    return watchlistParam
+      ? this.showsService.addToWatchlist(showId, showData, userId)
+      : this.showsService.addToWatchedShows(showId, showData, userId);
   }
 }
 

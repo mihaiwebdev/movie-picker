@@ -2,11 +2,12 @@ import { Location } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   computed,
   inject,
   signal,
 } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { RippleModule } from 'primeng/ripple';
 import { catchError, finalize, of, tap } from 'rxjs';
@@ -18,8 +19,9 @@ import {
   tvGenres,
 } from '../../core';
 import { ShowsStore } from '../../core/store/shows.store';
-import { GenreInterface, ReadMoreDirective } from '../../shared';
+import { GenreInterface, ReadMoreDirective, ShowTypesEnum } from '../../shared';
 import { BookmarksEnum } from '../../bookmarks/bookmarks.enum';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-show',
@@ -31,6 +33,8 @@ import { BookmarksEnum } from '../../bookmarks/bookmarks.enum';
 })
 export class ShowComponent {
   private readonly router = inject(Router);
+  private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly destroyRef = inject(DestroyRef);
   private readonly showsStore = inject(ShowsStore);
   private readonly showsService = inject(ShowsService);
   private readonly messageService = inject(MessageService);
@@ -38,6 +42,7 @@ export class ShowComponent {
   private readonly loaderService = inject(LoaderService);
   private readonly location = inject(Location);
   private readonly allGenres = [...movieGenres, ...tvGenres];
+  private trendingShow?: ShowTypesEnum | null;
 
   public readonly imgBaseUrl = 'https://image.tmdb.org/t/p/original';
   public readonly $selectedShow = this.showsStore.$selectedShow;
@@ -71,6 +76,10 @@ export class ShowComponent {
       this.router.navigate(['/', 'app']);
       return;
     }
+
+    this.trendingShow = this.activatedRoute.snapshot.queryParamMap.get(
+      'trending',
+    ) as ShowTypesEnum;
 
     this.checkShowBookmark(BookmarksEnum.hidden);
     this.checkShowBookmark(BookmarksEnum.watched);
@@ -203,10 +212,13 @@ export class ShowComponent {
       this.$showIdx() === this.$showsResults()!.length &&
       this.$page() < this.$resultsPages()
     ) {
-      this.loaderService.setIsLoading(true);
       this.$page.update((val) => ++val);
 
-      this.getShows();
+      if (this.trendingShow) {
+        this.getTrendingShows();
+      } else {
+        this.getShows();
+      }
     } else {
       this.showsStore.setSelectedShow(this.$showsResults()![this.$showIdx()]);
     }
@@ -323,9 +335,12 @@ export class ShowComponent {
   }
 
   private getShows() {
+    this.loaderService.setIsLoading(true);
+
     this.showsService
       .getShows(this.$page())
       .pipe(
+        takeUntilDestroyed(this.destroyRef),
         tap((res) => {
           this.showsStore.setSelectedShow(res[0]);
           this.showsStore.updateShowsResults(res);
@@ -333,6 +348,33 @@ export class ShowComponent {
         finalize(() => {
           this.loaderService.setIsLoading(false);
         }),
+      )
+      .subscribe();
+  }
+
+  private getTrendingShows() {
+    if (!this.trendingShow) return;
+
+    this.loaderService.setIsLoading(true);
+
+    this.showsService
+      .getTrendingShows(this.trendingShow, this.$page())
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        tap((res) => {
+          this.showsStore.setResultPages(res.total_results);
+          this.showsStore.updateShowsResults(res.results);
+          this.showsStore.setSelectedShow(res.results[0]);
+        }),
+        catchError((err) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Could not get the shows',
+          });
+          return of(err);
+        }),
+        finalize(() => this.loaderService.setIsLoading(false)),
       )
       .subscribe();
   }

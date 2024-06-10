@@ -2,18 +2,13 @@
   <div class="content-container">
     <app-platform-list></app-platform-list>
   </div>
-  <app-show-type
-    ($selectShowTypeOutput)="onSelectShowTypeOutput($event)"
-  ></app-show-type>
+  <app-show-type></app-show-type>
 </div>
 
 <div class="content-container trending-movies">
   <app-show-genres></app-show-genres>
 
-  <app-trending
-    [$areTrendingShowsLoading]="$areTrendingShowsLoading()"
-    [$trendingShows]="$trendingShows()"
-  ></app-trending>
+  <app-trending></app-trending>
 
   <button
     pRipple

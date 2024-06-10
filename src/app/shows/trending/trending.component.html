@@ -1,54 +1,44 @@
 <h2 class="trending-text">Trending {{ $selectedShowType() }}</h2>
 
-@if ($areTrendingShowsLoading()) {
-  <span class="loader"></span>
+@if (screenWidth > 800) {
+  <div class="swiper-desktop">
+    <swiper-container
+      #mySwiper
+      init="false"
+      effect="coverflow"
+      grab-cursor="true"
+      centered-slides="true"
+      slides-per-view="auto"
+      coverflow-effect-rotate="0"
+      coverflow-effect-stretch="0"
+      coverflow-effect-depth="50"
+      coverflow-effect-modifier="5"
+      coverflow-effect-slide-shadows="true"
+    >
+      @for (show of $trendingShows(); track show.id) {
+        <swiper-slide (click)="onShowClick(show)">
+          <img
+            class="show-image"
+            [src]="imgBaseUrl + show.poster_path"
+            alt="movie-poster"
+          />
+        </swiper-slide>
+      }
+    </swiper-container>
+  </div>
 } @else {
-  @if (screenWidth > 800) {
-    <div class="swiper-desktop">
-      <swiper-container
-        #mySwiper
-        init="false"
-        effect="coverflow"
-        grab-cursor="true"
-        centered-slides="true"
-        slides-per-view="auto"
-        coverflow-effect-rotate="0"
-        coverflow-effect-stretch="0"
-        coverflow-effect-depth="50"
-        coverflow-effect-modifier="5"
-        coverflow-effect-slide-shadows="true"
-        loop="true"
-      >
-        @for (show of $trendingShows(); track show.id) {
-          <swiper-slide (click)="onShowClick(show)">
-            <img
-              class="show-image"
-              [src]="imgBaseUrl + show.poster_path"
-              alt="movie-poster"
-            />
-          </swiper-slide>
-        }
-      </swiper-container>
-    </div>
-  } @else {
-    <div class="swiper-mobile">
-      <swiper-container
-        #mySwiper
-        init="false"
-        effect="cards"
-        grab-cursor="true"
-      >
-        @for (show of $trendingShows(); track show.id) {
-          <swiper-slide>
-            <img
-              class="show-image"
-              [src]="imgBaseUrl + show.poster_path"
-              alt="movie-poster"
-              (click)="onShowClick(show)"
-            />
-          </swiper-slide>
-        }
-      </swiper-container>
-    </div>
-  }
+  <div class="swiper-mobile">
+    <swiper-container #mySwiper init="false" effect="cards" grab-cursor="true">
+      @for (show of $trendingShows(); track show.id) {
+        <swiper-slide>
+          <img
+            class="show-image"
+            [src]="imgBaseUrl + show.poster_path"
+            alt="movie-poster"
+            (click)="onShowClick(show)"
+          />
+        </swiper-slide>
+      }
+    </swiper-container>
+  </div>
 }

@@ -3,14 +3,17 @@ import {
   Component,
   computed,
   CUSTOM_ELEMENTS_SCHEMA,
-  effect,
+  DestroyRef,
   ElementRef,
   inject,
-  input,
+  signal,
   ViewChild,
 } from '@angular/core';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
-import { ShowsStore } from '../../core';
+import { MessageService } from 'primeng/api';
+import { catchError, finalize, of, take, tap } from 'rxjs';
+import { LoaderService, ShowsService, ShowsStore } from '../../core';
 import { ShowInterface, ShowTypesEnum } from '../../shared';
 
 @Component({
@@ -24,43 +27,97 @@ import { ShowInterface, ShowTypesEnum } from '../../shared';
 })
 export class TrendingComponent {
   private readonly showsStore = inject(ShowsStore);
+  private readonly showsService = inject(ShowsService);
+  private readonly loaderService = inject(LoaderService);
+  private readonly messageService = inject(MessageService);
+  private readonly destroyRef = inject(DestroyRef);
   private readonly router = inject(Router);
+  private page = 0;
+  private isFirstTypeChange = true;
   private readonly swiperParams = {
-    slideToClickedSlide: true,
+    on: {
+      reachEnd: () => {
+        this.getTrendingShows();
+      },
+    },
   };
+  private readonly showTypeObs$ = toObservable(
+    this.showsStore.$selectedShowType,
+  );
 
-  public readonly $trendingShows = input<ShowInterface[] | null>(null);
+  public readonly $trendingShows = signal<ShowInterface[]>([]);
   public readonly $selectedShowType = computed(() =>
     this.showsStore.$selectedShowType() === ShowTypesEnum.tv
       ? 'TV Series'
       : 'Movies',
   );
-  public readonly $areTrendingShowsLoading = input(true);
+
   public readonly imgBaseUrl = 'https://image.tmdb.org/t/p/w342';
   public readonly screenWidth = window.innerWidth;
 
-  constructor() {
-    effect(() => {
-      if (
-        this.$trendingShows() &&
-        this.$trendingShows()!.length > 0 &&
-        this.mySwiper
-      ) {
-        Object.assign(this.mySwiper?.nativeElement, this.swiperParams);
-        this.mySwiper?.nativeElement.initialize();
-      }
-    });
+  @ViewChild('mySwiper') mySwiper?: ElementRef;
+
+  ngOnInit() {
+    this.showTypeObs$
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+
+        tap(() => {
+          if (this.isFirstTypeChange) {
+            this.isFirstTypeChange = false;
+          } else {
+            this.getTrendingShows(false);
+          }
+        }),
+      )
+      .subscribe();
   }
 
-  @ViewChild('mySwiper') mySwiper?: ElementRef;
+  ngAfterViewInit() {
+    Object.assign(this.mySwiper?.nativeElement, this.swiperParams);
+    this.mySwiper?.nativeElement.initialize();
+  }
 
   public onShowClick(show: ShowInterface) {
     if (this.$trendingShows()) {
       this.showsStore.setShowsResults(this.$trendingShows()!);
-      this.showsStore.setResultPages(1);
     }
 
     this.showsStore.setSelectedShow(show);
-    this.router.navigateByUrl(`/app/movie`);
+    const showType = this.showsStore.$selectedShowType();
+
+    this.router.navigateByUrl(`/app/movie?trending=${showType}`);
+  }
+
+  private getTrendingShows(isUpdate: boolean = true) {
+    this.loaderService.setIsLoading(true);
+    const showType = this.showsStore.$selectedShowType();
+    this.page++;
+
+    this.showsService
+      .getTrendingShows(showType, this.page)
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        tap((res) => {
+          this.showsStore.setResultPages(res.total_results);
+          if (isUpdate) {
+            this.$trendingShows.update((state) => {
+              return state ? [...state, ...res.results] : [...res.results];
+            });
+          } else {
+            this.$trendingShows.set(res.results);
+          }
+        }),
+        catchError((err) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Could not get the trending shows',
+          });
+          return of(err);
+        }),
+        finalize(() => this.loaderService.setIsLoading(false)),
+      )
+      .subscribe();
   }
 }

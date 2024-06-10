@@ -24,7 +24,7 @@ export class HeaderComponent {
 
   public readonly $currentUser = this.userDataService.$currentUser;
   public readonly $isMoviePage = signal(false);
-  public readonly $isNavHidden = signal(false);
+  public readonly $isNavHidden = signal(true);
   public readonly $isLoading = signal(false);
   public readonly deviceWith = window.innerWidth;
 
@@ -32,6 +32,7 @@ export class HeaderComponent {
     this.router.events.subscribe((res) => {
       if (res instanceof NavigationEnd) {
         this.$isMoviePage.set(res.urlAfterRedirects.includes('/movie'));
+
         this.$isNavHidden.set(res.urlAfterRedirects.includes('/login'));
       }
     });

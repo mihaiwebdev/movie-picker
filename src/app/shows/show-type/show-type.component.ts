@@ -1,9 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  output,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { RippleModule } from 'primeng/ripple';
 import { TabMenuModule } from 'primeng/tabmenu';
@@ -24,7 +19,7 @@ export class ShowTypeComponent {
 
   public readonly showTypesEnum = ShowTypesEnum;
   public readonly $showType = this.showsStore.$selectedShowType;
-  public readonly $selectShowTypeOutput = output<ShowTypesEnum>();
+
   public readonly showTypeItems: MenuItem[] = [
     { label: 'Movies' },
     { label: 'TV Series' },
@@ -39,9 +34,7 @@ export class ShowTypeComponent {
       this.showsStore.setSelectedGenres([]);
     }
     this.isFirstChange = false;
-
     this.showsStore.setSelectedShowType(show);
-    this.$selectShowTypeOutput.emit(show);
   }
 
   public onActiveItemChange($event: any) {
