@@ -1,3 +1,4 @@
+import { MoodsInterface } from './../../shared/types/moods.interface';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -6,20 +7,23 @@ import {
   effect,
   ElementRef,
   inject,
+  model,
   OnInit,
   signal,
   ViewChild,
 } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ChipsModule } from 'primeng/chips';
+import { SelectButtonModule } from 'primeng/selectbutton';
 import { register } from 'swiper/element/bundle';
 import { movieGenres, ShowsStore, tvGenres } from '../../core';
 import { GenreInterface, ShowTypesEnum } from '../../shared';
+import { movieMoods, tvMoods } from '../../core/data/moods-data';
 
 @Component({
   selector: 'app-show-genres',
   standalone: true,
-  imports: [FormsModule, ChipsModule, ReactiveFormsModule],
+  imports: [FormsModule, ChipsModule, ReactiveFormsModule, SelectButtonModule],
   templateUrl: './show-genres.component.html',
   styleUrl: './show-genres.component.css',
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -31,9 +35,18 @@ export class ShowGenresComponent implements AfterViewInit, OnInit {
   private isFirstChange = true;
 
   public readonly iconBasePath = '../../../assets/icons/';
+  public readonly moodIconPath = '../../../assets/mood-icons/';
   public readonly $movieGenres = signal<GenreInterface[]>(movieGenres);
+  public readonly $movieMoods = signal<MoodsInterface[]>(movieMoods);
   public readonly $showGenres = signal<GenreInterface[]>(tvGenres);
+  public readonly $showMoods = signal<MoodsInterface[]>(tvMoods);
   public readonly $selectedShowType = this.showsStore.$selectedShowType;
+  public readonly $selectButtonValue = model<string>('mood');
+  public readonly stateOptions: any[] = [
+    { label: 'Mood', value: 'mood' },
+    { label: 'Genres', value: 'genres' },
+  ];
+  public readonly $selectedMoodName = signal<string>('');
 
   private get selectedGenresControl() {
     return this.genresForm.controls['selectedGenres'];
@@ -157,6 +170,34 @@ export class ShowGenresComponent implements AfterViewInit, OnInit {
     }
 
     this.showsStore.setSelectedGenres(this.selectedGenresControl.value);
+  }
+
+  public onMoodSelect(mood: MoodsInterface) {
+    this.$selectedMoodName.set(mood.name);
+
+    const selectedGenres = this.$movieGenres().filter((genre) =>
+      mood.genre_ids.includes(genre.id),
+    );
+
+    this.showsStore.setSelectedGenres(selectedGenres);
+  }
+
+  public onTvMoodSelect(mood: MoodsInterface) {
+    this.$selectedMoodName.set(mood.name);
+
+    const selectedGenres = this.$showGenres().filter((genre) =>
+      mood.genre_ids.includes(genre.id),
+    );
+
+    this.showsStore.setSelectedGenres(selectedGenres);
+  }
+
+  public clearSelectedGenres() {
+    this.showsStore.setSelectedGenres([]);
+    this.$selectedMoodName.set('');
+
+    this.selectedGenresControl.setValue([]);
+    this.selectedGenresNames.setValue([]);
   }
 
   public isGenreSelected(genreId: number) {

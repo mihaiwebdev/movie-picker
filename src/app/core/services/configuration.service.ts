@@ -20,11 +20,11 @@ export class ConfigurationService {
   constructor() {
     this.primengConfig.ripple = true;
 
-    const appCheck = initializeAppCheck(this.firebaseApp, {
-      provider: new ReCaptchaV3Provider(
-        '6LcvjPQpAAAAAAIFA2zvA3OAyQibtMXRfSuF3G6q',
-      ),
-      isTokenAutoRefreshEnabled: true,
-    });
+    // const appCheck = initializeAppCheck(this.firebaseApp, {
+    //   provider: new ReCaptchaV3Provider(
+    //     '6LcvjPQpAAAAAAIFA2zvA3OAyQibtMXRfSuF3G6q',
+    //   ),
+    //   isTokenAutoRefreshEnabled: true,
+    // });
   }
 }

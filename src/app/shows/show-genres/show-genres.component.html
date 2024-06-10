@@ -1,9 +1,33 @@
 <section class="show-genres">
   <!-- Movie swiper -->
+  <div class="mood-genre-options">
+    <h2>Pick your</h2>
+    <p-selectButton
+      [options]="stateOptions"
+      [(ngModel)]="$selectButtonValue"
+      optionLabel="label"
+      optionValue="value"
+      (onChange)="clearSelectedGenres()"
+      unselectable="true"
+    />
+  </div>
   <div class="movie-swiper-container">
     <swiper-container #movieSwiper init="false" pagination-clickable="true">
+      @for (mood of $movieMoods(); track mood.name) {
+        <swiper-slide [class.hidden]="$selectButtonValue() !== 'mood'">
+          <div
+            (click)="onMoodSelect(mood)"
+            class="genre-btn"
+            [class.active]="$selectedMoodName() === mood.name"
+          >
+            <img [src]="moodIconPath + mood.icon_path" alt="mood-icon" />
+          </div>
+          <span class="genre-name" [title]="mood.name">{{ mood.name }}</span>
+        </swiper-slide>
+      }
+
       @for (genre of $movieGenres(); track genre.id) {
-        <swiper-slide>
+        <swiper-slide [class.hidden]="$selectButtonValue() === 'mood'">
           <div
             (click)="onGenreSelect(genre)"
             class="genre-btn"
@@ -11,7 +35,7 @@
           >
             <img [src]="iconBasePath + genre.icon_path" alt="genre-image" />
           </div>
-          <span class="genre-name">{{ genre.name }}</span>
+          <span class="genre-name" [title]="genre.name">{{ genre.name }}</span>
         </swiper-slide>
       }
     </swiper-container>
@@ -22,8 +46,21 @@
   <!-- TV Swiper -->
   <div class="tv-swiper-container">
     <swiper-container #tvSwiper init="false" pagination-clickable="true">
+      @for (mood of $showMoods(); track mood.name) {
+        <swiper-slide [class.hidden]="$selectButtonValue() !== 'mood'">
+          <div
+            (click)="onTvMoodSelect(mood)"
+            class="genre-btn"
+            [class.active]="$selectedMoodName() === mood.name"
+          >
+            <img [src]="moodIconPath + mood.icon_path" alt="mood-icon" />
+          </div>
+          <span class="genre-name" [title]="mood.name">{{ mood.name }}</span>
+        </swiper-slide>
+      }
+
       @for (genre of $showGenres(); track genre.id) {
-        <swiper-slide>
+        <swiper-slide [class.hidden]="$selectButtonValue() === 'mood'">
           <div
             (click)="onGenreSelect(genre)"
             class="genre-btn"
@@ -31,7 +68,7 @@
           >
             <img [src]="iconBasePath + genre.icon_path" alt="genre-image" />
           </div>
-          <span class="genre-name">{{ genre.name }}</span>
+          <span class="genre-name" [title]="genre.name">{{ genre.name }}</span>
         </swiper-slide>
       }
     </swiper-container>
@@ -39,11 +76,13 @@
     <div class="swiper-pagination-tv"></div>
   </div>
 </section>
-<div class="card p-fluid selected-genres">
-  <form [formGroup]="genresForm">
-    <p-chips
-      formControlName="selectedGenresNames"
-      (onRemove)="onChipRemove($event)"
-    />
-  </form>
-</div>
+@if ($selectButtonValue() !== "mood") {
+  <div class="card p-fluid selected-genres">
+    <form [formGroup]="genresForm">
+      <p-chips
+        formControlName="selectedGenresNames"
+        (onRemove)="onChipRemove($event)"
+      />
+    </form>
+  </div>
+}
