@@ -1,6 +1,7 @@
 section.how-it-works {
   display: flex;
   align-items: center;
+  margin-bottom: 2rem;
 
   aside.aside-how-it-works {
     position: relative;
@@ -32,18 +33,6 @@ section.how-it-works {
         display: flex;
 
         .show-step {
-          /* margin-right: 0.8rem;
-          padding: 1rem;
-          font-size: 2rem;
-          border: none;
-          border-radius: 50%;
-          background-color: blue;
-          width: 4rem; 
-          height: 4rem; 
-          display: flex;
-          justify-content: center;
-          align-items: center; */
-
           font-weight: 600;
           font-size: 1.4rem;
           background-color: #f8cf01;
@@ -70,6 +59,7 @@ section.how-it-works {
     }
 
     button.get-started {
+      margin-top: 1rem;
       padding: 1.1rem 2rem;
       font-size: 1rem;
       font-weight: 600;

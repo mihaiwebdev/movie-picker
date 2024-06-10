@@ -1,6 +1,7 @@
 section.hero {
   display: flex;
   align-items: center;
+  margin-bottom: 4rem;
 
   .aside-hero {
     width: 40%;
@@ -9,7 +10,6 @@ section.hero {
       border-radius: 80px;
       width: 65%;
       margin-top: 2.5rem;
-      /* box-shadow: 5px 5px 10px 1px #000000; */
     }
   }
 
@@ -21,13 +21,11 @@ section.hero {
       display: flex;
       flex-direction: column;
       font-weight: 800;
-      padding-bottom: 1rem;
 
       .title-span {
         font-size: 4rem;
 
         &.suffix {
-          /* color: var(--font-color-secondary); */
           background-image: var(--yellow-gradient);
           background-clip: text;
           -webkit-text-fill-color: transparent;
@@ -55,6 +53,7 @@ section.hero {
       background-color: var(--bg-black);
       border: none;
       border-radius: 16px;
+      margin-top: 1rem;
 
       &:hover {
         cursor: pointer;

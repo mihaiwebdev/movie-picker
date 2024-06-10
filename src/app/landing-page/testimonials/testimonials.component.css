@@ -1,6 +1,6 @@
 .testimonials {
+  margin-top: 5rem;
   h1.testimonials-title {
-    /* color: var(--font-color-secondary); */
     text-align: center;
     font-size: 3.75rem;
     margin-bottom: 0;
@@ -43,7 +43,7 @@
         0 2.414506143104518px 7.2435184293135535px -1.25px #0000000d,
         0 6.382653521484461px 19.147960564453385px -1.875px #0000000d,
         0 20px 60px -2.5px #0000000d;
-      transition: transform 0.3s ease;
+      transition: transform 0.1s ease;
 
       .heading {
         display: flex;
