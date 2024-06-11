@@ -15,6 +15,7 @@ export interface ShowInterface {
   vote_average: number;
   vote_count: number;
   name?: string;
+  media_type?: string;
 }
 
 export interface ShowResponseInterface {

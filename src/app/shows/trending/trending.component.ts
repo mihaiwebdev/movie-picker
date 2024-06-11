@@ -35,6 +35,7 @@ export class TrendingComponent {
   private page = 0;
   private isFirstTypeChange = true;
   private readonly swiperParams = {
+    initialSlide: 10,
     on: {
       reachEnd: () => {
         this.getTrendingShows();
@@ -56,6 +57,7 @@ export class TrendingComponent {
   public readonly screenWidth = window.innerWidth;
 
   @ViewChild('mySwiper') mySwiper?: ElementRef;
+  @ViewChild('mySwiperMobile') mySwiperMobile?: ElementRef;
 
   ngOnInit() {
     this.showTypeObs$
@@ -74,8 +76,15 @@ export class TrendingComponent {
   }
 
   ngAfterViewInit() {
-    Object.assign(this.mySwiper?.nativeElement, this.swiperParams);
-    this.mySwiper?.nativeElement.initialize();
+    if (this.mySwiper) {
+      Object.assign(this.mySwiper?.nativeElement, this.swiperParams);
+      this.mySwiper?.nativeElement.initialize();
+    }
+
+    if (this.mySwiperMobile) {
+      Object.assign(this.mySwiperMobile?.nativeElement, this.swiperParams);
+      this.mySwiperMobile?.nativeElement.initialize();
+    }
   }
 
   public onShowClick(show: ShowInterface) {

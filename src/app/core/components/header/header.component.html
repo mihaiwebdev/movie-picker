@@ -11,6 +11,16 @@
     </div>
 
     <div class="desktop-nav">
+      <div class="auto-complete-container">
+        <p-autoComplete
+          [suggestions]="$suggestions()"
+          (completeMethod)="searchShows($event)"
+          (onSelect)="onShowSelect($event)"
+          field="name"
+        />
+        <i class="pi pi-search"></i>
+      </div>
+
       @if (!$currentUser()) {
         <a
           routerLink="/app/login"
@@ -19,17 +29,7 @@
           class="nav-link-desktop"
           ><i class="bi bi-box-arrow-in-right"></i> Login
         </a>
-
-        <a
-          pRipple
-          routerLink="/app/contact"
-          (click)="closeNav(navCheckbox)"
-          class="nav-link-desktop"
-        >
-          <i class="bi bi-chat-dots"></i> Talk with us</a
-        >
       }
-
       @if ($currentUser()) {
         <a
           pRipple
@@ -41,20 +41,33 @@
           <i pRipple class="bi bi-bookmark"></i>
           Bookmarks
         </a>
+      }
+      <a
+        pRipple
+        routerLink="/app/contact"
+        (click)="closeNav(navCheckbox)"
+        class="nav-link-desktop"
+      >
+        <i class="bi bi-chat-dots"></i> Talk with us</a
+      >
 
-        <a
-          pRipple
-          routerLink="/app/contact"
-          (click)="closeNav(navCheckbox)"
-          class="nav-link-desktop"
-        >
-          <i class="bi bi-chat-dots"></i> Talk with us</a
-        >
-
+      @if ($currentUser()) {
         <a pRipple (click)="signOut()" class="nav-link-desktop"
           ><i class="bi bi-box-arrow-left"></i> Logout
         </a>
       }
+    </div>
+
+    <div class="auto-complete-container mobile-search" #mobileSearch>
+      <p-autoComplete
+        [suggestions]="$suggestions()"
+        (completeMethod)="searchShows($event)"
+        (onSelect)="onShowSelect($event)"
+        field="name"
+        (onFocus)="mobileSearch.classList.add('active')"
+        (onBlur)="mobileSearch.classList.remove('active')"
+      />
+      <i class="pi pi-search"></i>
     </div>
 
     <div class="mobile-nav">

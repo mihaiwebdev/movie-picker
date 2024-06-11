@@ -32,7 +32,7 @@ export class ShowsService {
   private readonly usersCollection = 'users';
   private readonly watchedlistCollection = 'watchedlist';
   private readonly watchlistCollection = 'watchlist';
-  private readonly blacklistCollection = 'blacklist';
+  private readonly hiddenShowsCollection = 'hidden-shows';
 
   private readonly $userLocation = this.userDataService.$userLocation;
   private readonly $currentUser = this.userDataService.$currentUser;
@@ -167,7 +167,7 @@ export class ShowsService {
           this.db,
           this.usersCollection,
           userId,
-          this.blacklistCollection,
+          this.hiddenShowsCollection,
           showId,
         ),
         showData,
@@ -182,7 +182,7 @@ export class ShowsService {
           this.db,
           this.usersCollection,
           userId,
-          this.blacklistCollection,
+          this.hiddenShowsCollection,
           showId,
         ),
       ),
@@ -196,7 +196,7 @@ export class ShowsService {
           this.db,
           this.usersCollection,
           userId,
-          this.blacklistCollection,
+          this.hiddenShowsCollection,
         ),
       ),
     );
@@ -209,10 +209,17 @@ export class ShowsService {
           this.db,
           this.usersCollection,
           userId,
-          this.blacklistCollection,
+          this.hiddenShowsCollection,
           showId,
         ),
       ),
+    );
+  }
+
+  // Search multi
+  public searchMulti(value: string) {
+    return this.http.get<ShowResponseInterface>(
+      `${this.tmdbApi}/search/multi?query=${value}&language=en-US&page=1`,
     );
   }
 

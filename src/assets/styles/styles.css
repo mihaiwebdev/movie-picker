@@ -6,7 +6,7 @@
 @import "primeicons/primeicons.css";
 
 @import "./theme/variables.css";
-@import "./theme/primeng-clases.css";
+@import "./theme/primeng/primeng-clases.css";
 @import "./theme/shared-classes.css";
 
 * {

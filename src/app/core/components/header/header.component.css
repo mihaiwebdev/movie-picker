@@ -32,6 +32,7 @@
     max-width: 1500px;
     margin: 0 auto;
     padding: 1em;
+    position: relative;
 
     .logo {
       display: flex;

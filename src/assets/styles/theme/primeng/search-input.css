@@ -1,0 +1,29 @@
+.search-input-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin: 1.5rem 0 2rem 0;
+
+  .float-label {
+    width: 100%;
+    font-family: var(--text-font);
+
+    .p-inputtext {
+      padding: 0.8rem 0.8rem;
+      border-radius: 8px;
+      border: 1px solid #383838;
+      width: 100%;
+      background: var(--prime-ng-dark);
+      box-shadow:
+        0 2px 1px -1px rgba(0, 0, 0, 0.2),
+        0 1px 1px 0 rgba(0, 0, 0, 0.14),
+        0 1px 3px 0 rgba(0, 0, 0, 0.12);
+      color: var(--font-color-primary);
+    }
+    .pi-search {
+      margin-left: 0.2rem;
+      margin-right: 0.3rem;
+    }
+  }
+}
