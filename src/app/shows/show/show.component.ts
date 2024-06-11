@@ -161,7 +161,7 @@ export class ShowComponent {
     }
     const listName =
       bookmarkType === BookmarksEnum.hidden
-        ? 'black list'
+        ? "don't show list"
         : bookmarkType === BookmarksEnum.watched
           ? 'watched list'
           : 'watch list';
@@ -178,7 +178,7 @@ export class ShowComponent {
           this.messageService.add({
             severity: 'success',
             summary: 'Success',
-            detail: `Show was added in the ${listName}!`,
+            detail: `Show was added in ${listName}!`,
           });
         }),
         catchError((error) => {

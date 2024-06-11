@@ -15,6 +15,7 @@ export class ShowsStore {
     $selectedPlatforms: signal<StreamingPlatformsInterface[]>([]),
     $selectedGenres: signal<GenreInterface[]>([]),
     $selectedShowType: signal<ShowTypesEnum>(ShowTypesEnum.movie),
+    $selectedGenreMode: signal<'mood' | 'genres'>('mood'),
     $watchedShows: signal<ShowBookmarkInterface[]>([]),
     $resultPages: signal(0),
   };
@@ -23,6 +24,8 @@ export class ShowsStore {
     this.state.$selectedPlatforms.asReadonly();
   public readonly $selectedGenres = this.state.$selectedGenres.asReadonly();
   public readonly $selectedShowType = this.state.$selectedShowType.asReadonly();
+  public readonly $selectedGenreMode =
+    this.state.$selectedGenreMode.asReadonly();
   public readonly $showsResults = this.state.$showsResults.asReadonly();
   public readonly $watchedShows = this.state.$watchedShows.asReadonly();
   public readonly $resultsPages = this.state.$resultPages.asReadonly();
@@ -52,6 +55,9 @@ export class ShowsStore {
   }
   public setSelectedShowType(showType: ShowTypesEnum) {
     this.state.$selectedShowType.set(showType);
+  }
+  public setSelectedGenreMode(mode: 'mood' | 'genres') {
+    this.state.$selectedGenreMode.set(mode);
   }
   public setWatchedShows(watchedShows: ShowBookmarkInterface[]) {
     this.state.$watchedShows.set(watchedShows);

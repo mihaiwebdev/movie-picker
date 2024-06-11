@@ -7,12 +7,7 @@ export const movieMoods: MoodsInterface[] = [
     genre_ids: [35, 10751],
     icon_path: 'happy.png',
   },
-  // Drama, Romance
-  {
-    name: 'Sad',
-    genre_ids: [18, 10749],
-    icon_path: 'sad.png',
-  },
+
   // Action ,Adventure
   {
     name: 'Excited',
@@ -61,6 +56,13 @@ export const movieMoods: MoodsInterface[] = [
     genre_ids: [80, 9648],
     icon_path: 'bored.png',
   },
+  // Adventure
+  {
+    name: 'Sad',
+    genre_ids: [12],
+    icon_path: 'sad.png',
+  },
+
   // Music, Drama
   {
     name: 'Inspired',

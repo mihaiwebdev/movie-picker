@@ -41,7 +41,9 @@ export class ShowGenresComponent implements AfterViewInit, OnInit {
   public readonly $showGenres = signal<GenreInterface[]>(tvGenres);
   public readonly $showMoods = signal<MoodsInterface[]>(tvMoods);
   public readonly $selectedShowType = this.showsStore.$selectedShowType;
-  public readonly $selectButtonValue = model<string>('mood');
+  public readonly $selectButtonValue = model<'mood' | 'genres'>(
+    this.showsStore.$selectedGenreMode(),
+  );
   public readonly stateOptions: any[] = [
     { label: 'Mood', value: 'mood' },
     { label: 'Genres', value: 'genres' },
@@ -198,6 +200,8 @@ export class ShowGenresComponent implements AfterViewInit, OnInit {
 
     this.selectedGenresControl.setValue([]);
     this.selectedGenresNames.setValue([]);
+
+    this.showsStore.setSelectedGenreMode(this.$selectButtonValue());
   }
 
   public isGenreSelected(genreId: number) {
