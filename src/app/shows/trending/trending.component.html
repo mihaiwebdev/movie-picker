@@ -1,4 +1,7 @@
-<h2 class="trending-text">Trending {{ $selectedShowType() }}</h2>
+<h2 class="trending-text">
+  Trending {{ $selectedShowType() }} on
+  {{ $selectedPlatformNames().join(", ") }}
+</h2>
 
 @if (screenWidth > 800) {
   <div class="swiper-desktop">

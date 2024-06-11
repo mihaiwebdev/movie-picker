@@ -8,13 +8,23 @@ import {
   getDocs,
   setDoc,
 } from 'firebase/firestore';
-import { Observable, from, map, of, switchMap, tap } from 'rxjs';
+import {
+  Observable,
+  filter,
+  forkJoin,
+  from,
+  map,
+  of,
+  switchMap,
+  tap,
+} from 'rxjs';
 import { ConfigurationService, ShowsStore } from '..';
 import { environment } from '../../../environments/environment.development';
 import {
   ShowInterface,
   ShowResponseInterface,
   ShowTypesEnum,
+  WatchProvidersResponse,
 } from '../../shared';
 import { UserDataService } from './user-data.service';
 
@@ -224,12 +234,19 @@ export class ShowsService {
   }
 
   // Get trending shows
-  public getTrendingShows(showType: ShowTypesEnum, page: number = 1) {
+  public getTrendingShows(
+    showType: ShowTypesEnum,
+    page: number = 1,
+  ): Observable<ShowResponseInterface> {
+    const watchProviders = this.getWatchProviders();
+    const path = `${showType}?language=en-US&page=${page}&sort_by=popularity.desc&watch_region=${this.$userLocation()?.country || 'US'}&with_watch_providers=${watchProviders}&without_genres=16`;
+
     return this.http.get<ShowResponseInterface>(
-      `${this.tmdbApi}/trending/${showType}/day?language=en-US&page=${page}`,
+      `${this.tmdbApi}/discover/${path}`,
     );
   }
 
+  // Search Show
   public getShow(showType: string, showName: string) {
     return this.http.get<ShowResponseInterface>(
       `${this.tmdbApi}/search/${showType}?query=${showName}`,
@@ -241,11 +258,14 @@ export class ShowsService {
     const watchProviders = this.getWatchProviders();
     const genresIds = this.getGenreIds();
     const joinedGenres = genresIds.join(',');
+    const path = `${this.showsStore.$selectedShowType()}?language=en-US&page=${page}&sort_by=vote_count.desc&watch_region=${this.$userLocation()?.country || 'US'}&with_genres=${joinedGenres}&with_watch_providers=${watchProviders}`;
+    // Filter animations
+    if (!genresIds.includes(16)) {
+      path.concat('&without_genres=16');
+    }
 
     return this.http
-      .get<ShowResponseInterface>(
-        `${this.tmdbApi}/discover/${this.showsStore.$selectedShowType()}?language=en-US&page=${page}&sort_by=vote_count.desc&watch_region=${this.$userLocation()?.country || 'US'}&with_genres=${joinedGenres}&with_watch_providers=${watchProviders}`,
-      )
+      .get<ShowResponseInterface>(`${this.tmdbApi}/discover/${path}`)
       .pipe(
         tap((res) => this.showsStore.setResultPages(res.total_pages)),
         map((res) => res.results),
@@ -265,7 +285,6 @@ export class ShowsService {
             : of(res);
         }),
         map(this.sortShowsByScore.bind(this)),
-        map((res) => this.filterAnimations(genresIds, res)),
         switchMap((res) => {
           return res.length < 1 ? this.getShows(page + 1) : of(res);
         }),
@@ -366,13 +385,5 @@ export class ShowsService {
         return res.filter((show) => !watchListShowIds.has(show.id));
       }),
     );
-  }
-
-  private filterAnimations(genres: number[], results: ShowInterface[]) {
-    if (!genres.includes(16)) {
-      return results.filter((result) => !result.genre_ids.includes(16));
-    } else {
-      return results;
-    }
   }
 }

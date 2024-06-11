@@ -12,9 +12,13 @@ import {
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
-import { catchError, finalize, of, take, tap } from 'rxjs';
+import { catchError, finalize, map, Observable, of, tap } from 'rxjs';
 import { LoaderService, ShowsService, ShowsStore } from '../../core';
-import { ShowInterface, ShowTypesEnum } from '../../shared';
+import {
+  ShowInterface,
+  ShowResponseInterface,
+  ShowTypesEnum,
+} from '../../shared';
 
 @Component({
   selector: 'app-trending',
@@ -34,22 +38,29 @@ export class TrendingComponent {
   private readonly router = inject(Router);
   private page = 0;
   private isFirstTypeChange = true;
+  private isFirstPlatformChange = true;
+  private isFirstTrendingCall = true;
+  private readonly showTypeObs$ = toObservable(
+    this.showsStore.$selectedShowType,
+  );
+  private readonly streamingPlatformObs$ = toObservable(
+    this.showsStore.$selectedPlatforms,
+  );
+  public readonly $selectedPlatformNames = signal<string[]>([]);
+
   private readonly swiperParams = {
     initialSlide: 10,
     on: {
       reachEnd: () => {
-        this.getTrendingShows();
+        this.getTrendingShows().subscribe();
       },
     },
   };
-  private readonly showTypeObs$ = toObservable(
-    this.showsStore.$selectedShowType,
-  );
 
   public readonly $trendingShows = signal<ShowInterface[]>([]);
   public readonly $selectedShowType = computed(() =>
     this.showsStore.$selectedShowType() === ShowTypesEnum.tv
-      ? 'TV Series'
+      ? `TV Series`
       : 'Movies',
   );
 
@@ -60,15 +71,31 @@ export class TrendingComponent {
   @ViewChild('mySwiperMobile') mySwiperMobile?: ElementRef;
 
   ngOnInit() {
+    // On show type changes
     this.showTypeObs$
       .pipe(
         takeUntilDestroyed(this.destroyRef),
-
         tap(() => {
           if (this.isFirstTypeChange) {
             this.isFirstTypeChange = false;
           } else {
-            this.getTrendingShows(false);
+            this.getTrendingShows(false).subscribe();
+          }
+        }),
+      )
+      .subscribe();
+
+    // On streaming platforms changes
+    this.streamingPlatformObs$
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        tap((res) => {
+          this.$selectedPlatformNames.set(res.map((platform) => platform.name));
+
+          if (this.isFirstPlatformChange) {
+            this.isFirstPlatformChange = false;
+          } else {
+            this.getTrendingShows(false).subscribe();
           }
         }),
       )
@@ -98,35 +125,48 @@ export class TrendingComponent {
     this.router.navigateByUrl(`/app/movie?trending=${showType}`);
   }
 
-  private getTrendingShows(isUpdate: boolean = true) {
+  private getTrendingShows(
+    isUpdate: boolean = true,
+  ): Observable<ShowResponseInterface> {
     this.loaderService.setIsLoading(true);
     const showType = this.showsStore.$selectedShowType();
     this.page++;
 
-    this.showsService
-      .getTrendingShows(showType, this.page)
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        tap((res) => {
-          this.showsStore.setResultPages(res.total_results);
-          if (isUpdate) {
-            this.$trendingShows.update((state) => {
-              return state ? [...state, ...res.results] : [...res.results];
-            });
-          } else {
-            this.$trendingShows.set(res.results);
-          }
-        }),
-        catchError((err) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Could not get the trending shows',
+    return this.showsService.getTrendingShows(showType, this.page).pipe(
+      takeUntilDestroyed(this.destroyRef),
+      map((res) => {
+        if (this.isFirstTrendingCall) {
+          this.isFirstTrendingCall = false;
+          return {
+            ...res,
+            results: [
+              ...res.results.slice(10, res.results.length).reverse(),
+              ...res.results.slice(0, 10),
+            ],
+          };
+        }
+        return res;
+      }),
+      tap((res) => {
+        this.showsStore.setResultPages(res.total_results);
+
+        if (isUpdate) {
+          this.$trendingShows.update((state) => {
+            return state ? [...state, ...res.results] : [...res.results];
           });
-          return of(err);
-        }),
-        finalize(() => this.loaderService.setIsLoading(false)),
-      )
-      .subscribe();
+        } else {
+          this.$trendingShows.set(res.results);
+        }
+      }),
+      catchError((err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Could not get the trending shows',
+        });
+        return of(err);
+      }),
+      finalize(() => this.loaderService.setIsLoading(false)),
+    );
   }
 }
