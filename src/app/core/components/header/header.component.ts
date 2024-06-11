@@ -63,7 +63,10 @@ export class HeaderComponent {
       if (res instanceof NavigationEnd) {
         this.$isMoviePage.set(res.urlAfterRedirects.includes('/movie'));
 
-        this.$isNavHidden.set(res.urlAfterRedirects.includes('/login'));
+        this.$isNavHidden.set(
+          res.urlAfterRedirects.includes('/login') ||
+            res.urlAfterRedirects === '/',
+        );
       }
     });
   }
