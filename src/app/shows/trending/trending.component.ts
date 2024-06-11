@@ -36,10 +36,9 @@ export class TrendingComponent {
   private readonly messageService = inject(MessageService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly router = inject(Router);
-  private page = 0;
-  private isFirstTypeChange = true;
+  private page = 1;
   private isFirstPlatformChange = true;
-  private isFirstTrendingCall = true;
+  private isFirstSliderEnd = true;
   private readonly showTypeObs$ = toObservable(
     this.showsStore.$selectedShowType,
   );
@@ -52,7 +51,12 @@ export class TrendingComponent {
     initialSlide: 10,
     on: {
       reachEnd: () => {
-        this.getTrendingShows().subscribe();
+        if (this.isFirstSliderEnd) {
+          this.isFirstSliderEnd = false;
+          return;
+        }
+
+        this.getTrendingShows(true).subscribe();
       },
     },
   };
@@ -76,11 +80,7 @@ export class TrendingComponent {
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         tap(() => {
-          if (this.isFirstTypeChange) {
-            this.isFirstTypeChange = false;
-          } else {
-            this.getTrendingShows(false).subscribe();
-          }
+          this.getTrendingShows(false).subscribe();
         }),
       )
       .subscribe();
@@ -126,17 +126,23 @@ export class TrendingComponent {
   }
 
   private getTrendingShows(
-    isUpdate: boolean = true,
+    isUpdate: boolean = false,
   ): Observable<ShowResponseInterface> {
     this.loaderService.setIsLoading(true);
     const showType = this.showsStore.$selectedShowType();
-    this.page++;
+
+    if (isUpdate) {
+      this.page++;
+    } else {
+      this.mySwiper?.nativeElement.swiper.slideTo(10, 0);
+      this.mySwiperMobile?.nativeElement.swiper.slideTo(10, 0);
+      this.page = 1;
+    }
 
     return this.showsService.getTrendingShows(showType, this.page).pipe(
       takeUntilDestroyed(this.destroyRef),
       map((res) => {
-        if (this.isFirstTrendingCall) {
-          this.isFirstTrendingCall = false;
+        if (!isUpdate) {
           return {
             ...res,
             results: [
