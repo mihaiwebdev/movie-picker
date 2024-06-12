@@ -13,7 +13,7 @@
 >
   <ng-template pTemplate="list" let-shows>
     @if ($isGetShowsLoading()) {
-      @for (row of $rowsArray(); track row) {
+      @for (row of $rowsArray(); track $index) {
         <p-skeleton class="card-skeleton" />
       }
     } @else {

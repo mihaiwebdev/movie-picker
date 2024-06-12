@@ -10,11 +10,11 @@ export const streamingPlatforms: StreamingPlatformsInterface[] = [
     name: 'Disney Plus',
   },
   {
-    provider_id: 384,
-    name: 'HBO Max',
+    provider_id: 1899,
+    name: 'Max',
   },
   {
-    provider_id: 119,
+    provider_id: 9,
     name: 'Amazone Prime Video',
   },
   {

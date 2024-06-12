@@ -1,4 +1,4 @@
-interface WatchProviderInterface {
+export interface WatchProviderInterface {
   [key: string]: {
     flatrate?: [
       {

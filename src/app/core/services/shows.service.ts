@@ -8,16 +8,7 @@ import {
   getDocs,
   setDoc,
 } from 'firebase/firestore';
-import {
-  Observable,
-  filter,
-  forkJoin,
-  from,
-  map,
-  of,
-  switchMap,
-  tap,
-} from 'rxjs';
+import { Observable, from, map, of, switchMap, tap } from 'rxjs';
 import { ConfigurationService, ShowsStore } from '..';
 import { environment } from '../../../environments/environment.development';
 import {
@@ -26,6 +17,8 @@ import {
   ShowTypesEnum,
   WatchProvidersResponse,
 } from '../../shared';
+import { ShowVideoResponseInterface } from '../../shared/types/show-video-response.interface';
+import { WatchProviderInterface } from '../../shared/types/watch-providers-response.interface';
 import { UserDataService } from './user-data.service';
 
 @Injectable({
@@ -42,10 +35,12 @@ export class ShowsService {
   private readonly usersCollection = 'users';
   private readonly watchedlistCollection = 'watchedlist';
   private readonly watchlistCollection = 'watchlist';
-  private readonly hiddenShowsCollection = 'hidden-shows';
+  private readonly likedShowsCollection = 'liked-shows';
 
   private readonly $userLocation = this.userDataService.$userLocation;
   private readonly $currentUser = this.userDataService.$currentUser;
+
+  // ~~~ Firestore API
 
   // Saved Shows / Watchlist
   public addToWatchlist(
@@ -169,15 +164,15 @@ export class ShowsService {
     );
   }
 
-  // Hidden shows
-  public addToHidden(showId: string, showData: ShowInterface, userId: string) {
+  // Liked shows
+  public addToLiked(showId: string, showData: ShowInterface, userId: string) {
     return from(
       setDoc(
         doc(
           this.db,
           this.usersCollection,
           userId,
-          this.hiddenShowsCollection,
+          this.likedShowsCollection,
           showId,
         ),
         showData,
@@ -185,45 +180,82 @@ export class ShowsService {
     );
   }
 
-  public removeFromHidden(showId: string, userId: string) {
+  public removeFromLiked(showId: string, userId: string) {
     return from(
       deleteDoc(
         doc(
           this.db,
           this.usersCollection,
           userId,
-          this.hiddenShowsCollection,
+          this.likedShowsCollection,
           showId,
         ),
       ),
     );
   }
 
-  public getAllHidden(userId: string) {
+  public getAllLiked(userId: string) {
     return from(
       getDocs(
         collection(
           this.db,
           this.usersCollection,
           userId,
-          this.hiddenShowsCollection,
+          this.likedShowsCollection,
         ),
       ),
     );
   }
 
-  public getFromHidden(showId: string, userId: string) {
+  public getFromLiked(showId: string, userId: string) {
     return from(
       getDoc(
         doc(
           this.db,
           this.usersCollection,
           userId,
-          this.hiddenShowsCollection,
+          this.likedShowsCollection,
           showId,
         ),
       ),
     );
+  }
+
+  // ~~~ Shows API
+  public getShowVideo(showType: ShowTypesEnum, showId: number) {
+    return this.http
+      .get<ShowVideoResponseInterface>(
+        `${this.tmdbApi}/${showType}/${showId}/videos?language=en-US`,
+      )
+      .pipe(
+        map((response) =>
+          response.results.filter(
+            (result) => result.official && result.type === 'Trailer',
+          ),
+        ),
+      );
+  }
+
+  public getShowWatchProviders(
+    showType: ShowTypesEnum,
+    showId: number,
+  ): Observable<string> {
+    return this.http
+      .get<WatchProvidersResponse>(
+        `${this.tmdbApi}/${showType}/${showId}/watch/providers`,
+      )
+      .pipe(
+        map((response) => {
+          const key = (this.$userLocation()?.country ||
+            'US') as keyof WatchProviderInterface;
+
+          const resultProperty = response.results[key];
+          if (resultProperty && resultProperty.flatrate) {
+            return resultProperty.flatrate[0].provider_name;
+          }
+          return '';
+        }),
+      );
   }
 
   // Search multi
@@ -258,10 +290,10 @@ export class ShowsService {
     const watchProviders = this.getWatchProviders();
     const genresIds = this.getGenreIds();
     const joinedGenres = genresIds.join(',');
-    const path = `${this.showsStore.$selectedShowType()}?language=en-US&page=${page}&sort_by=vote_count.desc&watch_region=${this.$userLocation()?.country || 'US'}&with_genres=${joinedGenres}&with_watch_providers=${watchProviders}`;
+    let path = `${this.showsStore.$selectedShowType()}?language=en-US&page=${page}&sort_by=vote_count.desc&watch_region=${this.$userLocation()?.country || 'US'}&with_genres=${joinedGenres}&with_watch_providers=${watchProviders}`;
     // Filter animations
     if (!genresIds.includes(16)) {
-      path.concat('&without_genres=16');
+      path += '&without_genres=16';
     }
 
     return this.http
@@ -281,7 +313,7 @@ export class ShowsService {
         }),
         switchMap((res) => {
           return this.$currentUser()?.uid
-            ? this.filterHiddenShows(res)
+            ? this.filterLikedShows(res)
             : of(res);
         }),
         map(this.sortShowsByScore.bind(this)),
@@ -363,14 +395,14 @@ export class ShowsService {
     );
   }
 
-  private filterHiddenShows(res: ShowInterface[]) {
-    return this.getAllHidden(this.$currentUser()!.uid).pipe(
-      map((hiddenShow) => {
-        const hiddenShowsIds = new Set();
+  private filterLikedShows(res: ShowInterface[]) {
+    return this.getAllLiked(this.$currentUser()!.uid).pipe(
+      map((likedShow) => {
+        const likedShowsIds = new Set();
 
-        hiddenShow.forEach((doc) => hiddenShowsIds.add(doc.data()['id']));
+        likedShow.forEach((doc) => likedShowsIds.add(doc.data()['id']));
 
-        return res.filter((show) => !hiddenShowsIds.has(show.id));
+        return res.filter((show) => !likedShowsIds.has(show.id));
       }),
     );
   }

@@ -8,7 +8,14 @@
         [$bookmarkType]="bookmarksEnum.watchlist"
       ></app-shows-list>
     </p-tabPanel>
-    <p-tabPanel header="Watched" class="content-container">
+    <p-tabPanel header="More like this" class="content-container">
+      @defer (on viewport) {
+        <app-shows-list [$bookmarkType]="bookmarksEnum.liked"></app-shows-list>
+      } @placeholder {
+        <span class="loader"></span>
+      }
+    </p-tabPanel>
+    <p-tabPanel header="Stop showing" class="content-container">
       @defer (on viewport) {
         <app-shows-list
           [$bookmarkType]="bookmarksEnum.watched"
@@ -16,9 +23,6 @@
       } @placeholder {
         <span class="loader"></span>
       }
-    </p-tabPanel>
-    <p-tabPanel header="Don't Show" class="content-container">
-      <app-shows-list [$bookmarkType]="bookmarksEnum.hidden"></app-shows-list>
     </p-tabPanel>
   </p-tabView>
 </div>

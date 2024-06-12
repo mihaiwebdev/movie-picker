@@ -169,8 +169,8 @@ export class ShowsListComponent {
       return this.showsService.getAllWatchedShows(this.$currentUser()!.uid);
     }
 
-    if (this.$bookmarkType() === BookmarksEnum.hidden) {
-      return this.showsService.getAllHidden(this.$currentUser()!.uid);
+    if (this.$bookmarkType() === BookmarksEnum.liked) {
+      return this.showsService.getAllLiked(this.$currentUser()!.uid);
     }
 
     return this.showsService.getAllFromWatchlist(this.$currentUser()!.uid);
@@ -184,8 +184,8 @@ export class ShowsListComponent {
       );
     }
 
-    if (this.$bookmarkType() === BookmarksEnum.hidden) {
-      return this.showsService.removeFromHidden(
+    if (this.$bookmarkType() === BookmarksEnum.liked) {
+      return this.showsService.removeFromLiked(
         String(showId),
         this.$currentUser()!.uid,
       );

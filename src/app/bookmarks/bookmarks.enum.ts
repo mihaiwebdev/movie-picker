@@ -1,5 +1,5 @@
 export enum BookmarksEnum {
   watched = 'watched',
   watchlist = 'watchlist',
-  hidden = 'hidden',
+  liked = 'liked',
 }

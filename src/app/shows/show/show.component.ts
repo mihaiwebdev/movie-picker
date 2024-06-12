@@ -56,8 +56,8 @@ export class ShowComponent {
   public readonly $isWatchedLoading = signal(false);
   public readonly $isInWatchlist = signal(false);
   public readonly $isWatchlistLoading = signal(false);
-  public readonly $isHidden = signal(false);
-  public readonly $isHiddenLoading = signal(false);
+  public readonly $isLiked = signal(false);
+  public readonly $isLikedLoading = signal(false);
   public readonly $currentUser = this.userDataService.$currentUser;
   public readonly $page = signal(1);
   public readonly $showIdx = signal(this.showsStore.$currentShowIndex() || 0);
@@ -81,7 +81,7 @@ export class ShowComponent {
       'trending',
     ) as ShowTypesEnum;
 
-    this.checkShowBookmark(BookmarksEnum.hidden);
+    this.checkShowBookmark(BookmarksEnum.liked);
     this.checkShowBookmark(BookmarksEnum.watched);
     this.checkShowBookmark(BookmarksEnum.watchlist);
   }
@@ -113,8 +113,8 @@ export class ShowComponent {
     if (bookmarkType === BookmarksEnum.watched) {
       this.$isWatchedLoading.set(true);
     }
-    if (bookmarkType === BookmarksEnum.hidden) {
-      this.$isHiddenLoading.set(true);
+    if (bookmarkType === BookmarksEnum.liked) {
+      this.$isLikedLoading.set(true);
     }
 
     this.removeFromBookmark(bookmarkType)
@@ -124,7 +124,7 @@ export class ShowComponent {
             ? this.$isInWatchlist.set(false)
             : bookmarkType === BookmarksEnum.watched
               ? this.$isWatched.set(false)
-              : this.$isHidden.set(false);
+              : this.$isLiked.set(false);
         }),
         catchError((error) => {
           this.messageService.add({
@@ -137,7 +137,7 @@ export class ShowComponent {
         finalize(() => {
           this.$isWatchlistLoading.set(false);
           this.$isWatchedLoading.set(false);
-          this.$isHiddenLoading.set(false);
+          this.$isLikedLoading.set(false);
         }),
       )
       .subscribe();
@@ -156,14 +156,14 @@ export class ShowComponent {
     if (bookmarkType === BookmarksEnum.watched) {
       this.$isWatchedLoading.set(true);
     }
-    if (bookmarkType === BookmarksEnum.hidden) {
-      this.$isHiddenLoading.set(true);
+    if (bookmarkType === BookmarksEnum.liked) {
+      this.$isLikedLoading.set(true);
     }
     const listName =
-      bookmarkType === BookmarksEnum.hidden
-        ? "don't show list"
+      bookmarkType === BookmarksEnum.liked
+        ? 'more like this list'
         : bookmarkType === BookmarksEnum.watched
-          ? 'watched list'
+          ? 'hide list'
           : 'watch list';
 
     this.addToBookmark(bookmarkType)
@@ -173,7 +173,7 @@ export class ShowComponent {
             ? this.$isInWatchlist.set(true)
             : bookmarkType === BookmarksEnum.watched
               ? this.$isWatched.set(true)
-              : this.$isHidden.set(true);
+              : this.$isLiked.set(true);
 
           this.messageService.add({
             severity: 'success',
@@ -192,7 +192,7 @@ export class ShowComponent {
         finalize(() => {
           this.$isWatchlistLoading.set(false);
           this.$isWatchedLoading.set(false);
-          this.$isHiddenLoading.set(false);
+          this.$isLikedLoading.set(false);
         }),
       )
       .subscribe();
@@ -223,7 +223,7 @@ export class ShowComponent {
       this.showsStore.setSelectedShow(this.$showsResults()![this.$showIdx()]);
     }
 
-    this.checkShowBookmark(BookmarksEnum.hidden);
+    this.checkShowBookmark(BookmarksEnum.liked);
     this.checkShowBookmark(BookmarksEnum.watched);
     this.checkShowBookmark(BookmarksEnum.watchlist);
   }
@@ -236,8 +236,8 @@ export class ShowComponent {
     if (bookmarkType === BookmarksEnum.watched) {
       this.$isWatchedLoading.set(true);
     }
-    if (bookmarkType === BookmarksEnum.hidden) {
-      this.$isHiddenLoading.set(true);
+    if (bookmarkType === BookmarksEnum.liked) {
+      this.$isLikedLoading.set(true);
     }
 
     this.getFromBookmarks(bookmarkType)
@@ -248,13 +248,13 @@ export class ShowComponent {
               ? this.$isInWatchlist.set(true)
               : bookmarkType === BookmarksEnum.watched
                 ? this.$isWatched.set(true)
-                : this.$isHidden.set(true);
+                : this.$isLiked.set(true);
           } else {
             bookmarkType === BookmarksEnum.watchlist
               ? this.$isInWatchlist.set(false)
               : bookmarkType === BookmarksEnum.watched
                 ? this.$isWatched.set(false)
-                : this.$isHidden.set(false);
+                : this.$isLiked.set(false);
           }
         }),
         catchError((error) => {
@@ -268,7 +268,7 @@ export class ShowComponent {
         finalize(() => {
           this.$isWatchlistLoading.set(false);
           this.$isWatchedLoading.set(false);
-          this.$isHiddenLoading.set(false);
+          this.$isLikedLoading.set(false);
         }),
       )
       .subscribe();
@@ -289,7 +289,7 @@ export class ShowComponent {
         this.$currentUser()!.uid,
       );
     }
-    return this.showsService.addToHidden(
+    return this.showsService.addToLiked(
       String(this.$selectedShow()!.id),
       this.$selectedShow()!,
       this.$currentUser()!.uid,
@@ -309,7 +309,7 @@ export class ShowComponent {
         this.$currentUser()!.uid,
       );
     }
-    return this.showsService.removeFromHidden(
+    return this.showsService.removeFromLiked(
       String(this.$selectedShow()!.id),
       this.$currentUser()!.uid,
     );
@@ -328,7 +328,7 @@ export class ShowComponent {
         this.$currentUser()!.uid,
       );
     }
-    return this.showsService.getFromHidden(
+    return this.showsService.getFromLiked(
       String(this.$selectedShow()!.id),
       this.$currentUser()!.uid,
     );
