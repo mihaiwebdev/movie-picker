@@ -228,11 +228,14 @@ export class ShowsService {
         `${this.tmdbApi}/${showType}/${showId}/videos?language=en-US`,
       )
       .pipe(
-        map((response) =>
-          response.results.filter(
-            (result) => result.official && result.type === 'Trailer',
-          ),
-        ),
+        map((response) => {
+          return response.results.filter(
+            (result) =>
+              result.official &&
+              (result.type === 'Trailer' || result.type === 'Teaser') &&
+              result.site === 'YouTube',
+          );
+        }),
       );
   }
 

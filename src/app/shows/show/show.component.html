@@ -8,189 +8,254 @@
       [class.loaded]="!$isImgLoading()"
     />
 
-    <iframe
-      class="trailer-video"
-      src="https://www.youtube.com/embed/Jokpt_LJpbw?autoplay=1&mute=1&loop=1"
-      frameborder="0"
-      width="420"
-      height="315"
-    ></iframe>
-
-    <div class="gradient-overlay">
-      <div class="action-buttons">
-        <button pRipple class="back-btn" (click)="goBack()">
-          <i class="bi bi-arrow-left-short"></i>
-        </button>
-        @if ($isLoginVisibile()) {
-          <button
-            routerLink="/app/login"
-            [queryParams]="{
-              watchlist: $selectedShow()?.name || $selectedShow()?.title,
-              movie: $selectedShow()?.title ? true : '',
-            }"
-            pRipple
-            class="login-btn"
-          >
-            Login
-          </button>
-        } @else {
-          @if ($isWatchlistLoading()) {
-            <div>
-              <span class="loader bookmark-loader"></span>
-            </div>
-          } @else {
-            @if ($isInWatchlist()) {
-              <button
-                pRipple
-                class="bookmark-btn"
-                (click)="removeFromBookmarks(bookmarksTypeEnum.watchlist)"
-              >
-                <i class="bi bi-bookmark-check-fill"></i>
-              </button>
-            } @else {
-              <button
-                pRipple
-                class="bookmark-btn"
-                (click)="addShowToBookmarks(bookmarksTypeEnum.watchlist)"
-              >
-                <i class="bi bi-bookmark"></i>
-              </button>
-            }
-          }
+    @if ($isTrailerVisibile()) {
+      <div class="trailer-video mobile-trailer">
+        @defer (when $isTrailerVisibile()) {
+          <app-video
+            [$showId]="$selectedShow()?.id"
+            ($closeVideo)="toggleTrailer()"
+          ></app-video>
         }
       </div>
+    }
 
-      <div class="show-poster">
-        <img
-          [src]="imgBaseUrl + $selectedShow()?.poster_path"
-          alt="show poster image"
-        />
-      </div>
-
-      <div class="show-overview">
-        <div class="above-title-data">
-          <!-- Add watch provider -->
-          <p class="show-type">
-            {{ $selectedShow()?.title ? "Movie" : "TV Series" }}
-          </p>
-        </div>
-
-        <h1 class="show-title">
-          {{ $selectedShow()?.title || $selectedShow()?.name }}
-        </h1>
-
-        <div class="sub-title-data">
-          <p class="release-date">
-            {{ getReleaseDate() }}
-          </p>
-
-          <p class="rating">
-            <i class="bi bi-stars"></i>
-            <span class="span-rating">{{
-              $selectedShow()?.vote_average?.toFixed(1)
-            }}</span
-            >/10
-            <span class="span-vote-count"
-              ><i class="bi bi-people"></i>
-              {{ $selectedShow()?.vote_count }}</span
-            >
-          </p>
-
-          <button pRipple class="trailer-btn">
-            <i class="bi bi-play-fill"></i>Play Trailer
-          </button>
-        </div>
-
-        @if (!$isLoginVisibile()) {
-          <div class="bookmarks-buttons">
-            @if ($isLikedLoading()) {
-              <span class="loader"></span>
+    <div class="gradient-overlay">
+      <div class="gradient-overlay-content">
+        @if (!$isTrailerVisibile()) {
+          <div class="action-buttons">
+            <button pRipple class="back-btn" (click)="goBack()">
+              <i class="bi bi-arrow-left-short"></i>
+            </button>
+            @if ($isLoginVisibile()) {
+              <button
+                routerLink="/app/login"
+                [queryParams]="{
+                  watchlist: $selectedShow()?.name || $selectedShow()?.title,
+                  movie: $selectedShow()?.title ? true : '',
+                }"
+                pRipple
+                class="login-btn"
+              >
+                Login
+              </button>
             } @else {
-              @if ($isLiked()) {
-                <button
-                  pRipple
-                  (click)="removeFromBookmarks(bookmarksTypeEnum.liked)"
-                  class="thumbs-up"
-                >
-                  <i class="pi pi-thumbs-down-fill"></i>
-                  <span>Remove like</span>
-                </button>
+              @if ($isWatchlistLoading()) {
+                <div>
+                  <span class="loader bookmark-loader"></span>
+                </div>
               } @else {
-                <button
-                  pRipple
-                  class="thumbs-up"
-                  (click)="addShowToBookmarks(bookmarksTypeEnum.liked)"
-                >
-                  <i class="pi pi-thumbs-up-fill"></i>
-                  <span>More like this</span>
-                </button>
-              }
-            }
-
-            @if ($isWatchedLoading()) {
-              <span class="loader"></span>
-            } @else {
-              @if ($isWatched()) {
-                <button
-                  pRipple
-                  class="hide"
-                  (click)="removeFromBookmarks(bookmarksTypeEnum.watched)"
-                >
-                  <i class="pi pi-eye"></i>
-                  <span>Hide</span>
-                </button>
-              } @else {
-                <button
-                  pRipple
-                  class="hide"
-                  (click)="addShowToBookmarks(bookmarksTypeEnum.watched)"
-                >
-                  <i class="pi pi-eye-slash"></i>
-                  <span>Remove Hide</span>
-                </button>
+                @if ($isInWatchlist()) {
+                  <button
+                    pRipple
+                    class="bookmark-btn"
+                    (click)="removeFromBookmarks(bookmarksTypeEnum.watchlist)"
+                  >
+                    <i class="bi bi-bookmark-check-fill"></i>
+                  </button>
+                } @else {
+                  <button
+                    pRipple
+                    class="bookmark-btn"
+                    (click)="addShowToBookmarks(bookmarksTypeEnum.watchlist)"
+                  >
+                    <i class="bi bi-bookmark"></i>
+                  </button>
+                }
               }
             }
           </div>
-        } @else {
-          <span
-            pRipple
-            routerLink="/app/login"
-            [queryParams]="{
-              watched: $selectedShow()?.title || $selectedShow()?.name,
-              movie: $selectedShow()?.title ? true : '',
-            }"
-            class="login-btn"
-            >Login to unlock</span
-          >
         }
-      </div>
 
-      <div class="show-description-box">
-        <p
-          class="show-description"
-          appReadMore
-          [maxLength]="250"
-          [text]="$selectedShow()?.overview || ''"
-        >
-          {{ $selectedShow()?.overview }}
-        </p>
-      </div>
+        <!-- Desktop trailer - version -->
+        @if ($isDesktopTrailerVisible()) {
+          <div class="trailer-video desktop-trailer">
+            @defer (when $isDesktopTrailerVisible()) {
+              <app-video
+                [$showId]="$selectedShow()?.id"
+                ($closeVideo)="toggleDesktopTrailer()"
+              ></app-video>
+            }
+          </div>
+        } @else {
+          <img
+            [src]="imgBaseUrl + $selectedShow()?.backdrop_path"
+            (load)="onImageLoad()"
+            alt="poster-image"
+            class="desktop-poster-image"
+            [class.loaded]="!$isImgLoading()"
+          />
+        }
 
-      @if ($showsResults()) {
-        <div class="choose-btn">
-          @if ($isPrevBtn()) {
-            <button (click)="nextShow(true, false)" pRipple class="previous">
-              <i class="bi bi-arrow-left-circle"></i> Prev
-            </button>
-          }
+        <div class="show-overview">
+          <div>
+            <div class="above-title-data">
+              <!-- Add watch provider -->
+              <p class="show-type">
+                {{ $selectedShow()?.title ? "Movie" : "TV Series" }}
+              </p>
+            </div>
 
-          @if ($isNextBtn()) {
-            <button (click)="nextShow(false, true)" pRipple class="next">
-              Next <i class="bi bi-arrow-right-circle"></i>
-            </button>
+            <h1 class="show-title">
+              {{ $selectedShow()?.title || $selectedShow()?.name }}
+            </h1>
+
+            <div class="sub-title-data">
+              <p class="release-date">
+                {{ getReleaseDate() }}
+              </p>
+
+              <p class="rating">
+                <i class="bi bi-stars"></i>
+                <span class="span-rating">{{
+                  $selectedShow()?.vote_average?.toFixed(1)
+                }}</span
+                >/10
+                <span class="span-vote-count"
+                  ><i class="bi bi-people"></i>
+                  {{ $selectedShow()?.vote_count }}</span
+                >
+              </p>
+
+              @if ($isTrailerVisibile()) {
+                <button
+                  pRipple
+                  (click)="toggleTrailer()"
+                  class="trailer-btn mobile-trailer-btn"
+                >
+                  <i class="bi bi-x-lg"></i>Close Trailer
+                </button>
+              } @else {
+                <button
+                  pRipple
+                  (click)="toggleTrailer()"
+                  class="trailer-btn mobile-trailer-btn"
+                >
+                  <i class="bi bi-play-fill"></i>Play Trailer
+                </button>
+              }
+              @if ($isDesktopTrailerVisible()) {
+                <button
+                  pRipple
+                  (click)="toggleDesktopTrailer()"
+                  class="trailer-btn desktop-trailer-btn"
+                >
+                  <i class="bi bi-x-lg"></i>Close Trailer
+                </button>
+              } @else {
+                <button
+                  pRipple
+                  (click)="toggleDesktopTrailer()"
+                  class="trailer-btn desktop-trailer-btn"
+                >
+                  <i class="bi bi-play-fill"></i>Play Trailer
+                </button>
+              }
+            </div>
+          </div>
+
+          @if (!$isLoginVisibile()) {
+            <div class="bookmarks-buttons">
+              @if ($isLikedLoading()) {
+                <span class="loader"></span>
+              } @else {
+                @if ($isLiked()) {
+                  <button
+                    pRipple
+                    (click)="removeFromBookmarks(bookmarksTypeEnum.liked)"
+                    class="thumbs-up"
+                  >
+                    <i class="pi pi-thumbs-down-fill"></i>
+                    <span>Remove like</span>
+                  </button>
+                } @else {
+                  <button
+                    pRipple
+                    class="thumbs-up"
+                    (click)="addShowToBookmarks(bookmarksTypeEnum.liked)"
+                  >
+                    <i class="pi pi-thumbs-up-fill"></i>
+                    <span>More like this</span>
+                  </button>
+                }
+              }
+
+              @if ($isWatchedLoading()) {
+                <span class="loader"></span>
+              } @else {
+                @if ($isWatched()) {
+                  <button
+                    pRipple
+                    class="hide"
+                    (click)="removeFromBookmarks(bookmarksTypeEnum.watched)"
+                  >
+                    <i class="pi pi-eye"></i>
+                    <span>Hide</span>
+                  </button>
+                } @else {
+                  <button
+                    pRipple
+                    class="hide"
+                    (click)="addShowToBookmarks(bookmarksTypeEnum.watched)"
+                  >
+                    <i class="pi pi-eye-slash"></i>
+                    <span>Remove Hide</span>
+                  </button>
+                }
+              }
+            </div>
+          } @else {
+            <span
+              pRipple
+              routerLink="/app/login"
+              [queryParams]="{
+                watched: $selectedShow()?.title || $selectedShow()?.name,
+                movie: $selectedShow()?.title ? true : '',
+              }"
+              class="login-btn"
+              >Login to unlock</span
+            >
           }
         </div>
-      }
+
+        <div class="show-description-box">
+          <p
+            class="show-description"
+            appReadMore
+            [maxLength]="250"
+            [text]="$selectedShow()?.overview || ''"
+          >
+            {{ $selectedShow()?.overview }}
+          </p>
+        </div>
+
+        <div class="display-genres">
+          <span>Genres: </span>
+          @if ($showGenres()) {
+            @for (genre of $showGenres(); track genre.id) {
+              <span
+                >{{ genre.name
+                }}{{ $index < $showGenres()!.length - 1 ? ", " : "" }}
+              </span>
+            }
+          }
+        </div>
+
+        @if ($showsResults()) {
+          <div class="choose-btn">
+            @if ($isPrevBtn()) {
+              <button (click)="nextShow(true, false)" pRipple class="previous">
+                <i class="bi bi-arrow-left-circle"></i> Prev
+              </button>
+            }
+
+            @if ($isNextBtn()) {
+              <button (click)="nextShow(false, true)" pRipple class="next">
+                Next <i class="bi bi-arrow-right-circle"></i>
+              </button>
+            }
+          </div>
+        }
+      </div>
     </div>
   </div>
 }

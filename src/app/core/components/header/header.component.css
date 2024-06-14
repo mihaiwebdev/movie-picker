@@ -23,6 +23,16 @@
       background-color: var(--bg-dark);
       z-index: -1;
     }
+
+    .navbar {
+      padding: 0.5rem 1rem;
+      .logo {
+        img {
+          width: 2.5rem;
+          height: 2.5rem;
+        }
+      }
+    }
   }
 
   .navbar {

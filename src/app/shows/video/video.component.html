@@ -1,0 +1,16 @@
+<div class="video-component">
+  <button pRipple (click)="closeVideoModal()" class="close-btn">
+    <i class="bi bi-x-lg"></i>
+  </button>
+
+  @if ($videoSource()) {
+    <iframe
+      class="youtube-iframe"
+      [src]="$videoSource()"
+      title="Youtube video player"
+      frameborder="0"
+      allow="autoplay"
+    >
+    </iframe>
+  }
+</div>

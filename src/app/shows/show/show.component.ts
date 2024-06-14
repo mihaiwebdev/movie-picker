@@ -7,10 +7,12 @@ import {
   inject,
   signal,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { RippleModule } from 'primeng/ripple';
 import { catchError, finalize, of, tap } from 'rxjs';
+import { BookmarksEnum } from '../../bookmarks/bookmarks.enum';
 import {
   LoaderService,
   ShowsService,
@@ -20,13 +22,12 @@ import {
 } from '../../core';
 import { ShowsStore } from '../../core/store/shows.store';
 import { GenreInterface, ReadMoreDirective, ShowTypesEnum } from '../../shared';
-import { BookmarksEnum } from '../../bookmarks/bookmarks.enum';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { VideoComponent } from '../video/video.component';
 
 @Component({
   selector: 'app-show',
   standalone: true,
-  imports: [RouterLink, ReadMoreDirective, RippleModule],
+  imports: [RouterLink, ReadMoreDirective, RippleModule, VideoComponent],
   templateUrl: './show.component.html',
   styleUrl: './show.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -69,6 +70,8 @@ export class ShowComponent {
       : false,
   );
   public readonly $isLoginVisibile = signal(false);
+  public readonly $isTrailerVisibile = signal(false);
+  public readonly $isDesktopTrailerVisible = signal(false);
   public readonly bookmarksTypeEnum = BookmarksEnum;
 
   ngOnInit(): void {
@@ -92,6 +95,13 @@ export class ShowComponent {
 
   public goBack() {
     this.location.back();
+  }
+
+  public toggleTrailer() {
+    this.$isTrailerVisibile.update((state) => !state);
+  }
+  public toggleDesktopTrailer() {
+    this.$isDesktopTrailerVisible.update((state) => !state);
   }
 
   public getReleaseDate() {
