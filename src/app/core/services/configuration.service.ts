@@ -5,6 +5,7 @@ import { getFirestore } from 'firebase/firestore';
 import { PrimeNGConfig } from 'primeng/api';
 import { environment } from '../../../environments/environment.development';
 import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check';
+import { getAnalytics } from 'firebase/analytics';
 
 @Injectable({
   providedIn: 'root',
@@ -14,17 +15,17 @@ export class ConfigurationService {
   // Firebase Config
   private readonly firebaseConfig = environment.firebaseConfig;
   public readonly firebaseApp = initializeApp(this.firebaseConfig);
-  // private readonly analytics = getAnalytics(this.firebaseApp)
+  private readonly analytics = getAnalytics(this.firebaseApp);
   public readonly db = getFirestore(this.firebaseApp);
 
   constructor() {
     this.primengConfig.ripple = true;
 
-    // const appCheck = initializeAppCheck(this.firebaseApp, {
-    //   provider: new ReCaptchaV3Provider(
-    //     '6LcvjPQpAAAAAAIFA2zvA3OAyQibtMXRfSuF3G6q',
-    //   ),
-    //   isTokenAutoRefreshEnabled: true,
-    // });
+    const appCheck = initializeAppCheck(this.firebaseApp, {
+      provider: new ReCaptchaV3Provider(
+        '6LcvjPQpAAAAAAIFA2zvA3OAyQibtMXRfSuF3G6q',
+      ),
+      isTokenAutoRefreshEnabled: true,
+    });
   }
 }
