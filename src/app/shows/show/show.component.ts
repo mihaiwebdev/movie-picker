@@ -64,6 +64,8 @@ export class ShowComponent {
   public readonly $isWatchlistLoading = signal(false);
   public readonly $isHidden = signal(false);
   public readonly $isHideLoading = signal(false);
+  public readonly $isProviderLoading = signal(false);
+  public readonly $watchProvider = signal<string>('');
 
   public readonly $currentUser = this.userDataService.$currentUser;
   public readonly $page = signal(1);
@@ -79,6 +81,9 @@ export class ShowComponent {
   public readonly $isWatchedLogin = signal(false);
   public readonly $isHideLogin = signal(false);
 
+  public readonly $isMovie = computed(() =>
+    this.$selectedShow()?.title ? true : false,
+  );
   public readonly $isTrailerVisibile = signal(false);
   public readonly $isDesktopTrailerVisible = signal(false);
   public readonly bookmarksTypeEnum = BookmarksEnum;
@@ -94,6 +99,7 @@ export class ShowComponent {
     ) as ShowTypesEnum;
 
     this.checkShowBookmark();
+    this.getShowWatchProviders();
   }
 
   public onImageLoad() {
@@ -247,6 +253,33 @@ export class ShowComponent {
     }
 
     this.checkShowBookmark();
+    this.getShowWatchProviders();
+  }
+
+  private getShowWatchProviders() {
+    this.$isProviderLoading.set(true);
+
+    if (!this.$selectedShow()?.id) return;
+
+    const showType = (this.$isMovie() ? 'movie' : 'tv') as ShowTypesEnum;
+    this.showsService
+      .getShowWatchProviders(showType, this.$selectedShow()!.id)
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        tap((respone) => {
+          this.$watchProvider.set(respone);
+        }),
+        catchError((err) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: `Could not get watch provider`,
+          });
+          return of(err);
+        }),
+        finalize(() => this.$isProviderLoading.set(false)),
+      )
+      .subscribe();
   }
 
   private checkShowBookmark() {

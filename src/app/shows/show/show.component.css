@@ -107,12 +107,22 @@
 
     .show-overview {
       .above-title-data {
+        display: flex;
+        color: var(--light-gray);
+        text-align: center;
+        align-items: center;
+
         .show-type {
           font-size: 0.7rem;
-          color: var(--light-gray);
           text-transform: uppercase;
           letter-spacing: 3px;
           margin: 0;
+          margin-right: 0.5rem;
+          margin-left: 1rem;
+        }
+
+        .watch-provider {
+          margin-left: 0.5rem;
         }
       }
 

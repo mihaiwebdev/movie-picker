@@ -89,10 +89,24 @@
         <div class="show-overview">
           <div>
             <div class="above-title-data">
-              <!-- Add watch provider -->
+              <img
+                width="80"
+                src="../../../assets/icons/just-watch-attr.svg"
+                alt="just-watch"
+              />
+
               <p class="show-type">
-                {{ $selectedShow()?.title ? "Movie" : "TV Series" }}
+                {{ $isMovie() ? "Movie" : "TV Series" }}
               </p>
+
+              <small>on </small>
+              @if ($isProviderLoading()) {
+                <span class="dots-loader"></span>
+              } @else {
+                <p class="show-type watch-provider">
+                  {{ $watchProvider() }}
+                </p>
+              }
             </div>
 
             <h1 class="show-title">

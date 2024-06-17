@@ -162,7 +162,6 @@ export class ShowsService {
   }
 
   // Saved Shows / Watchlist
-
   public getAllFromWatchlist(userId: string) {
     return from(
       getDocs(
