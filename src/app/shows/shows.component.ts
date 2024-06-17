@@ -24,6 +24,7 @@ import {
   UserDataService,
 } from '../core';
 import { ShowInterface } from '../shared';
+import { BookmarksEnum } from '../bookmarks/bookmarks.enum';
 
 @Component({
   selector: 'app-shows',
@@ -58,11 +59,21 @@ export class ShowsComponent {
   public readonly $selectedGenres = this.showsStore.$selectedGenres;
 
   ngOnInit() {
+    this.getShowAndAddToCollection();
+  }
+
+  public getShowAndAddToCollection() {
     const movieParam = this.route.snapshot.queryParamMap.get('movie');
     const showType = Boolean(movieParam) ? 'movie' : 'tv';
     const watchedParam = this.route.snapshot.queryParamMap.get('watched');
     const watchlistParam = this.route.snapshot.queryParamMap.get('watchlist');
-    const showName = watchedParam || watchlistParam;
+    const hide = this.route.snapshot.queryParamMap.get('hide');
+    const showName = watchedParam || watchlistParam || hide;
+    const bookmarkType = watchedParam
+      ? BookmarksEnum.watched
+      : watchlistParam
+        ? BookmarksEnum.watchlist
+        : BookmarksEnum.hidden;
 
     if (!this.$currentUser()?.uid) {
       return;
@@ -72,17 +83,18 @@ export class ShowsComponent {
     }
 
     this.loaderService.setIsLoading(true);
+
     this.showsService
       .getShow(showType, decodeURI(showName))
       .pipe(
         map((res) => res.results),
         filter((res) => !!res[0].id),
         switchMap((res) => {
-          const addToCollectionObs = this.getAddToCollectionObs(
+          const addToCollectionObs = this.showsService.addShow(
             String(res[0].id),
             res[0],
             this.$currentUser()!.uid,
-            watchlistParam,
+            bookmarkType,
           );
 
           return res.length > 0 && res[0].id ? addToCollectionObs : of(null);
@@ -91,7 +103,7 @@ export class ShowsComponent {
           this.messageService.add({
             severity: 'success',
             summary: 'Success',
-            detail: `${showName} added to ${watchedParam ? 'watched shows' : 'watchlist'}`,
+            detail: `${showName} added to ${watchedParam ? 'watched shows' : watchlistParam ? 'watchlist' : 'stop recommending shows'}`,
           });
         }),
         finalize(() => {
@@ -126,17 +138,6 @@ export class ShowsComponent {
         }),
       )
       .subscribe();
-  }
-
-  private getAddToCollectionObs(
-    showId: string,
-    showData: ShowInterface,
-    userId: string,
-    watchlistParam: string | null,
-  ) {
-    return watchlistParam
-      ? this.showsService.addToWatchlist(showId, showData, userId)
-      : this.showsService.addToWatchedShows(showId, showData, userId);
   }
 }
 

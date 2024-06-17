@@ -100,7 +100,12 @@ export class ShowsListComponent {
 
     this.$isRemoveLoading.set(true);
 
-    this.removeShowRequest(showId)
+    this.showsService
+      .removeShow(
+        String(showId),
+        String(this.$currentUser()?.uid),
+        this.$bookmarkType(),
+      )
       .pipe(
         tap(() => {
           this.$shows.update((shows) =>
@@ -169,31 +174,10 @@ export class ShowsListComponent {
       return this.showsService.getAllWatchedShows(this.$currentUser()!.uid);
     }
 
-    if (this.$bookmarkType() === BookmarksEnum.liked) {
-      return this.showsService.getAllLiked(this.$currentUser()!.uid);
+    if (this.$bookmarkType() === BookmarksEnum.hidden) {
+      return this.showsService.getAllHidden(this.$currentUser()!.uid);
     }
 
     return this.showsService.getAllFromWatchlist(this.$currentUser()!.uid);
-  }
-
-  private removeShowRequest(showId: number): Observable<void> {
-    if (this.$bookmarkType() === BookmarksEnum.watched) {
-      return this.showsService.removeFromWatchedShows(
-        String(showId),
-        this.$currentUser()!.uid,
-      );
-    }
-
-    if (this.$bookmarkType() === BookmarksEnum.liked) {
-      return this.showsService.removeFromLiked(
-        String(showId),
-        this.$currentUser()!.uid,
-      );
-    }
-
-    return this.showsService.removeFromWatchlist(
-      String(showId),
-      this.$currentUser()!.uid,
-    );
   }
 }

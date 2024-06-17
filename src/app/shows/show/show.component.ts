@@ -24,6 +24,10 @@ import { ShowsStore } from '../../core/store/shows.store';
 import { GenreInterface, ReadMoreDirective, ShowTypesEnum } from '../../shared';
 import { VideoComponent } from '../video/video.component';
 
+export interface MovieMetadataInterface {
+  status: BookmarksEnum;
+}
+
 @Component({
   selector: 'app-show',
   standalone: true,
@@ -52,13 +56,15 @@ export class ShowComponent {
   public readonly $showGenres = computed(
     () => this.$selectedShow()?.genre_ids && this.getShowGenres(),
   );
+
   public readonly $isImgLoading = signal(true);
   public readonly $isWatched = signal(false);
   public readonly $isWatchedLoading = signal(false);
   public readonly $isInWatchlist = signal(false);
   public readonly $isWatchlistLoading = signal(false);
-  public readonly $isLiked = signal(false);
-  public readonly $isLikedLoading = signal(false);
+  public readonly $isHidden = signal(false);
+  public readonly $isHideLoading = signal(false);
+
   public readonly $currentUser = this.userDataService.$currentUser;
   public readonly $page = signal(1);
   public readonly $showIdx = signal(this.showsStore.$currentShowIndex() || 0);
@@ -69,7 +75,10 @@ export class ShowComponent {
         this.$page() !== this.$resultsPages()
       : false,
   );
-  public readonly $isLoginVisibile = signal(false);
+  public readonly $isWatchlistLogin = signal(false);
+  public readonly $isWatchedLogin = signal(false);
+  public readonly $isHideLogin = signal(false);
+
   public readonly $isTrailerVisibile = signal(false);
   public readonly $isDesktopTrailerVisible = signal(false);
   public readonly bookmarksTypeEnum = BookmarksEnum;
@@ -84,9 +93,7 @@ export class ShowComponent {
       'trending',
     ) as ShowTypesEnum;
 
-    this.checkShowBookmark(BookmarksEnum.liked);
-    this.checkShowBookmark(BookmarksEnum.watched);
-    this.checkShowBookmark(BookmarksEnum.watchlist);
+    this.checkShowBookmark();
   }
 
   public onImageLoad() {
@@ -111,11 +118,7 @@ export class ShowComponent {
   }
 
   public removeFromBookmarks(bookmarkType: BookmarksEnum) {
-    if (!this.$selectedShow()?.id) return;
-    if (!this.$currentUser()?.uid) {
-      this.$isLoginVisibile.set(true);
-      return;
-    }
+    if (!this.$selectedShow()?.id || !this.$currentUser()?.uid) return;
 
     if (bookmarkType === BookmarksEnum.watchlist) {
       this.$isWatchlistLoading.set(true);
@@ -123,18 +126,23 @@ export class ShowComponent {
     if (bookmarkType === BookmarksEnum.watched) {
       this.$isWatchedLoading.set(true);
     }
-    if (bookmarkType === BookmarksEnum.liked) {
-      this.$isLikedLoading.set(true);
+    if (bookmarkType === BookmarksEnum.hidden) {
+      this.$isHideLoading.set(true);
     }
 
-    this.removeFromBookmark(bookmarkType)
+    this.showsService
+      .removeShow(
+        String(this.$selectedShow()?.id),
+        String(this.$currentUser()?.uid),
+        bookmarkType,
+      )
       .pipe(
         tap(() => {
           bookmarkType === BookmarksEnum.watchlist
             ? this.$isInWatchlist.set(false)
             : bookmarkType === BookmarksEnum.watched
               ? this.$isWatched.set(false)
-              : this.$isLiked.set(false);
+              : this.$isHidden.set(false);
         }),
         catchError((error) => {
           this.messageService.add({
@@ -147,7 +155,7 @@ export class ShowComponent {
         finalize(() => {
           this.$isWatchlistLoading.set(false);
           this.$isWatchedLoading.set(false);
-          this.$isLikedLoading.set(false);
+          this.$isHideLoading.set(false);
         }),
       )
       .subscribe();
@@ -155,35 +163,38 @@ export class ShowComponent {
 
   public addShowToBookmarks(bookmarkType: BookmarksEnum) {
     if (!this.$selectedShow()?.id) return;
+
+    this.bookmarkTypeCheckOnAdd(bookmarkType);
+
     if (!this.$currentUser()?.uid) {
-      this.$isLoginVisibile.set(true);
       return;
     }
 
-    if (bookmarkType === BookmarksEnum.watchlist) {
-      this.$isWatchlistLoading.set(true);
-    }
-    if (bookmarkType === BookmarksEnum.watched) {
-      this.$isWatchedLoading.set(true);
-    }
-    if (bookmarkType === BookmarksEnum.liked) {
-      this.$isLikedLoading.set(true);
-    }
     const listName =
-      bookmarkType === BookmarksEnum.liked
-        ? 'more like this list'
+      bookmarkType === BookmarksEnum.hidden
+        ? 'stop recommending list'
         : bookmarkType === BookmarksEnum.watched
-          ? 'hide list'
-          : 'watch list';
+          ? 'watched list'
+          : 'watchlist';
 
-    this.addToBookmark(bookmarkType)
+    this.showsService
+      .addShow(
+        String(this.$selectedShow()!.id),
+        this.$selectedShow()!,
+        this.$currentUser()!.uid,
+        bookmarkType,
+      )
       .pipe(
         tap(() => {
+          this.$isInWatchlist.set(false);
+          this.$isWatched.set(false);
+          this.$isHidden.set(false);
+
           bookmarkType === BookmarksEnum.watchlist
             ? this.$isInWatchlist.set(true)
             : bookmarkType === BookmarksEnum.watched
               ? this.$isWatched.set(true)
-              : this.$isLiked.set(true);
+              : this.$isHidden.set(true);
 
           this.messageService.add({
             severity: 'success',
@@ -202,7 +213,7 @@ export class ShowComponent {
         finalize(() => {
           this.$isWatchlistLoading.set(false);
           this.$isWatchedLoading.set(false);
-          this.$isLikedLoading.set(false);
+          this.$isHideLoading.set(false);
         }),
       )
       .subscribe();
@@ -212,7 +223,9 @@ export class ShowComponent {
     if (!this.$showsResults()) {
       return;
     }
-    this.$isLoginVisibile.set(false);
+    this.$isHideLogin.set(false);
+    this.$isWatchedLogin.set(false);
+    this.$isWatchlistLogin.set(false);
     this.$isImgLoading.set(true);
 
     if (prev) this.$showIdx.update((val) => --val);
@@ -233,115 +246,71 @@ export class ShowComponent {
       this.showsStore.setSelectedShow(this.$showsResults()![this.$showIdx()]);
     }
 
-    this.checkShowBookmark(BookmarksEnum.liked);
-    this.checkShowBookmark(BookmarksEnum.watched);
-    this.checkShowBookmark(BookmarksEnum.watchlist);
+    this.checkShowBookmark();
   }
 
-  private checkShowBookmark(bookmarkType: BookmarksEnum) {
+  private checkShowBookmark() {
     if (!this.$selectedShow()?.id || !this.$currentUser()?.uid) return;
-    if (bookmarkType === BookmarksEnum.watchlist) {
-      this.$isWatchlistLoading.set(true);
-    }
-    if (bookmarkType === BookmarksEnum.watched) {
-      this.$isWatchedLoading.set(true);
-    }
-    if (bookmarkType === BookmarksEnum.liked) {
-      this.$isLikedLoading.set(true);
-    }
 
-    this.getFromBookmarks(bookmarkType)
+    this.$isWatchlistLoading.set(true);
+    this.$isWatchedLoading.set(true);
+    this.$isHideLoading.set(true);
+
+    this.showsService
+      .getFromMetadata(
+        String(this.$selectedShow()?.id),
+        this.$currentUser()!.uid,
+      )
       .pipe(
         tap((response) => {
-          if (response.data()) {
-            bookmarkType === BookmarksEnum.watchlist
+          this.$isInWatchlist.set(false);
+          this.$isWatched.set(false);
+          this.$isHidden.set(false);
+
+          const movieMetadata = response.data() as MovieMetadataInterface;
+          if (movieMetadata) {
+            const status = movieMetadata.status;
+
+            status === BookmarksEnum.watchlist
               ? this.$isInWatchlist.set(true)
-              : bookmarkType === BookmarksEnum.watched
+              : status === BookmarksEnum.watched
                 ? this.$isWatched.set(true)
-                : this.$isLiked.set(true);
-          } else {
-            bookmarkType === BookmarksEnum.watchlist
-              ? this.$isInWatchlist.set(false)
-              : bookmarkType === BookmarksEnum.watched
-                ? this.$isWatched.set(false)
-                : this.$isLiked.set(false);
+                : this.$isHidden.set(true);
           }
         }),
         catchError((error) => {
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
-            detail: `Could not check if show is in the ${bookmarkType} collection`,
+            detail: `Could not check if show is in the collection`,
           });
           return of(error);
         }),
         finalize(() => {
           this.$isWatchlistLoading.set(false);
           this.$isWatchedLoading.set(false);
-          this.$isLikedLoading.set(false);
+          this.$isHideLoading.set(false);
         }),
       )
       .subscribe();
   }
 
-  private addToBookmark(bookmarkType: BookmarksEnum) {
+  private bookmarkTypeCheckOnAdd(bookmarkType: BookmarksEnum) {
     if (bookmarkType === BookmarksEnum.watchlist) {
-      return this.showsService.addToWatchlist(
-        String(this.$selectedShow()!.id),
-        this.$selectedShow()!,
-        this.$currentUser()!.uid,
-      );
+      !this.$currentUser()?.uid
+        ? this.$isWatchlistLogin.set(true)
+        : this.$isWatchlistLoading.set(true);
     }
     if (bookmarkType === BookmarksEnum.watched) {
-      return this.showsService.addToWatchedShows(
-        String(this.$selectedShow()!.id),
-        this.$selectedShow()!,
-        this.$currentUser()!.uid,
-      );
+      !this.$currentUser()?.uid
+        ? this.$isWatchedLogin.set(true)
+        : this.$isWatchedLoading.set(true);
     }
-    return this.showsService.addToLiked(
-      String(this.$selectedShow()!.id),
-      this.$selectedShow()!,
-      this.$currentUser()!.uid,
-    );
-  }
-
-  private removeFromBookmark(bookmarkType: BookmarksEnum) {
-    if (bookmarkType === BookmarksEnum.watchlist) {
-      return this.showsService.removeFromWatchlist(
-        String(this.$selectedShow()!.id),
-        this.$currentUser()!.uid,
-      );
+    if (bookmarkType === BookmarksEnum.hidden) {
+      !this.$currentUser()?.uid
+        ? this.$isHideLogin.set(true)
+        : this.$isHideLoading.set(true);
     }
-    if (bookmarkType === BookmarksEnum.watched) {
-      return this.showsService.removeFromWatchedShows(
-        String(this.$selectedShow()!.id),
-        this.$currentUser()!.uid,
-      );
-    }
-    return this.showsService.removeFromLiked(
-      String(this.$selectedShow()!.id),
-      this.$currentUser()!.uid,
-    );
-  }
-
-  private getFromBookmarks(bookmarkType: BookmarksEnum) {
-    if (bookmarkType === BookmarksEnum.watchlist) {
-      return this.showsService.getFromWatchlist(
-        String(this.$selectedShow()!.id),
-        this.$currentUser()!.uid,
-      );
-    }
-    if (bookmarkType === BookmarksEnum.watched) {
-      return this.showsService.getFromWatchedShows(
-        String(this.$selectedShow()!.id),
-        this.$currentUser()!.uid,
-      );
-    }
-    return this.showsService.getFromLiked(
-      String(this.$selectedShow()!.id),
-      this.$currentUser()!.uid,
-    );
   }
 
   private getShows() {

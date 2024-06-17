@@ -7,8 +7,9 @@ import {
   getDoc,
   getDocs,
   setDoc,
+  writeBatch,
 } from 'firebase/firestore';
-import { Observable, from, map, of, switchMap, tap } from 'rxjs';
+import { Observable, from, map, mergeMap, of, switchMap, tap } from 'rxjs';
 import { ConfigurationService, ShowsStore } from '..';
 import { environment } from '../../../environments/environment.development';
 import {
@@ -20,6 +21,8 @@ import {
 import { ShowVideoResponseInterface } from '../../shared/types/show-video-response.interface';
 import { WatchProviderInterface } from '../../shared/types/watch-providers-response.interface';
 import { UserDataService } from './user-data.service';
+import { BookmarksEnum } from '../../bookmarks/bookmarks.enum';
+import { MovieMetadataInterface } from '../../shows/show/show.component';
 
 @Injectable({
   providedIn: 'root',
@@ -35,46 +38,130 @@ export class ShowsService {
   private readonly usersCollection = 'users';
   private readonly watchedlistCollection = 'watchedlist';
   private readonly watchlistCollection = 'watchlist';
-  private readonly likedShowsCollection = 'liked-shows';
+  private readonly hiddenShowsCollection = 'hidden';
+  private readonly movieMetadataCollection = 'movieMetadata';
 
   private readonly $userLocation = this.userDataService.$userLocation;
   private readonly $currentUser = this.userDataService.$currentUser;
 
   // ~~~ Firestore API
 
-  // Saved Shows / Watchlist
-  public addToWatchlist(
+  // Add show to collection
+  public addShow(
     showId: string,
     showData: ShowInterface,
     userId: string,
+    status: BookmarksEnum,
   ) {
+    const batch = writeBatch(this.db);
+
+    // Reference to movieMetadata document
+    const movieMetadataRef = doc(
+      this.db,
+      this.usersCollection,
+      userId,
+      this.movieMetadataCollection,
+      showId,
+    );
+
+    // Reference to all collections
+    const watchlistRef = doc(
+      this.db,
+      this.usersCollection,
+      userId,
+      this.watchlistCollection,
+      showId,
+    );
+    const watchedRef = doc(
+      this.db,
+      this.usersCollection,
+      userId,
+      this.watchedlistCollection,
+      showId,
+    );
+    const hiddenRef = doc(
+      this.db,
+      this.usersCollection,
+      userId,
+      this.hiddenShowsCollection,
+      showId,
+    );
+
+    const getStatusRef = (status: BookmarksEnum) => {
+      return status === BookmarksEnum.watchlist
+        ? watchlistRef
+        : status === BookmarksEnum.watched
+          ? watchedRef
+          : hiddenRef;
+    };
+
+    // Commit the batch
+    return from(getDoc(movieMetadataRef)).pipe(
+      mergeMap((docSnap) => {
+        if (docSnap.exists()) {
+          const data = docSnap.data() as MovieMetadataInterface;
+          if (data.status !== status) {
+            const existingStatusRef = getStatusRef(data.status);
+            batch.delete(existingStatusRef);
+          }
+        }
+
+        // Set movie metadata with status
+        batch.set(movieMetadataRef, { status: status });
+
+        const newStatusRef = getStatusRef(status);
+        // Set movie data in the specific collection
+        batch.set(newStatusRef, showData);
+
+        return from(batch.commit());
+      }),
+    );
+  }
+
+  public getFromMetadata(showId: string, userId: string) {
     return from(
-      setDoc(
+      getDoc(
         doc(
           this.db,
           this.usersCollection,
           userId,
-          this.watchlistCollection,
+          this.movieMetadataCollection,
           showId,
         ),
-        showData,
       ),
     );
   }
 
-  public removeFromWatchlist(showId: string, userId: string) {
-    return from(
-      deleteDoc(
-        doc(
-          this.db,
-          this.usersCollection,
-          userId,
-          this.watchlistCollection,
-          showId,
-        ),
-      ),
+  // Remove show
+  public removeShow(showId: string, userId: string, status: BookmarksEnum) {
+    const batch = writeBatch(this.db);
+
+    // Reference to movieMetadata document
+    const movieMetadataRef = doc(
+      this.db,
+      this.usersCollection,
+      userId,
+      this.movieMetadataCollection,
+      showId,
     );
+
+    // Reference to the specific status collection document
+    const statusCollection = this.getStatusCollection(status);
+    const statusRef = doc(
+      this.db,
+      this.usersCollection,
+      userId,
+      statusCollection,
+      showId,
+    );
+
+    batch.delete(movieMetadataRef);
+    batch.delete(statusRef);
+
+    return from(batch.commit());
   }
+
+  // Saved Shows / Watchlist
 
   public getAllFromWatchlist(userId: string) {
     return from(
@@ -89,54 +176,7 @@ export class ShowsService {
     );
   }
 
-  public getFromWatchlist(showId: string, userId: string) {
-    return from(
-      getDoc(
-        doc(
-          this.db,
-          this.usersCollection,
-          userId,
-          this.watchlistCollection,
-          showId,
-        ),
-      ),
-    );
-  }
-
   // Watched Shows
-  public addToWatchedShows(
-    showId: string,
-    showData: ShowInterface,
-    userId: string,
-  ) {
-    return from(
-      setDoc(
-        doc(
-          this.db,
-          this.usersCollection,
-          userId,
-          this.watchedlistCollection,
-          showId,
-        ),
-        showData,
-      ),
-    );
-  }
-
-  public removeFromWatchedShows(showId: string, userId: string) {
-    return from(
-      deleteDoc(
-        doc(
-          this.db,
-          this.usersCollection,
-          userId,
-          this.watchedlistCollection,
-          showId,
-        ),
-      ),
-    );
-  }
-
   public getAllWatchedShows(userId: string) {
     return from(
       getDocs(
@@ -150,72 +190,15 @@ export class ShowsService {
     );
   }
 
-  public getFromWatchedShows(showId: string, userId: string) {
-    return from(
-      getDoc(
-        doc(
-          this.db,
-          this.usersCollection,
-          userId,
-          this.watchedlistCollection,
-          showId,
-        ),
-      ),
-    );
-  }
-
-  // Liked shows
-  public addToLiked(showId: string, showData: ShowInterface, userId: string) {
-    return from(
-      setDoc(
-        doc(
-          this.db,
-          this.usersCollection,
-          userId,
-          this.likedShowsCollection,
-          showId,
-        ),
-        showData,
-      ),
-    );
-  }
-
-  public removeFromLiked(showId: string, userId: string) {
-    return from(
-      deleteDoc(
-        doc(
-          this.db,
-          this.usersCollection,
-          userId,
-          this.likedShowsCollection,
-          showId,
-        ),
-      ),
-    );
-  }
-
-  public getAllLiked(userId: string) {
+  // Hidden shows
+  public getAllHidden(userId: string) {
     return from(
       getDocs(
         collection(
           this.db,
           this.usersCollection,
           userId,
-          this.likedShowsCollection,
-        ),
-      ),
-    );
-  }
-
-  public getFromLiked(showId: string, userId: string) {
-    return from(
-      getDoc(
-        doc(
-          this.db,
-          this.usersCollection,
-          userId,
-          this.likedShowsCollection,
-          showId,
+          this.hiddenShowsCollection,
         ),
       ),
     );
@@ -316,7 +299,7 @@ export class ShowsService {
         }),
         switchMap((res) => {
           return this.$currentUser()?.uid
-            ? this.filterLikedShows(res)
+            ? this.filterHiddenShows(res)
             : of(res);
         }),
         map(this.sortShowsByScore.bind(this)),
@@ -398,8 +381,8 @@ export class ShowsService {
     );
   }
 
-  private filterLikedShows(res: ShowInterface[]) {
-    return this.getAllLiked(this.$currentUser()!.uid).pipe(
+  private filterHiddenShows(res: ShowInterface[]) {
+    return this.getAllHidden(this.$currentUser()!.uid).pipe(
       map((likedShow) => {
         const likedShowsIds = new Set();
 
@@ -420,5 +403,18 @@ export class ShowsService {
         return res.filter((show) => !watchListShowIds.has(show.id));
       }),
     );
+  }
+
+  private getStatusCollection(status: BookmarksEnum): string {
+    switch (status) {
+      case 'watchlist':
+        return this.watchlistCollection;
+      case 'watched':
+        return this.watchedlistCollection;
+      case 'hidden':
+        return this.hiddenShowsCollection;
+      default:
+        throw new Error('Invalid status');
+    }
   }
 }
