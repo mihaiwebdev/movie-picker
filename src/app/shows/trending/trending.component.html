@@ -3,6 +3,11 @@
   {{ $selectedPlatformNames().join(", ") }}
 </h2>
 
+@if ($trendingShows().length < 1) {
+  <p class="no-shows">
+    No shows available in your country on the selected Platform
+  </p>
+}
 @if (screenWidth > 800) {
   <div class="swiper-desktop">
     <swiper-container
@@ -24,6 +29,8 @@
             class="show-image"
             [src]="imgBaseUrl + show.poster_path"
             alt="movie-poster"
+            (load)="onImageLoad()"
+            [class.loaded]="!$isImgLoading()"
           />
         </swiper-slide>
       }
@@ -46,6 +53,8 @@
             [src]="imgBaseUrl + show.poster_path"
             alt="movie-poster"
             (click)="onShowClick(show)"
+            (load)="onImageLoad()"
+            [class.loaded]="!$isImgLoading()"
           />
         </swiper-slide>
       }

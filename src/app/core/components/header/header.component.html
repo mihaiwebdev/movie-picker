@@ -13,6 +13,7 @@
     <div class="desktop-nav">
       <div class="auto-complete-container">
         <p-autoComplete
+          [(ngModel)]="$selectedMovie"
           [suggestions]="$suggestions()"
           (completeMethod)="searchShows($event)"
           (onSelect)="onShowSelect($event)"

@@ -12,7 +12,15 @@ import {
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
-import { catchError, finalize, map, Observable, of, tap } from 'rxjs';
+import {
+  catchError,
+  finalize,
+  map,
+  Observable,
+  of,
+  switchMap,
+  tap,
+} from 'rxjs';
 import { LoaderService, ShowsService, ShowsStore } from '../../core';
 import {
   ShowInterface,
@@ -70,6 +78,7 @@ export class TrendingComponent {
 
   public readonly imgBaseUrl = 'https://image.tmdb.org/t/p/w342';
   public readonly screenWidth = window.innerWidth;
+  public readonly $isImgLoading = signal(true);
 
   @ViewChild('mySwiper') mySwiper?: ElementRef;
   @ViewChild('mySwiperMobile') mySwiperMobile?: ElementRef;
@@ -79,8 +88,9 @@ export class TrendingComponent {
     this.showTypeObs$
       .pipe(
         takeUntilDestroyed(this.destroyRef),
-        tap(() => {
-          this.getTrendingShows(false).subscribe();
+
+        switchMap(() => {
+          return this.getTrendingShows(false);
         }),
       )
       .subscribe();
@@ -91,11 +101,13 @@ export class TrendingComponent {
         takeUntilDestroyed(this.destroyRef),
         tap((res) => {
           this.$selectedPlatformNames.set(res.map((platform) => platform.name));
-
+        }),
+        switchMap(() => {
           if (this.isFirstPlatformChange) {
             this.isFirstPlatformChange = false;
+            return of(null);
           } else {
-            this.getTrendingShows(false).subscribe();
+            return this.getTrendingShows(false);
           }
         }),
       )
@@ -125,10 +137,15 @@ export class TrendingComponent {
     this.router.navigateByUrl(`/app/movie?trending=${showType}`);
   }
 
+  public onImageLoad() {
+    this.$isImgLoading.set(false);
+  }
+
   private getTrendingShows(
     isUpdate: boolean = false,
   ): Observable<ShowResponseInterface> {
     this.loaderService.setIsLoading(true);
+    this.$isImgLoading.set(true);
     const showType = this.showsStore.$selectedShowType();
 
     if (isUpdate) {

@@ -79,6 +79,7 @@
     margin-top: 0.4rem;
     overflow: hidden;
     text-overflow: ellipsis;
+    text-wrap: nowrap;
   }
 
   .swiper-pagination-movie,
@@ -86,7 +87,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: 0.5rem;
+    margin-top: 1rem;
   }
 }
 

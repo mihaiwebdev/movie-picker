@@ -29,14 +29,14 @@
     width: 100%;
     height: 100%;
   }
-
-  iframe {
-    pointer-events: none;
-  }
 }
 
 @media screen and (min-width: 1200px) {
   .video-component {
     height: 517px;
+  }
+
+  iframe {
+    pointer-events: none;
   }
 }

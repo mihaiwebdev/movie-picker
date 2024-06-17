@@ -14,7 +14,7 @@ export const streamingPlatforms: StreamingPlatformsInterface[] = [
     name: 'Max',
   },
   {
-    provider_id: 9,
+    provider_id: 119,
     name: 'Amazone Prime Video',
   },
   {
@@ -25,12 +25,8 @@ export const streamingPlatforms: StreamingPlatformsInterface[] = [
     provider_id: 2,
     name: 'Apple TV',
   },
-  {
-    provider_id: 35,
-    name: 'Rakuten TV',
-  },
-  {
-    provider_id: 7,
-    name: 'Vudu',
-  },
+  // {
+  //   provider_id: 35,
+  //   name: 'Rakuten TV',
+  // },
 ];

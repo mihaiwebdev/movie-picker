@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, model, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
@@ -52,6 +52,7 @@ export class HeaderComponent {
   private subscription?: Subscription;
 
   public readonly deviceWith = window.innerWidth;
+  public readonly $selectedMovie = model<string>();
   public readonly $currentUser = this.userDataService.$currentUser;
   public readonly $isMoviePage = signal(false);
   public readonly $isNavHidden = signal(true);
@@ -77,7 +78,10 @@ export class HeaderComponent {
 
   public onShowSelect($event: AutoCompleteSelectEvent) {
     const showData: ShowInterface = $event.value.showData;
+    this.$selectedMovie.set('');
     this.showsStore.setSelectedShow(showData);
+    this.showsStore.setShowsResults([showData]);
+    this.showsStore.setResultPages(1);
     this.router.navigateByUrl('/app/movie');
   }
 

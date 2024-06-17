@@ -213,7 +213,6 @@ export class ShowsService {
         map((response) => {
           return response.results.filter(
             (result) =>
-              result.official &&
               (result.type === 'Trailer' || result.type === 'Teaser') &&
               result.site === 'YouTube',
           );
@@ -236,7 +235,9 @@ export class ShowsService {
 
           const resultProperty = response.results[key];
           if (resultProperty && resultProperty.flatrate) {
-            return resultProperty.flatrate[0].provider_name;
+            return resultProperty.flatrate
+              .map((provider) => provider.provider_name)
+              .join(', ');
           }
           return '';
         }),

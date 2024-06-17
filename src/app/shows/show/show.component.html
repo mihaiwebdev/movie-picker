@@ -99,13 +99,17 @@
                 {{ $isMovie() ? "Movie" : "TV Series" }}
               </p>
 
-              <small>on </small>
-              @if ($isProviderLoading()) {
-                <span class="dots-loader"></span>
+              @if ($watchProvider()) {
+                <small>on </small>
+                @if ($isProviderLoading()) {
+                  <span class="dots-loader"></span>
+                } @else {
+                  <p class="show-type watch-provider">
+                    {{ $watchProvider() }}
+                  </p>
+                }
               } @else {
-                <p class="show-type watch-provider">
-                  {{ $watchProvider() }}
-                </p>
+                <small>not available in your region</small>
               }
             </div>
 
