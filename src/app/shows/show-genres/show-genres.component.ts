@@ -136,6 +136,10 @@ export class ShowGenresComponent implements AfterViewInit, OnInit {
     this.selectedGenresControl.valueChanges.subscribe((res) =>
       this.selectedGenresNames.setValue(res?.map((genre) => genre.name)),
     );
+
+    if (this.$selectButtonValue() === 'mood') {
+      this.showsStore.setSelectedGenres([]);
+    }
   }
 
   @ViewChild('movieSwiper') movieSwiper?: ElementRef;
