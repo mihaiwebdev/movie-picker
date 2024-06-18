@@ -3,10 +3,6 @@
     text-align: center;
     font-size: 3.75rem;
     margin-bottom: 0;
-    /* background-image: var(--yellow-gradient);
-    background-clip: text;
-    -webkit-text-fill-color: transparent; */
-    /* color: var(--font-color-secondary); */
   }
 
   p.team-subtitle {
@@ -30,17 +26,22 @@
 
       .mihai-description {
         width: 50%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
 
         p.mihai-name {
           text-align: center;
           font-size: 2.5rem;
           font-weight: 800;
           margin: 0;
+          margin-right: 2rem;
         }
 
         p.mihai-text {
           width: 90%;
-          margin: 1.5rem 4rem;
+          margin: 1.5rem 0;
           line-height: 2;
           font-weight: 600;
         }
@@ -63,17 +64,23 @@
 
       .andreea-description {
         width: 50%;
+        width: 50%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
 
         p.andreea-name {
           text-align: center;
           font-size: 2.5rem;
           font-weight: 800;
           margin: 0;
+          margin-right: 2rem;
         }
 
         p.andreea-text {
           width: 90%;
-          margin: 1.5rem 4rem;
+          margin: 1.5rem 0;
           line-height: 2;
           font-weight: 600;
         }
@@ -85,6 +92,95 @@
         height: 25rem;
         border-radius: 20%;
         box-shadow: 2px 4px 12px rgba(0, 0, 0, 0.6);
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .team {
+    .team-members {
+      .mihai {
+        img {
+          width: 20rem;
+          height: 20rem;
+        }
+      }
+
+      .andreea {
+        img {
+          width: 20rem;
+          height: 20rem;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  .team {
+    h1.team-title {
+      font-size: 3.5rem;
+    }
+
+    .team-members {
+      .mihai {
+        flex-direction: column;
+        gap: 0;
+
+        .mihai-description {
+          margin-top: 2rem;
+          width: 100%;
+          p.mihai-name {
+            margin-right: 0;
+          }
+        }
+      }
+
+      .andreea {
+        flex-direction: column;
+        gap: 0;
+        flex-direction: column-reverse;
+
+        .andreea-description {
+          margin-top: 2rem;
+          width: 100%;
+          p.andreea-name {
+            margin-right: 0;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .team {
+    h1.team-title {
+      font-size: 2rem;
+    }
+    p.team-subtitle {
+      font-size: 1.2rem;
+    }
+
+    .team-members {
+      padding: 2rem 0.5rem;
+      gap: 0;
+
+      .mihai {
+        .mihai-description {
+          p.mihai-name {
+            font-size: 2rem;
+          }
+        }
+      }
+      .andreea {
+        margin-top: 1.5rem;
+        .andreea-description {
+          p.andreea-name {
+            font-size: 2rem;
+          }
+        }
       }
     }
   }
