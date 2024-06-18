@@ -66,7 +66,7 @@ export class HeaderComponent {
 
         this.$isNavHidden.set(
           res.urlAfterRedirects.includes('/login') ||
-            res.urlAfterRedirects === '/',
+            !res.urlAfterRedirects.includes('/app'),
         );
       }
     });

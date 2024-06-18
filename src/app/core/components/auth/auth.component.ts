@@ -176,9 +176,10 @@ export class AuthComponent {
     this.authService
       .checkIsSingInWithEmailLink()
       ?.pipe(
-        tap(() =>
+        tap(() => {
           this.storageService.removeFromLocalStorage(environment.email),
-        ),
+            this.router.navigateByUrl('/app');
+        }),
         catchError((error) => {
           this.messageService.add({
             severity: 'error',
