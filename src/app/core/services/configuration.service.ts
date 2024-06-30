@@ -1,11 +1,10 @@
 import { Injectable, inject } from '@angular/core';
 
+import { getAnalytics } from 'firebase/analytics';
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { PrimeNGConfig } from 'primeng/api';
 import { environment } from '../../../environments/environment.development';
-import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check';
-import { getAnalytics } from 'firebase/analytics';
 
 @Injectable({
   providedIn: 'root',
@@ -20,12 +19,5 @@ export class ConfigurationService {
 
   constructor() {
     this.primengConfig.ripple = true;
-
-    const appCheck = initializeAppCheck(this.firebaseApp, {
-      provider: new ReCaptchaV3Provider(
-        '6LcvjPQpAAAAAAIFA2zvA3OAyQibtMXRfSuF3G6q',
-      ),
-      isTokenAutoRefreshEnabled: true,
-    });
   }
 }

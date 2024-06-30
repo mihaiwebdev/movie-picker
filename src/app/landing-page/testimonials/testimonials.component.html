@@ -1,6 +1,40 @@
 <section class="testimonials">
   <h1 class="testimonials-title">Here's what our users have to say.</h1>
   <p class="testimonials-subtitle">Read real stories</p>
+
+  <div class="slider">
+    <swiper-container
+      #testimonialsSwiper
+      pagination="true"
+      pagination-clickable="true"
+      space-between="30"
+      slides-per-view="3"
+    >
+      <!-- @for (comment of testimonials; track comment.id) {
+        <swiper-slide>
+          <div class="card">
+            <div class="heading">
+              <img
+                [src]="'../../../assets/images/' + comment.img"
+                alt="profileImg"
+              />
+              <div class="person-name">
+                <span class="name">{{ comment.name }}</span>
+                <p class="id">{{ comment.id }}</p>
+              </div>
+            </div>
+            <span class="maintxt">{{ comment.text }}</span>
+          </div>
+          <p>helo</p>
+        </swiper-slide>
+      } -->
+      <swiper-slide>Slide 1</swiper-slide>
+      <swiper-slide>Slide 2</swiper-slide>
+      <swiper-slide>Slide 3</swiper-slide>
+      <swiper-slide>Slide 4</swiper-slide>
+    </swiper-container>
+  </div>
+
   <div class="cards">
     <div class="columns">
       <div class="card">
