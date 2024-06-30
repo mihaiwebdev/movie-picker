@@ -6,8 +6,7 @@ export const baseEnv = {
     'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlMmRjMDI0Mjc2MWU3NmVmZGJmZTI1OGRjYjdiZjlkMCIsInN1YiI6IjYzNGU3YTY1Mzg5ZGExMDA3OWU2NGE1YSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.GQ3OTma_bWgWATd-IWV7i_F-BXgBRRTEz8XhzVO9XcY',
   firebaseConfig: {
     apiKey: 'AIzaSyBDDbR0I5tjk4t3QEx5QqogBBswoH9Tbhc',
-    // authDomain: 'movie-picker-81e11.firebaseapp.com',
-    authDomain: 'favorite-movie-app-q6ir.vercel.app',
+    authDomain: 'movie-picker-81e11.firebaseapp.com',
     projectId: 'movie-picker-81e11',
     storageBucket: 'movie-picker-81e11.appspot.com',
     messagingSenderId: '458754057875',
