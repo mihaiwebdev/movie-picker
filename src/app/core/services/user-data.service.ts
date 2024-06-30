@@ -24,8 +24,8 @@ export class UserDataService {
   public readonly $currentUser = this.state.$currentUser.asReadonly();
 
   constructor() {
-    // this.getUserLocation();
-    // this.getCurrentUser();
+    this.getUserLocation();
+    this.getCurrentUser();
   }
 
   public getCurrentUser() {
