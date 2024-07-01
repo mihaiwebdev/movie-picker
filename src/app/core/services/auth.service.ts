@@ -10,10 +10,10 @@ import {
   signInWithRedirect,
   signOut,
 } from 'firebase/auth';
+import { from } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
 import { ConfigurationService } from './configuration.service';
 import { StorageService } from './storage.service';
-import { from, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -57,11 +57,7 @@ export class AuthService {
   }
 
   public loginWithTwitter() {
-    return from(signInWithRedirect(this.auth, this.twitterProvider)).pipe(
-      tap((result) => {
-        console.log('result', result);
-      }),
-    );
+    return from(signInWithRedirect(this.auth, this.twitterProvider));
   }
 
   public getRedirectResult() {
