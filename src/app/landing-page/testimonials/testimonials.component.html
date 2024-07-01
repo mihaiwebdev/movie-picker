@@ -2,15 +2,9 @@
   <h1 class="testimonials-title">Here's what our users have to say.</h1>
   <p class="testimonials-subtitle">Read real stories</p>
 
-  <div class="slider">
-    <swiper-container
-      #testimonialsSwiper
-      pagination="true"
-      pagination-clickable="true"
-      space-between="30"
-      slides-per-view="3"
-    >
-      <!-- @for (comment of testimonials; track comment.id) {
+  <div class="swiper-container">
+    <swiper-container #mySwiper init="false" pagination-clickable="true">
+      @for (comment of testimonials; track comment.id) {
         <swiper-slide>
           <div class="card">
             <div class="heading">
@@ -23,152 +17,86 @@
                 <p class="id">{{ comment.id }}</p>
               </div>
             </div>
-            <span class="maintxt">{{ comment.text }}</span>
+            <div class="comment-box">
+              <span
+                appReadMore
+                [maxLength]="150"
+                [text]="comment.text || ''"
+                class="maintxt"
+              >
+                {{ comment.text }}
+              </span>
+            </div>
           </div>
-          <p>helo</p>
         </swiper-slide>
-      } -->
-      <swiper-slide>Slide 1</swiper-slide>
-      <swiper-slide>Slide 2</swiper-slide>
-      <swiper-slide>Slide 3</swiper-slide>
-      <swiper-slide>Slide 4</swiper-slide>
+      }
     </swiper-container>
+
+    <div class="swiper-pagination-el"></div>
   </div>
 
   <div class="cards">
     <div class="columns">
-      <div class="card">
-        <div class="heading">
-          <img src="../../../assets/images/x_coding.jpg" alt="profileImg" />
-          <div class="person-name">
-            <span class="name">x_Coding</span>
-            <p class="id">{{ "@" }}MrxCoding</p>
+      @for (comment of testimonials.slice(0, 3); track comment.id) {
+        <div class="card">
+          <div class="heading">
+            <img
+              [src]="'../../../assets/images/' + comment.img"
+              alt="profileImg"
+            />
+            <div class="person-name">
+              <span class="name">{{ comment.name }}</span>
+              <p class="id">{{ comment.id }}</p>
+            </div>
           </div>
-        </div>
-        <span class="maintxt"
-          >Lorem ipsum, dolor sit amet consectetur adipisicing elit. Corporis
-          maxime ex eos accusamus architecto aliquam!</span
-        >
-      </div>
 
-      <div class="card">
-        <div class="heading">
-          <img src="../../../assets/images/venus.jpg" alt="profileImg" />
-          <div class="person-name">
-            <span class="name">Venus</span>
-            <p class="id">{{ "@" }}venusbhatia</p>
-          </div>
+          <span class="maintxt">
+            {{ comment.text }}
+          </span>
         </div>
-        <span class="maintxt"
-          >"Thanks for giving the opportunity be an early tester..You and Mihai
-          have put great efforts in making this and it's visible in it!UI is
-          pretty smooth even though being on web. I liked it so much. Loved the
-          carousel on the home screen so much btw, so much that I want to learn
-          how to implement in an iOS app!"</span
-        >
-      </div>
-
-      <div class="card">
-        <div class="heading">
-          <img src="../../../assets/images/Harun.jpg" alt="profileImg" />
-          <div class="person-name">
-            <span class="name">Harun</span>
-            <p class="id">{{ "@" }}haruncodes</p>
-          </div>
-        </div>
-        <span class="maintxt"
-          >"On mobile that animation is amazing!! It's perfect. Keep at it! I
-          wanna use it when its ready!"</span
-        >
-      </div>
+      }
     </div>
 
     <div class="columns">
-      <div class="card">
-        <div class="heading">
-          <img src="../../../assets/images/Dev.jpg" alt="profileImg" />
-          <div class="person-name">
-            <span class="name">DevHQ</span>
-            <p class="id">{{ "@" }}codezonn</p>
+      @for (comment of testimonials.slice(3, 5); track comment.id) {
+        <div class="card">
+          <div class="heading">
+            <img
+              [src]="'../../../assets/images/' + comment.img"
+              alt="profileImg"
+            />
+            <div class="person-name">
+              <span class="name">{{ comment.name }}</span>
+              <p class="id">{{ comment.id }}</p>
+            </div>
           </div>
-        </div>
-        <span class="maintxt"
-          >"You did an excellent work. The background of each movie and the
-          little summary writen about each movies, the transition from a movie
-          to another, gave me the desire to start watching them immediatley.
-          Another thing I love about it is that the search algorithm doesn't
-          take too much time to load the requested movies. I find the app super
-          attractive, easy to use for a first user and a big kudos for the
-          quick. Can't wait to see the finaly version of the app and I would be
-          glad to be the first user!"</span
-        >
-      </div>
 
-      <div class="card">
-        <div class="heading">
-          <img src="../../../assets/images/Krish.jpg" alt="profileImg" />
-          <div class="person-name">
-            <span class="name">Krish</span>
-            <p class="id">{{ "@" }}krishfromasap</p>
-          </div>
+          <span class="maintxt">
+            {{ comment.text }}
+          </span>
         </div>
-        <span class="maintxt"
-          >"Seems like your hard work will pay off. I really like it.I am always
-          confused with what movie to watch on Netflix hahaha so this is a life
-          saver and I find it really helpful that you can combine more than one
-          genre to find a movie"</span
-        >
-      </div>
+      }
     </div>
 
     <div class="columns">
-      <div class="card">
-        <div class="heading">
-          <img src="../../../assets/images/Arjun.jpg" alt="profileImg" />
-          <div class="person-name">
-            <span class="name">Arjun Rathod</span>
-            <p class="id">{{ "@" }}ArjunRa87193765</p>
+      @for (comment of testimonials.slice(5, 8); track comment.id) {
+        <div class="card">
+          <div class="heading">
+            <img
+              [src]="'../../../assets/images/' + comment.img"
+              alt="profileImg"
+            />
+            <div class="person-name">
+              <span class="name">{{ comment.name }}</span>
+              <p class="id">{{ comment.id }}</p>
+            </div>
           </div>
-        </div>
-        <span class="maintxt"
-          >"Hey the UI looks great and catchy.Making a movie picker was a good
-          idea and your implimentation looks cool.Can't wait for final
-          product!"</span
-        >
-      </div>
 
-      <div class="card">
-        <div class="heading">
-          <img src="../../../assets/images/Haarmet.jpg" alt="profileImg" />
-          <div class="person-name">
-            <span class="name">Harmeet Singh</span>
-            <p class="id">{{ "@" }}ImHarmeet_Singh</p>
-          </div>
+          <span class="maintxt">
+            {{ comment.text }}
+          </span>
         </div>
-        <span class="maintxt"
-          >"I really like the concept of the app. The design is visually
-          appealing, and the dropdown animation is smooth, which I
-          appreciate.I'm excited to see the app evolve into its final
-          phase."</span
-        >
-      </div>
-
-      <div class="card">
-        <div class="heading">
-          <img src="../../../assets/images/Meda.jpg" alt="profileImg" />
-          <div class="person-name">
-            <span class="name">MedaFarcas</span>
-            <p class="id">{{ "@" }}MedaFarcas</p>
-          </div>
-        </div>
-        <span class="maintxt"
-          >"I'm truly impressed by the attention to details, especially
-          integrating TMDb ratings for quality content, cause it's simplifying
-          the search for quality content. Additionally, the ability to combine
-          platforms is a game changer for those with multiple subscriptions.
-          Thanks for these helpful features!"</span
-        >
-      </div>
+      }
     </div>
   </div>
 </section>

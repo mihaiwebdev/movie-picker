@@ -4,11 +4,12 @@ import {
   ElementRef,
   ViewChild,
 } from '@angular/core';
-
+import { register } from 'swiper/element/bundle';
+import { ReadMoreDirective } from '../../shared';
 @Component({
   selector: 'app-testimonials',
   standalone: true,
-  imports: [],
+  imports: [ReadMoreDirective],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './testimonials.component.html',
   styleUrl: './testimonials.component.css',
@@ -89,42 +90,42 @@ export class TestimonialsComponent {
       img: 'Meda.jpg',
     },
   ];
+
   // SWIPER Config
   public readonly breakpoints = {
-    slidesPerView: 3,
+    slidesPerView: 1,
     spaceBetween: 20,
     breakpoints: {
-      320: {
-        slidesPerView: 4,
-        spaceBetween: 30,
+      600: {
+        slidesPerView: 2,
       },
-      480: {
-        slidesPerView: 5,
-        spaceBetween: 40,
-      },
-      640: {
-        slidesPerView: 6,
-        spaceBetween: 40,
+      768: {
+        slidesPerView: 2,
+        spaceBetween: 20,
       },
 
-      780: {
-        slidesPerView: 7,
-        spaceBetween: 50,
-      },
-      920: {
-        slidesPerView: 8,
-        spaceBetween: 50,
-      },
-      1100: {
-        slidesPerView: 9,
-        spaceBetween: 50,
+      1000: {
+        slidesPerView: 3,
+        spaceBetween: 20,
       },
     },
   };
 
-  @ViewChild('testimonialsSwiper') testimonialsSwiper?: ElementRef;
+  public readonly swiperPagination = {
+    pagination: {
+      el: '.swiper-pagination-el',
+      type: 'bullets',
+    },
+  };
+
+  ngOnInit() {
+    register();
+  }
+  @ViewChild('mySwiper') mySwiper?: ElementRef;
 
   ngAfterViewInit() {
-    // Object.assign(this.testimonialsSwiper?.nativeElement, this.breakpoints);
+    Object.assign(this.mySwiper?.nativeElement, this.breakpoints);
+    Object.assign(this.mySwiper?.nativeElement, this.swiperPagination);
+    this.mySwiper?.nativeElement.initialize();
   }
 }

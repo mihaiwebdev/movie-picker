@@ -13,13 +13,31 @@
     margin-bottom: 0;
   }
 
-  .slider {
-    /* display: none; */
-    display: block;
+  .swiper-container {
+    display: none;
+    cursor: pointer;
+    margin-top: 2rem;
+    padding-bottom: 1rem;
+    margin-bottom: 6rem;
   }
+
   swiper-container {
     width: 100%;
     height: 100%;
+
+    .card {
+      margin-bottom: 2.5rem;
+      min-height: 225px;
+    }
+  }
+  .swiper-pagination-el {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .swiper-pagination-bullet {
+    background: #000;
   }
 
   .cards {
@@ -41,49 +59,53 @@
       width: 23%;
       gap: 1.25rem;
     }
+  }
 
-    .card {
-      background-color: #fff;
-      padding: 2rem;
-      height: auto;
-      border-radius: 20px;
-      box-shadow:
-        0 0.7961918735236395px 2.3885756205709185px -0.625px #0000000d,
-        0 2.414506143104518px 7.2435184293135535px -1.25px #0000000d,
-        0 6.382653521484461px 19.147960564453385px -1.875px #0000000d,
-        0 20px 60px -2.5px #0000000d;
-      transition: transform 0.1s ease;
+  .card {
+    background-color: #fff;
+    padding: 2rem;
+    height: auto;
+    border-radius: 20px;
+    box-shadow:
+      0 0.7961918735236395px 2.3885756205709185px -0.625px #0000000d,
+      0 2.414506143104518px 7.2435184293135535px -1.25px #0000000d,
+      0 6.382653521484461px 19.147960564453385px -1.875px #0000000d,
+      0 20px 60px -2.5px #0000000d;
+    transition: transform 0.1s ease;
 
-      .heading {
-        display: flex;
-        flex-wrap: nowrap;
-        align-items: center;
-        justify-content: flex-start;
-        gap: 1rem;
-        margin-bottom: 1rem;
+    .heading {
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 1rem;
+      margin-bottom: 1rem;
 
-        img {
-          width: 3.125rem;
-          height: 3.125rem;
-          border-radius: 50%;
-        }
-
-        .person-name {
-          .name {
-            font-weight: 600;
-          }
-          p.id {
-            margin: 0.3rem 0;
-            color: var(--dark-gray);
-            font-size: 0.8rem;
-          }
-        }
+      img {
+        width: 3.125rem;
+        height: 3.125rem;
+        border-radius: 50%;
       }
 
-      &:hover {
-        transform: scale(1.01);
+      .person-name {
+        .name {
+          font-weight: 600;
+        }
+        p.id {
+          margin: 0.3rem 0;
+          color: var(--dark-gray);
+          font-size: 0.8rem;
+        }
       }
     }
+
+    &:hover {
+      transform: scale(1.01);
+    }
+  }
+
+  .read-more-btn {
+    color: #000;
   }
 }
 
@@ -93,8 +115,31 @@
       display: none;
     }
 
-    .slider {
+    .swiper-container {
       display: block;
+    }
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  .testimonials {
+    h1.testimonials-title {
+      font-size: 3.5rem;
+    }
+  }
+}
+
+@media screen and (max-width: 764px) {
+  .testimonials {
+    h1.testimonials-title {
+      font-size: 2rem;
+    }
+    p.testimonials-subtitle {
+      font-size: 1.2rem;
+    }
+
+    .swiper-container {
+      margin-bottom: 4rem;
     }
   }
 }

@@ -137,8 +137,6 @@ export class AuthComponent {
       .loginWithTwitter()
       .pipe(
         catchError((error) => {
-          console.log(error);
-
           this.messageService.add({
             severity: 'error',
             summary: 'Error',

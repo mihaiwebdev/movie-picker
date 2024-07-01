@@ -29,3 +29,13 @@ body {
     color: #fff;
   }
 }
+
+.swiper-pagination-el {
+  .swiper-pagination-bullet {
+    background: #000;
+
+    &.swiper-pagination-bullet-active {
+      background: var(--font-color-secondary);
+    }
+  }
+}

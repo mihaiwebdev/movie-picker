@@ -11,7 +11,7 @@ import {
   signInWithRedirect,
   signOut,
 } from 'firebase/auth';
-import { from, tap } from 'rxjs';
+import { from } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
 import { ConfigurationService } from './configuration.service';
 import { StorageService } from './storage.service';
@@ -58,11 +58,7 @@ export class AuthService {
   }
 
   public loginWithTwitter() {
-    return from(signInWithPopup(this.auth, this.twitterProvider)).pipe(
-      tap((result) => {
-        console.log(result);
-      }),
-    );
+    return from(signInWithPopup(this.auth, this.twitterProvider)).pipe();
   }
 
   public getRedirectResult() {

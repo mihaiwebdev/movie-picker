@@ -32,11 +32,8 @@ export class UserDataService {
     this.loaderService.setIsLoading(true);
 
     onAuthStateChanged(this.auth, (user) => {
-      if (user) {
-        this.state.$currentUser.set(user);
-      } else {
-        this.state.$currentUser.set(null);
-      }
+      this.state.$currentUser.set(user);
+
       this.loaderService.setIsLoading(false);
     });
   }
