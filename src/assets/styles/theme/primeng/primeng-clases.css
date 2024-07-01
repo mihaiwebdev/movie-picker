@@ -1,6 +1,7 @@
 @import "./search-input.css";
 @import "./tabview.css";
 @import "./auto-complete.css";
+@import "./landing-page-accordion.css";
 
 /* Multiselect */
 .p-multiselect {

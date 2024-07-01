@@ -1,6 +1,6 @@
 .testimonials {
   margin-top: 5rem;
-  h1.testimonials-title {
+  h2.testimonials-title {
     text-align: center;
     font-size: 3.75rem;
     margin-bottom: 0;
@@ -27,6 +27,8 @@
 
     .card {
       margin-bottom: 2.5rem;
+      margin-left: 0.5rem;
+      margin-right: 0.5rem;
       min-height: 225px;
     }
   }
@@ -123,7 +125,7 @@
 
 @media screen and (max-width: 1024px) {
   .testimonials {
-    h1.testimonials-title {
+    h2.testimonials-title {
       font-size: 3.5rem;
     }
   }
@@ -131,7 +133,7 @@
 
 @media screen and (max-width: 764px) {
   .testimonials {
-    h1.testimonials-title {
+    h2.testimonials-title {
       font-size: 2rem;
     }
     p.testimonials-subtitle {

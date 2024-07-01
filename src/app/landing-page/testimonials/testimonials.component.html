@@ -1,10 +1,10 @@
 <section class="testimonials">
-  <h1 class="testimonials-title">Here's what our users have to say.</h1>
+  <h2 class="testimonials-title">Here's what our users have to say.</h2>
   <p class="testimonials-subtitle">Read real stories</p>
 
   <div class="swiper-container">
     <swiper-container #mySwiper init="false" pagination-clickable="true">
-      @for (comment of testimonials; track comment.id) {
+      @for (comment of testimonials.reverse(); track comment.id) {
         <swiper-slide>
           <div class="card">
             <div class="heading">

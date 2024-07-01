@@ -20,7 +20,7 @@ section.how-it-works {
       text-align: center;
     }
 
-    h1.highlight {
+    h2.highlight {
       font-size: 3rem;
       margin: 1rem 0;
     }
@@ -99,7 +99,7 @@ section.how-it-works {
 @media screen and (max-width: 768px) {
   section.how-it-works {
     aside.aside-how-it-works {
-      h1.highlight {
+      h2.highlight {
         font-size: 2rem;
       }
 

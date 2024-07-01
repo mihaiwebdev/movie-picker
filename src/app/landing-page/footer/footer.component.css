@@ -6,7 +6,7 @@
     justify-content: center;
     margin-bottom: 5rem;
 
-    h1 {
+    h2 {
       font-size: 3.75rem;
       margin-bottom: 2rem;
     }
@@ -176,7 +176,7 @@
 @media screen and (max-width: 1024px) {
   .footer {
     .sign-up-box {
-      h1 {
+      h2 {
         font-size: 3.5rem;
       }
     }
@@ -213,7 +213,7 @@
 @media screen and (max-width: 768px) {
   .footer {
     .sign-up-box {
-      h1 {
+      h2 {
         font-size: 2rem;
       }
 

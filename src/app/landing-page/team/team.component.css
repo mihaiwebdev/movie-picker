@@ -1,5 +1,5 @@
 .team {
-  h1.team-title {
+  h2.team-title {
     text-align: center;
     font-size: 3.75rem;
     margin-bottom: 0;
@@ -119,7 +119,7 @@
 
 @media screen and (max-width: 1024px) {
   .team {
-    h1.team-title {
+    h2.team-title {
       font-size: 3.5rem;
     }
 
@@ -156,7 +156,7 @@
 
 @media screen and (max-width: 768px) {
   .team {
-    h1.team-title {
+    h2.team-title {
       font-size: 2rem;
     }
     p.team-subtitle {
