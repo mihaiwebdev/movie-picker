@@ -13,7 +13,7 @@ import {
 import { environment } from '../../../environments/environment.development';
 import { ConfigurationService } from './configuration.service';
 import { StorageService } from './storage.service';
-import { from } from 'rxjs';
+import { from, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -57,7 +57,11 @@ export class AuthService {
   }
 
   public loginWithTwitter() {
-    return from(signInWithRedirect(this.auth, this.twitterProvider));
+    return from(signInWithRedirect(this.auth, this.twitterProvider)).pipe(
+      tap((result) => {
+        console.log('result', result);
+      }),
+    );
   }
 
   public getRedirectResult() {

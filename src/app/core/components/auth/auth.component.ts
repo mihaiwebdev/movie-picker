@@ -137,6 +137,8 @@ export class AuthComponent {
       .loginWithTwitter()
       .pipe(
         catchError((error) => {
+          console.log(error);
+
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
@@ -156,7 +158,12 @@ export class AuthComponent {
     this.authService
       .getRedirectResult()
       .pipe(
+        tap((result) => {
+          console.log('result redirect', result);
+        }),
         catchError((error) => {
+          console.log('redirect error', error);
+
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
