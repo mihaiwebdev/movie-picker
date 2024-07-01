@@ -7,10 +7,11 @@ import {
   isSignInWithEmailLink,
   sendSignInLinkToEmail,
   signInWithEmailLink,
+  signInWithPopup,
   signInWithRedirect,
   signOut,
 } from 'firebase/auth';
-import { from } from 'rxjs';
+import { from, tap } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
 import { ConfigurationService } from './configuration.service';
 import { StorageService } from './storage.service';
@@ -57,7 +58,11 @@ export class AuthService {
   }
 
   public loginWithTwitter() {
-    return from(signInWithRedirect(this.auth, this.twitterProvider));
+    return from(signInWithPopup(this.auth, this.twitterProvider)).pipe(
+      tap((result) => {
+        console.log(result);
+      }),
+    );
   }
 
   public getRedirectResult() {
