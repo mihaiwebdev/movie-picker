@@ -1,27 +1,40 @@
-<section class="hero">
-  <main class="main-hero">
-    <div class="hero-title">
-      <span class="title-span">Discover Your Next </span>
-      <span class="title-span suffix">Favorite Movie</span>
+<section class="hero" id="#">
+  <div class="content-container">
+    <main class="main-hero">
+      <div class="hero-title">
+        <span class="title-span">Always know what movie</span>
+        <span class="title-span suffix"> to watch next</span>
+      </div>
+
+      <div class="hero-description">
+        <p>
+          Tired of endlessly scrolling through streaming services trying to find
+          something cool to watch?
+        </p>
+        <p>Let us simplify your decision-making process.</p>
+      </div>
+
+      <div class="hero-cta">
+        <button pRipple routerLink="/app" class="get-started">
+          Get Started for FREE
+        </button>
+
+        <a pRipple href="#how-it-works" class="learn-more"> Learn more </a>
+      </div>
+    </main>
+
+    <div class="movies-swiper">
+      @for (slide of slidesArray; track slide) {
+        <div class="image-box" [attr.data-index]="$index">
+          <img
+            class="show-image"
+            [src]="'../../../assets/images/phone-lp.png'"
+            alt="movie-poster"
+            (load)="onImageLoad()"
+            [class.loaded]="!$isImgLoading()"
+          />
+        </div>
+      }
     </div>
-
-    <div class="hero-description">
-      <p>
-        Tired of endlessly scrolling through streaming services trying to find
-        something cool to watch?
-      </p>
-      <p>
-        <span class="emoji">🔥 </span> Let us simplify your decision-making
-        process.
-      </p>
-    </div>
-
-    <button pRipple routerLink="/app" class="get-started">
-      Get Started for FREE
-    </button>
-  </main>
-
-  <aside class="aside-hero">
-    <img src="../../../assets/images/phone-lp.png" alt="" />
-  </aside>
+  </div>
 </section>

@@ -1,12 +1,19 @@
 section.how-it-works {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  margin-top: 5rem;
   margin-bottom: 2rem;
+  padding: 0 2rem;
+
+  .app-demo-video {
+    border-radius: 8px;
+  }
 
   aside.aside-how-it-works {
     position: relative;
-    width: 45%;
-    padding: 2rem;
+    width: 35%;
+    padding-bottom: 2rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -16,7 +23,7 @@ section.how-it-works {
       position: absolute;
       height: 1rem;
       width: 60%;
-      top: 15%;
+      top: 10%;
       text-align: center;
     }
 
@@ -56,6 +63,7 @@ section.how-it-works {
         color: var(--dark-gray);
         font-weight: 600;
         margin-bottom: 2.3rem;
+        margin-top: 0.5rem;
       }
     }
 
@@ -78,11 +86,11 @@ section.how-it-works {
   }
 
   main.main-how-it-works {
-    width: 55%;
+    width: 60%;
   }
 }
 
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: 1200px) {
   section.how-it-works {
     flex-direction: column-reverse;
 
@@ -91,20 +99,27 @@ section.how-it-works {
     }
 
     main.main-how-it-works {
-      width: 100%;
+      margin-top: 1rem;
+      width: 80%;
     }
   }
 }
 
 @media screen and (max-width: 768px) {
   section.how-it-works {
+    padding: 0;
+    .app-demo-video {
+      border-radius: 4px;
+    }
+
     aside.aside-how-it-works {
+      padding: 0 1rem;
       h2.highlight {
         font-size: 2rem;
       }
 
       svg {
-        top: 13%;
+        top: 10%;
       }
 
       div.steps {
@@ -120,8 +135,15 @@ section.how-it-works {
 
         p.details {
           font-size: 0.9rem;
+          margin-top: 0.2rem;
+          margin-bottom: 1.5rem;
         }
       }
+    }
+
+    main.main-how-it-works {
+      margin-top: 2rem;
+      width: 100%;
     }
   }
 }

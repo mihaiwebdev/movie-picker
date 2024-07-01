@@ -1,5 +1,5 @@
-import { Component, inject } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { RippleModule } from 'primeng/ripple';
 
 @Component({
