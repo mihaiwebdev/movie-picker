@@ -2,7 +2,7 @@ section.how-it-works {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 5rem;
+  margin-top: 20rem;
   margin-bottom: 2rem;
   padding: 0 2rem;
 
@@ -90,9 +90,16 @@ section.how-it-works {
   }
 }
 
+@media screen and (max-width: 1400px) {
+  section.how-it-works {
+    margin-top: 12rem;
+  }
+}
+
 @media screen and (max-width: 1200px) {
   section.how-it-works {
     flex-direction: column-reverse;
+    margin-top: 20rem;
 
     aside.aside-how-it-works {
       width: 100%;
@@ -107,6 +114,7 @@ section.how-it-works {
 
 @media screen and (max-width: 768px) {
   section.how-it-works {
+    margin-top: 10rem;
     padding: 0;
     .app-demo-video {
       border-radius: 4px;

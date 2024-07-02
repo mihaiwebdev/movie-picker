@@ -95,6 +95,14 @@
   }
 }
 
+@media screen and (max-width: 1200px) {
+  .navbar-lp {
+    .navbar-links-lp {
+      padding: 1rem 1rem;
+    }
+  }
+}
+
 @media screen and (max-width: 1024px) {
   .navbar-lp {
     .logo-lp {
@@ -143,7 +151,7 @@
           height: 3px;
           width: 100%;
           border-radius: 10px;
-          background: var(--bg-black);
+          background: var(--font-color-primary);
         }
 
         .line1 {
