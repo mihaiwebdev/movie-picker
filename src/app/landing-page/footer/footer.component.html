@@ -1,0 +1,84 @@
+<section class="footer">
+  <div class="sign-up-box">
+    <h2 class="sign-up-title">Sign Up Today.</h2>
+    @if ($successEmailSent()) {
+      <p class="email-sent">{{ $successEmailSent() }}</p>
+    }
+    <div class="subscription">
+      <form
+        [formGroup]="form"
+        (ngSubmit)="loginWithEmail()"
+        class="subscription-form"
+      >
+        <input
+          type="email"
+          placeholder="signup@me.now"
+          class="add-email"
+          formControlName="email"
+        />
+
+        @if ($isLoading()) {
+          <span class="loader submit-email"></span>
+        } @else {
+          <button [disabled]="$isLoading()" pRipple class="submit-email">
+            Sing up
+          </button>
+        }
+      </form>
+    </div>
+    @if (
+      emailFormControl.dirty &&
+      emailFormControl.invalid &&
+      emailFormControl.touched
+    ) {
+      <small class="invalid-control">Please enter a valid email address!</small>
+    }
+  </div>
+
+  <div class="footer-box">
+    <div class="content-container">
+      <div class="footer-logo">
+        <a href="#">
+          <img src="../../../assets/logo-squaree.png" alt="movie picker logo" />
+        </a>
+        <a href="#" class="app-title">
+          <p class="app-title-lp">Movie</p>
+          <p class="app-title-suffix-lp">Picker</p>
+        </a>
+      </div>
+
+      <div class="footer-navigation">
+        <p class="links">Links</p>
+        <a href="/#how-it-works" class="navbar-link-lp">How It Works</a>
+        <a href="#testimonials" class="navbar-link-lp">Testimonials</a>
+        <a href="#faqs" class="navbar-link-lp">FAQs</a>
+        <a href="#team" class="navbar-link-lp">Team</a>
+        <a routerLink="/app/contact" class="navbar-link-lp">Support</a>
+      </div>
+
+      <div class="social-media">
+        <p class="follow-us">Follow Us for more!</p>
+
+        <div class="twitter">
+          <i class="bi bi-twitter-x"></i>
+          <div class="twitter-name">
+            <a href="https://x.com/AndreeaFarcas98" class="name" target="_blank"
+              >AndreeaFarcas98</a
+            >
+            <a href="https://x.com/MihaiSava98" class="name" target="_blank"
+              >MihaiSava98</a
+            >
+          </div>
+        </div>
+      </div>
+
+      <div class="credits">
+        <img src="../../../assets/icons/tmdb-logo.svg" alt="tmdb-image" />
+        <p>
+          The MoviePicker app uses TMDB and the TMDB APIs but is not endorsed,
+          certified, or otherwise approved by TMDB.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>

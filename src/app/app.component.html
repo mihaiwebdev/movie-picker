@@ -1,8 +1,15 @@
-<div class="container">
-  <p-toast position="top-center" styleClass="toastr" />
-  @if (!$isNavHidden()) {
-    <app-header></app-header>
-  }
-  <router-outlet></router-outlet>
-  <!-- <app-footer></app-footer> -->
-</div>
+<app-header></app-header>
+
+@if (!$isAppVisible()) {
+  <div class="landing-page-container">
+    <router-outlet></router-outlet>
+  </div>
+} @else {
+  <div class="app-container">
+    <router-outlet></router-outlet>
+
+    <app-loader></app-loader>
+  </div>
+}
+
+<p-toast position="top-center" styleClass="toastr" />

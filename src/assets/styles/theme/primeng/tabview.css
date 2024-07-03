@@ -1,0 +1,77 @@
+/* Tab View */
+.p-tabview .p-tabview-panels {
+  background: var(--bg-dark);
+}
+.p-tabview .p-tabview-nav li .p-tabview-nav-link {
+  background: var(--bg-dark);
+}
+.p-tabview-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.p-card .p-card-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-wrap: nowrap;
+  font-size: 1.1rem;
+}
+
+/* P Card */
+.p-dataview .p-dataview-content {
+  width: 90%;
+  margin: 0 auto;
+  background-color: var(--bg-dark);
+}
+.p-card {
+  margin: 1rem auto;
+  border-radius: 10px;
+  position: relative;
+  max-width: 240px;
+}
+.p-card .p-card-content {
+  padding: 0;
+}
+.p-card-body {
+  font-family: var(--text-font);
+}
+
+/* Skeleton */
+.p-skeleton {
+  height: 100% !important;
+  width: 95% !important;
+}
+
+@media screen and (min-width: 768px) {
+  /* TabView */
+  .p-dataview .p-dataview-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    .p-element {
+      margin-left: 0.5rem;
+      margin-right: 0.5rem;
+    }
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  /* TabView */
+  .p-dataview .p-dataview-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  /* TabView */
+  .p-dataview .p-dataview-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+
+    .p-element {
+      margin-left: 0.5rem;
+      margin-right: 0.5rem;
+    }
+  }
+}

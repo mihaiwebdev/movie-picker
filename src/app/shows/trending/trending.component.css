@@ -1,8 +1,14 @@
 .trending-text {
   padding: 0 1.5rem;
-  margin: 1rem 0;
+  margin-top: 2rem;
+  margin-bottom: 1.5rem;
+
   font-weight: 600;
   font-size: 1.3rem;
+}
+
+.no-shows {
+  padding: 0 1.5rem;
 }
 
 .swiper-mobile {
@@ -15,9 +21,19 @@
       align-items: center;
       justify-content: center;
       border-radius: 18px;
+
       .show-image {
         width: 100%;
         height: 100%;
+
+        transform: scale(0.5);
+        opacity: 0;
+        transition: all 0.3s ease;
+
+        &.loaded {
+          transform: scale(1);
+          opacity: 1;
+        }
       }
     }
   }
@@ -39,6 +55,15 @@
         width: 100%;
         height: 100%;
         border-radius: 18px;
+
+        transform: scale(0.5);
+        opacity: 0;
+        transition: all 0.3s ease;
+
+        &.loaded {
+          transform: scale(1);
+          opacity: 1;
+        }
       }
     }
   }

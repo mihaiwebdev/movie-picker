@@ -1,0 +1,45 @@
+.questions-section {
+  padding: 0 5rem 5rem 5rem;
+
+  h2 {
+    text-align: center;
+    font-size: 3.75rem;
+    margin-bottom: 0;
+  }
+
+  .subtitle {
+    text-align: center;
+    color: var(--dark-gray);
+    font-size: 1.5rem;
+
+    .ask-link {
+      text-decoration: underline;
+      font-weight: bold;
+      font-style: italic;
+      cursor: pointer;
+    }
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  .questions-section {
+    h2 {
+      font-size: 3.5rem;
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .questions-section {
+    padding: 0;
+    margin-bottom: 2rem;
+
+    h2 {
+      font-size: 2rem;
+    }
+
+    .subtitle {
+      font-size: 1.2rem;
+    }
+  }
+}

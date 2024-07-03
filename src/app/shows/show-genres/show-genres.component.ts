@@ -1,3 +1,4 @@
+import { MoodsInterface } from './../../shared/types/moods.interface';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -6,43 +7,48 @@ import {
   effect,
   ElementRef,
   inject,
+  model,
   OnInit,
   signal,
   ViewChild,
 } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ChipsModule } from 'primeng/chips';
+import { SelectButtonModule } from 'primeng/selectbutton';
 import { register } from 'swiper/element/bundle';
-import {
-  ConfigurationService,
-  GenreInterface,
-  ShowsService,
-  ShowTypesEnum,
-} from '../../core';
+import { movieGenres, ShowsStore, tvGenres } from '../../core';
+import { GenreInterface, ShowTypesEnum } from '../../shared';
+import { movieMoods, tvMoods } from '../../core/data/moods-data';
 
 @Component({
   selector: 'app-show-genres',
   standalone: true,
-  imports: [FormsModule, ChipsModule, ReactiveFormsModule],
+  imports: [FormsModule, ChipsModule, ReactiveFormsModule, SelectButtonModule],
   templateUrl: './show-genres.component.html',
   styleUrl: './show-genres.component.css',
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ShowGenresComponent implements AfterViewInit, OnInit {
-  private readonly configurationService = inject(ConfigurationService);
-  private readonly showsService = inject(ShowsService);
+  private readonly showsStore = inject(ShowsStore);
   private readonly formBuilder = inject(FormBuilder);
   private isFirstChange = true;
 
   public readonly iconBasePath = '../../../assets/icons/';
-  public readonly $movieGenres = signal<GenreInterface[]>(
-    this.configurationService.getMovieGenres(),
+  public readonly moodIconPath = '../../../assets/mood-icons/';
+  public readonly $movieGenres = signal<GenreInterface[]>(movieGenres);
+  public readonly $movieMoods = signal<MoodsInterface[]>(movieMoods);
+  public readonly $showGenres = signal<GenreInterface[]>(tvGenres);
+  public readonly $showMoods = signal<MoodsInterface[]>(tvMoods);
+  public readonly $selectedShowType = this.showsStore.$selectedShowType;
+  public readonly $selectButtonValue = model<'mood' | 'genres'>(
+    this.showsStore.$selectedGenreMode(),
   );
-  public readonly $showGenres = signal<GenreInterface[]>(
-    this.configurationService.getTvGenres(),
-  );
-  public readonly $selectedShowType = this.showsService.$selectedShowType;
+  public readonly stateOptions: any[] = [
+    { label: 'Mood', value: 'mood' },
+    { label: 'Genres', value: 'genres' },
+  ];
+  public readonly $selectedMoodName = signal<string>('');
 
   private get selectedGenresControl() {
     return this.genresForm.controls['selectedGenres'];
@@ -52,10 +58,10 @@ export class ShowGenresComponent implements AfterViewInit, OnInit {
   }
   public readonly genresForm = this.formBuilder.group({
     selectedGenresNames: this.formBuilder.control<string[] | undefined>(
-      this.showsService.$selectedGenres().map((genre) => genre.name),
+      this.showsStore.$selectedGenres().map((genre) => genre.name),
     ),
     selectedGenres: this.formBuilder.control<GenreInterface[]>(
-      this.showsService.$selectedGenres(),
+      this.showsStore.$selectedGenres(),
     ),
   });
 
@@ -130,6 +136,10 @@ export class ShowGenresComponent implements AfterViewInit, OnInit {
     this.selectedGenresControl.valueChanges.subscribe((res) =>
       this.selectedGenresNames.setValue(res?.map((genre) => genre.name)),
     );
+
+    if (this.$selectButtonValue() === 'mood') {
+      this.showsStore.setSelectedGenres([]);
+    }
   }
 
   @ViewChild('movieSwiper') movieSwiper?: ElementRef;
@@ -165,7 +175,37 @@ export class ShowGenresComponent implements AfterViewInit, OnInit {
       this.selectedGenresControl.setValue(selectedGenres);
     }
 
-    this.showsService.setSelectedGenres(this.selectedGenresControl.value);
+    this.showsStore.setSelectedGenres(this.selectedGenresControl.value);
+  }
+
+  public onMoodSelect(mood: MoodsInterface) {
+    this.$selectedMoodName.set(mood.name);
+
+    const selectedGenres = this.$movieGenres().filter((genre) =>
+      mood.genre_ids.includes(genre.id),
+    );
+
+    this.showsStore.setSelectedGenres(selectedGenres);
+  }
+
+  public onTvMoodSelect(mood: MoodsInterface) {
+    this.$selectedMoodName.set(mood.name);
+
+    const selectedGenres = this.$showGenres().filter((genre) =>
+      mood.genre_ids.includes(genre.id),
+    );
+
+    this.showsStore.setSelectedGenres(selectedGenres);
+  }
+
+  public clearSelectedGenres() {
+    this.showsStore.setSelectedGenres([]);
+    this.$selectedMoodName.set('');
+
+    this.selectedGenresControl.setValue([]);
+    this.selectedGenresNames.setValue([]);
+
+    this.showsStore.setSelectedGenreMode(this.$selectButtonValue());
   }
 
   public isGenreSelected(genreId: number) {
@@ -183,6 +223,6 @@ export class ShowGenresComponent implements AfterViewInit, OnInit {
 
     this.selectedGenresControl.setValue(filteredGenres);
 
-    this.showsService.setSelectedGenres(this.selectedGenresControl.value);
+    this.showsStore.setSelectedGenres(this.selectedGenresControl.value);
   }
 }

@@ -1,0 +1,192 @@
+.auth-container {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-dark);
+
+  .email-sent {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    background-color: var(--font-color-secondary);
+    color: var(--bg-dark);
+    font-weight: 600;
+    padding: 0.5rem 0.5rem;
+    border-radius: 10px;
+    width: 100%;
+    text-align: center;
+  }
+  .login-card {
+    border-radius: 20px;
+    width: 90%;
+    height: auto;
+    padding: 2rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background-color: var(--bg-light-red);
+
+    .logo {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+
+      img {
+        width: 4.125em;
+        height: 4.125em;
+        border-radius: 50%;
+      }
+
+      .app-title {
+        font-size: 2rem;
+        margin-left: 0.4em;
+        color: var(--font-color-primary);
+        font-weight: 900;
+      }
+      .app-title-suffix {
+        font-size: 2rem;
+        color: var(--font-color-secondary);
+        font-weight: 900;
+      }
+    }
+
+    .welcome {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      flex-direction: column;
+      margin-top: 1.5rem;
+      font-size: 1rem;
+      font-weight: 500;
+
+      p {
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+      }
+    }
+
+    .form-separator {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      margin: 1.8rem 0;
+
+      .line {
+        width: 40%;
+        height: 2px;
+        background-color: var(--font-color-primary);
+      }
+    }
+
+    .google-auth {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 0.7rem;
+      margin-top: 0.7rem;
+      background-color: #4285f4;
+      padding: 0.7rem;
+      width: 100%;
+      border-radius: 10px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      font-family: var(--font-family);
+      img {
+        margin-right: 0.5rem;
+      }
+    }
+
+    .twitter-auth {
+      display: flex;
+      border: none;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--bg-dark);
+      padding: 0.9rem;
+      width: 100%;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: var(--font-family);
+      img {
+        margin-right: 0.5rem;
+      }
+    }
+
+    .auth-form {
+      width: 100%;
+      .form-control {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        flex-direction: column;
+
+        input[type="email"] {
+          width: 100%;
+          padding: 0.8rem;
+          border-radius: 10px;
+          background-color: var(--bg-dark);
+          border: none;
+          font-family: var(--font-family);
+          font-size: 0.9rem;
+        }
+
+        .invalid-control {
+          color: var(--font-color-primary);
+          font-weight: 600;
+        }
+        .submit-btn {
+          background-color: var(--font-color-secondary);
+          color: var(--bg-dark);
+          font-weight: 700;
+          font-size: 1rem;
+          padding: 0.8rem;
+          margin-top: 0.8rem;
+          border: none;
+          border-radius: 10px;
+          width: 100%;
+          font-family: var(--font-family);
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .auth-container {
+    .login-card {
+      width: 50%;
+
+      .logo:hover,
+      .twitter-auth:hover,
+      .google-auth:hover,
+      .submit-btn:hover {
+        opacity: 0.8;
+      }
+
+      button {
+        font-size: 1rem;
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .auth-container {
+    .login-card {
+      width: 40%;
+    }
+  }
+}

@@ -1,4 +1,9 @@
-.container {
-  overflow-x: hidden;
-  min-height: 100dvh;
+.app-container {
+  background-color: var(--bg-dark);
+  color: var(--font-color-primary);
+}
+
+.landing-page-container {
+  background-color: var(--font-color-primary);
+  color: var(--bg-dark);
 }

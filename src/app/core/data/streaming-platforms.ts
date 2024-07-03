@@ -1,4 +1,4 @@
-import { StreamingPlatformsInterface } from '../';
+import { StreamingPlatformsInterface } from '../../shared';
 
 export const streamingPlatforms: StreamingPlatformsInterface[] = [
   {
@@ -10,8 +10,8 @@ export const streamingPlatforms: StreamingPlatformsInterface[] = [
     name: 'Disney Plus',
   },
   {
-    provider_id: 384,
-    name: 'HBO Max',
+    provider_id: 1899,
+    name: 'Max',
   },
   {
     provider_id: 119,
@@ -25,12 +25,8 @@ export const streamingPlatforms: StreamingPlatformsInterface[] = [
     provider_id: 2,
     name: 'Apple TV',
   },
-  {
-    provider_id: 35,
-    name: 'Rakuten TV',
-  },
-  {
-    provider_id: 7,
-    name: 'Vudu',
-  },
+  // {
+  //   provider_id: 35,
+  //   name: 'Rakuten TV',
+  // },
 ];

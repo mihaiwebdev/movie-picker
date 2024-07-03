@@ -1,21 +1,41 @@
 /* You can add global styles to this file, and also import other style files */
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
 
 @import "primeng/resources/themes/arya-orange/theme.css";
 @import "primeng/resources/primeng.min.css";
+@import "primeicons/primeicons.css";
 
 @import "./theme/variables.css";
-@import "./theme/primeng-clases.css";
+@import "./theme/primeng/primeng-clases.css";
 @import "./theme/shared-classes.css";
 
 * {
   box-sizing: border-box;
+  scroll-behavior: smooth;
 }
 
 body {
-  background-color: var(--bg-dark);
-  color: var(--text-color-primary);
   font-family: var(--text-font);
   margin: 0;
   padding: 0;
+  background-color: var(--bg-dark);
+
+  i {
+    color: #fff;
+  }
+
+  button {
+    color: #fff;
+  }
+}
+
+.swiper-pagination-el {
+  .swiper-pagination-bullet {
+    background: #000;
+
+    &.swiper-pagination-bullet-active {
+      background: var(--font-color-secondary);
+    }
+  }
 }

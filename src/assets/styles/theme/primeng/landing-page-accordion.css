@@ -1,0 +1,14 @@
+.landing-page-accordion {
+  .p-accordion .p-accordion-header .p-accordion-header-link {
+    background-color: var(--font-color-primary);
+    color: #1e1e1e;
+    border: none;
+    border-bottom: 1px solid var(--very-light-gray);
+  }
+
+  .p-accordion .p-accordion-content {
+    background: var(--font-color-primary);
+    border: none;
+    color: #1e1e1e;
+  }
+}

@@ -1,0 +1,76 @@
+<section class="hero" id="#">
+  <div class="content-container">
+    <main class="main-hero">
+      <div class="hero-title">
+        <span class="title-span">Always know what movie</span>
+        <span class="title-span suffix"> to watch next</span>
+      </div>
+
+      <div class="hero-description">
+        <p class="description-p1">
+          Tired of endlessly scrolling through streaming services trying to find
+          something cool to watch?
+        </p>
+        <p class="description-p2">
+          Let us simplify your decision-making process.
+        </p>
+      </div>
+
+      <div class="hero-cta">
+        <button pRipple routerLink="/app" class="get-started">
+          Get Started for FREE
+        </button>
+
+        <a pRipple href="#how-it-works" class="learn-more"> Learn more </a>
+      </div>
+    </main>
+
+    <div class="movies-swiper">
+      <div class="image-box" [attr.data-index]="0">
+        <img
+          class="show-image"
+          [src]="'../../../assets/images/dune-poster.jpg'"
+          alt="movie-poster"
+          (load)="onImageLoad()"
+          [class.loaded]="!$isImgLoading()"
+        />
+      </div>
+      <div class="image-box" [attr.data-index]="1">
+        <img
+          class="show-image"
+          [src]="'../../../assets/images/forest-gump-poster.jpg'"
+          alt="movie-poster"
+          (load)="onImageLoad()"
+          [class.loaded]="!$isImgLoading()"
+        />
+      </div>
+      <div class="image-box" [attr.data-index]="2">
+        <img
+          class="show-image"
+          [src]="'../../../assets/images/mobile-show-page.png'"
+          alt="movie-poster"
+          (load)="onImageLoad()"
+          [class.loaded]="!$isImgLoading()"
+        />
+      </div>
+      <div class="image-box" [attr.data-index]="3">
+        <img
+          class="show-image"
+          [src]="'../../../assets/images/barbie.jpg'"
+          alt="movie-poster"
+          (load)="onImageLoad()"
+          [class.loaded]="!$isImgLoading()"
+        />
+      </div>
+      <div class="image-box" [attr.data-index]="4">
+        <img
+          class="show-image"
+          [src]="'../../../assets/images/deadpool-poster.jpg'"
+          alt="movie-poster"
+          (load)="onImageLoad()"
+          [class.loaded]="!$isImgLoading()"
+        />
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,53 @@
+<nav class="navbar-lp">
+  <div class="nav-content">
+    <div class="logo-lp">
+      <a href="#">
+        <img src="../../../assets/logo-squaree.png" alt="movie picker logo" />
+      </a>
+      <a href="#">
+        <span class="app-title-lp">Movie</span>
+        <span class="app-title-suffix-lp">Picker</span>
+      </a>
+    </div>
+
+    <div class="navbar-links-lp">
+      <a href="#how-it-works" class="navbar-link-lp">How It Works</a>
+      <a href="#testimonials" class="navbar-link-lp">Testimonials</a>
+      <a href="#team" class="navbar-link-lp">Team</a>
+      <a href="#faqs" class="navbar-link-lp">FAQs</a>
+      <a routerLink="/app/contact" class="navbar-link-lp">Support</a>
+    </div>
+
+    <div class="navbar-links-lp">
+      <a
+        pRipple
+        routerLink="/app/login"
+        class="navbar-link-lp navbar-link-lp-right"
+        >Sign up</a
+      >
+    </div>
+
+    <div class="mobile-nav">
+      <input class="checkbox" type="checkbox" #navCheckbox />
+      <button pRipple class="hamburger">
+        <span class="line line1"></span>
+        <span class="line line2"></span>
+        <span class="line line3"></span>
+      </button>
+
+      <div class="nav-links">
+        <a
+          pRipple
+          (click)="navCheckbox.click()"
+          href="#how-it-works"
+          class="navbar-link-lp"
+          >How It Works</a
+        >
+        <a pRipple href="#testimonials" class="navbar-link-lp">Testimonials</a>
+        <a pRipple href="#team" class="navbar-link-lp">Team</a>
+        <a pRipple href="#faqs" class="navbar-link-lp">FAQs</a>
+        <a pRipple routerLink="/app/contact" class="navbar-link-lp">Support</a>
+      </div>
+    </div>
+  </div>
+</nav>

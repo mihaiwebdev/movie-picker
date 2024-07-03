@@ -1,0 +1,29 @@
+<div class="tab-view">
+  <p-tabView
+    [activeIndex]="$activeIndex()"
+    (activeIndexChange)="changeTabIndex($event)"
+  >
+    <p-tabPanel header="Watchlist" class="content-container">
+      <app-shows-list
+        [$bookmarkType]="bookmarksEnum.watchlist"
+      ></app-shows-list>
+    </p-tabPanel>
+    <p-tabPanel header="Watched" class="content-container">
+      @defer (on viewport) {
+        <app-shows-list
+          [$bookmarkType]="bookmarksEnum.watched"
+        ></app-shows-list>
+      } @placeholder {
+        <span class="loader"></span>
+      }
+    </p-tabPanel>
+
+    <p-tabPanel header="Stop Recommending" class="content-container">
+      @defer (on viewport) {
+        <app-shows-list [$bookmarkType]="bookmarksEnum.hidden"></app-shows-list>
+      } @placeholder {
+        <span class="loader"></span>
+      }
+    </p-tabPanel>
+  </p-tabView>
+</div>

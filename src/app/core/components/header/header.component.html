@@ -1,52 +1,125 @@
-<header class="header">
-  <div class="header-container">
-    <nav class="navbar">
-      <div class="logo" [routerLink]="['/']">
-        <img src="../../../assets/logo-squaree.png" alt="movie picker logo" />
-        <span class="app-title">Movie</span>
-        <span class="app-title-suffix">Picker</span>
+<header
+  class="header"
+  [class.black-header]="$isMoviePage()"
+  [class.hidden]="($isMoviePage() && deviceWith < 1200) || $isNavHidden()"
+>
+  <nav class="navbar">
+    <div class="logo" routerLink="/app">
+      <img src="../../../assets/logo-squaree.png" alt="movie picker logo" />
+      <span class="app-title">Movie</span>
+      <span class="app-title-suffix">Picker</span>
+    </div>
+
+    <div class="desktop-nav">
+      <div class="auto-complete-container">
+        <p-autoComplete
+          [(ngModel)]="$selectedMovie"
+          [suggestions]="$suggestions()"
+          (completeMethod)="searchShows($event)"
+          (onSelect)="onShowSelect($event)"
+          field="name"
+        />
+        <i class="pi pi-search"></i>
       </div>
 
-      <div class="desktop-nav">
-        <a pRipple class="nav-link-desktop"
+      @if (!$currentUser()) {
+        <a
+          routerLink="/app/login"
+          (click)="closeNav(navCheckbox)"
+          pRipple
+          class="nav-link-desktop"
           ><i class="bi bi-box-arrow-in-right"></i> Login
         </a>
-        <a pRipple class="nav-link-desktop"
-          ><i class="bi bi-person"></i> Profile
-        </a>
-        <a pRipple class="nav-link-desktop">
+      }
+      @if ($currentUser()) {
+        <a
+          pRipple
+          routerLink="/app/bookmarks"
+          [queryParams]="{ tab: 0 }"
+          (click)="closeNav(navCheckbox)"
+          class="nav-link-desktop"
+        >
           <i pRipple class="bi bi-bookmark"></i>
           Bookmarks
         </a>
-        <a pRipple class="nav-link-desktop"
+      }
+      <a
+        pRipple
+        routerLink="/app/contact"
+        (click)="closeNav(navCheckbox)"
+        class="nav-link-desktop"
+      >
+        <i class="bi bi-chat-dots"></i> Support</a
+      >
+
+      @if ($currentUser()) {
+        <a pRipple (click)="signOut()" class="nav-link-desktop"
           ><i class="bi bi-box-arrow-left"></i> Logout
         </a>
-      </div>
+      }
+    </div>
 
-      <div class="mobile-nav">
-        <input class="checkbox" type="checkbox" />
-        <button pRipple class="hamburger">
-          <span class="line line1"></span>
-          <span class="line line2"></span>
-          <span class="line line3"></span>
-        </button>
+    <div class="auto-complete-container mobile-search" #mobileSearch>
+      <p-autoComplete
+        [suggestions]="$suggestions()"
+        (completeMethod)="searchShows($event)"
+        (onSelect)="onShowSelect($event)"
+        field="name"
+        (onFocus)="mobileSearch.classList.add('active')"
+        (onBlur)="mobileSearch.classList.remove('active')"
+      />
+      <i class="pi pi-search"></i>
+    </div>
 
-        <div class="nav-links">
-          <a pRipple class="nav-link login-btn"
+    <div class="mobile-nav">
+      <input class="checkbox" type="checkbox" #navCheckbox />
+      <button pRipple class="hamburger">
+        <span class="line line1"></span>
+        <span class="line line2"></span>
+        <span class="line line3"></span>
+      </button>
+
+      <div class="nav-links">
+        @if (!$currentUser()) {
+          <a routerLink="/app/login" pRipple class="nav-link login-btn"
             ><i class="bi bi-box-arrow-in-right"></i> Login</a
           >
 
-          <a pRipple class="nav-link"><i class="bi bi-person"></i> Profile</a>
-          <a pRipple class="nav-link">
+          <a
+            pRipple
+            routerLink="/app/contact"
+            (click)="closeNav(navCheckbox)"
+            class="nav-link"
+          >
+            <i class="bi bi-chat-dots"></i> Support</a
+          >
+        }
+
+        @if ($currentUser()) {
+          <a
+            pRipple
+            routerLink="/app/bookmarks"
+            [queryParams]="{ tab: 0 }"
+            (click)="closeNav(navCheckbox)"
+            class="nav-link"
+          >
             <i class="bi bi-bookmark"></i> Bookmarks</a
           >
 
-          <a pRipple class="nav-link"
+          <a
+            pRipple
+            routerLink="/app/contact"
+            (click)="closeNav(navCheckbox)"
+            class="nav-link"
+          >
+            <i class="bi bi-chat-dots"></i> Support</a
+          >
+
+          <a (click)="signOut()" pRipple class="nav-link"
             ><i class="bi bi-box-arrow-left"></i> Logout</a
           >
-        </div>
+        }
       </div>
-    </nav>
-    <h1>Enjoy your next favorite film</h1>
-  </div>
+    </div>
+  </nav>
 </header>

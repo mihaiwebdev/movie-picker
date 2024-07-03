@@ -1,0 +1,102 @@
+<section class="testimonials" id="testimonials">
+  <h2 class="testimonials-title">Here's what our users have to say.</h2>
+  <p class="testimonials-subtitle">Read real stories</p>
+
+  <div class="swiper-container">
+    <swiper-container #mySwiper init="false" pagination-clickable="true">
+      @for (comment of testimonials.reverse(); track comment.id) {
+        <swiper-slide>
+          <div class="card">
+            <div class="heading">
+              <img
+                [src]="'../../../assets/images/' + comment.img"
+                alt="profileImg"
+              />
+              <div class="person-name">
+                <span class="name">{{ comment.name }}</span>
+                <p class="id">{{ comment.id }}</p>
+              </div>
+            </div>
+            <div class="comment-box">
+              <span
+                appReadMore
+                [maxLength]="150"
+                [text]="comment.text || ''"
+                class="maintxt"
+              >
+                {{ comment.text }}
+              </span>
+            </div>
+          </div>
+        </swiper-slide>
+      }
+    </swiper-container>
+
+    <div class="swiper-pagination-el"></div>
+  </div>
+
+  <div class="cards">
+    <div class="columns">
+      @for (comment of testimonials.slice(0, 3); track comment.id) {
+        <div class="card">
+          <div class="heading">
+            <img
+              [src]="'../../../assets/images/' + comment.img"
+              alt="profileImg"
+            />
+            <div class="person-name">
+              <span class="name">{{ comment.name }}</span>
+              <p class="id">{{ comment.id }}</p>
+            </div>
+          </div>
+
+          <span class="maintxt">
+            {{ comment.text }}
+          </span>
+        </div>
+      }
+    </div>
+
+    <div class="columns">
+      @for (comment of testimonials.slice(3, 5); track comment.id) {
+        <div class="card">
+          <div class="heading">
+            <img
+              [src]="'../../../assets/images/' + comment.img"
+              alt="profileImg"
+            />
+            <div class="person-name">
+              <span class="name">{{ comment.name }}</span>
+              <p class="id">{{ comment.id }}</p>
+            </div>
+          </div>
+
+          <span class="maintxt">
+            {{ comment.text }}
+          </span>
+        </div>
+      }
+    </div>
+
+    <div class="columns">
+      @for (comment of testimonials.slice(5, 8); track comment.id) {
+        <div class="card">
+          <div class="heading">
+            <img
+              [src]="'../../../assets/images/' + comment.img"
+              alt="profileImg"
+            />
+            <div class="person-name">
+              <span class="name">{{ comment.name }}</span>
+              <p class="id">{{ comment.id }}</p>
+            </div>
+          </div>
+
+          <span class="maintxt">
+            {{ comment.text }}
+          </span>
+        </div>
+      }
+    </div>
+  </div>
+</section>

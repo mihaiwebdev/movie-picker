@@ -1,0 +1,12 @@
+{
+  "hosting": {
+    "public": "dist/top-movie-app/browser",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}

@@ -3,6 +3,24 @@
   position: relative;
   color: var(--font-color-primary);
   margin-top: 1.5em;
+
+  .mood-genre-options {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+
+    h2 {
+      margin: 0;
+      font-size: 1.2rem;
+      margin-right: 0.8rem;
+    }
+  }
+
+  .hidden {
+    display: none;
+  }
+
   .movie-swiper-container {
     display: none;
 
@@ -28,12 +46,13 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 1px solid var(--light-gray);
+    border: 1px solid var(--light-dark);
     padding: 0.5rem;
     border-radius: 6px;
-    background-color: transparent;
+
     cursor: pointer;
     position: relative;
+    z-index: 3;
 
     img {
       display: block;
@@ -58,6 +77,9 @@
     display: block;
     margin: 0 auto;
     margin-top: 0.4rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-wrap: nowrap;
   }
 
   .swiper-pagination-movie,
@@ -65,10 +87,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-top: 1rem;
   }
 }
 
 .selected-genres {
+  margin-top: 0.5rem;
   .p-inputtext {
     background: transparent;
   }
