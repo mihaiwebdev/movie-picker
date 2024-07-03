@@ -77,3 +77,21 @@
     }
   }
 }
+
+@media screen and (max-width: 1024px) {
+  .testimonials {
+    .cards {
+      padding: 1rem;
+
+      .columns {
+        max-width: 45%;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+}
+
+@media screen and (max-width: 420px) {
+}
