@@ -5,15 +5,15 @@ export const routes: Routes = [
     path: '',
     loadComponent: () => import('./landing-page/landing-page.component'),
   },
-  {
-    path: 'app',
-    loadChildren: () => import('./app.routes'),
-  },
+  // {
+  //   path: 'app',
+  //   loadChildren: () => import('./app.routes'),
+  // },
 
   // Wildcard route
   {
     path: '**',
-    redirectTo: '/app',
+    redirectTo: '/',
     pathMatch: 'full',
   },
 ];

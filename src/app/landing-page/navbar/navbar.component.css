@@ -54,6 +54,7 @@
     align-items: center;
     justify-content: flex-start;
     padding: 1rem 1.8rem;
+    cursor: pointer;
 
     a.navbar-link-lp {
       text-decoration: none;

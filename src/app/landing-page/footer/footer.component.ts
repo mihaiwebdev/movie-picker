@@ -7,10 +7,11 @@ import {
 } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { AuthService } from '../../core/services/auth.service';
-import { StorageService } from '../../core';
+import { ConfigurationService, StorageService } from '../../core';
 import { environment } from '../../../environments/environment.development';
 import { catchError, finalize, of, tap } from 'rxjs';
 import { RouterLink } from '@angular/router';
+import { doc, setDoc } from 'firebase/firestore';
 
 @Component({
   selector: 'app-footer',
@@ -24,6 +25,9 @@ export class FooterComponent {
   public readonly $isLoading = signal<boolean>(false);
   private readonly authService = inject(AuthService);
   private readonly storageService = inject(StorageService);
+  private readonly configSvc = inject(ConfigurationService);
+
+  public readonly $isSubmitted = signal(false);
 
   public get emailFormControl() {
     return this.form.controls['email'];
@@ -73,5 +77,21 @@ export class FooterComponent {
         finalize(() => this.$isLoading.set(false)),
       )
       .subscribe();
+  }
+
+  public handleFormSubmit() {
+    const userEmail = this.form.controls['email'].value;
+    this.form.markAllAsTouched();
+
+    if (this.form.invalid || !userEmail) return;
+    this.$isLoading.set(true);
+
+    setDoc(doc(this.configSvc.db, 'waitlist', userEmail), {
+      email: this.form.controls['email'].value,
+    }).finally(() => {
+      this.$isLoading.set(false);
+      this.$isSubmitted.set(true);
+      this.emailFormControl.reset('');
+    });
   }
 }
