@@ -155,3 +155,9 @@ section.how-it-works {
     }
   }
 }
+
+@media screen and (max-width: 480px) {
+  section.how-it-works {
+    margin-top: 13rem;
+  }
+}

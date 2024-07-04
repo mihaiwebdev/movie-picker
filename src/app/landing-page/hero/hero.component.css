@@ -281,7 +281,7 @@ section.hero .content-container {
 @media screen and (max-width: 480px) {
   section.hero .content-container {
     .main-hero {
-      margin-top: 60%;
+      margin-top: 80%;
 
       .hero-description {
         .description-p1 {
@@ -289,6 +289,16 @@ section.hero .content-container {
         }
         .description-p2 {
           font-weight: 600;
+        }
+      }
+    }
+
+    .movies-swiper {
+      .image-box {
+        &[data-index="2"] {
+          margin: 0;
+          height: auto;
+          width: auto;
         }
       }
     }
