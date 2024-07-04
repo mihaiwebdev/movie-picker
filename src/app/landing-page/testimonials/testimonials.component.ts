@@ -65,7 +65,7 @@ export class TestimonialsComponent {
       text: `"I'm truly impressed by the attention to details, especially integrating TMDb ratings for quality content, cause it's simplifying the search for quality content. Additionally, the ability to combine platforms is a game changer for those with multiple subscriptions. Thanks for these helpful features!"`,
       img: 'Meda.jpg',
     },
-  ];
+  ].reverse();
 
   // SWIPER Config
   public readonly breakpoints = {

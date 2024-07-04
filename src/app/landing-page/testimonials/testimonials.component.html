@@ -4,7 +4,7 @@
 
   <div class="swiper-container">
     <swiper-container #mySwiper init="false" pagination-clickable="true">
-      @for (comment of testimonials.reverse(); track comment.id) {
+      @for (comment of testimonials; track comment.id) {
         <swiper-slide>
           <div class="card">
             <div class="heading">
