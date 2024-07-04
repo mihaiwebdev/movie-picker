@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-how-it-works',
@@ -8,5 +9,14 @@ import { Component } from '@angular/core';
   styleUrl: './how-it-works.component.css',
 })
 export class HowItWorksComponent {
+  private readonly messageService = inject(MessageService);
   videoSrc = '../../../assets/video/movie-picker-demo.mp4';
+
+  public onGetStarted() {
+    this.messageService.add({
+      severity: 'info',
+      summary: 'The Launch is on Monday 8 July',
+      detail: 'Sign up to get notified about it!',
+    });
+  }
 }

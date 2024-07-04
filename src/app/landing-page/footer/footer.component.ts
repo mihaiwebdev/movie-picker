@@ -83,7 +83,15 @@ export class FooterComponent {
     const userEmail = this.form.controls['email'].value;
     this.form.markAllAsTouched();
 
-    if (this.form.invalid || !userEmail) return;
+    if (this.emailFormControl.invalid) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Please enter a valid email',
+      });
+      return;
+    }
+
     this.$isLoading.set(true);
 
     setDoc(doc(this.configSvc.db, 'waitlist', userEmail), {
