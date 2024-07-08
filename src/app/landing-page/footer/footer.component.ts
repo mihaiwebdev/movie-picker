@@ -58,7 +58,7 @@ export class FooterComponent {
           );
 
           this.$successEmailSent.set(
-            'Sign up email sent, please check your email!',
+            'We emailed you the magic link. Please check in spam also!',
           );
           this.emailFormControl.reset('');
         }),

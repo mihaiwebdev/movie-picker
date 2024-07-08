@@ -92,7 +92,9 @@ export class AuthComponent {
             this.emailFormControl.value,
           );
 
-          this.$successEmailSent.set('Please check your email!');
+          this.$successEmailSent.set(
+            'We emailed you the magic link. Please check in spam also!',
+          );
           this.emailFormControl.reset('');
         }),
         catchError((error) => {
