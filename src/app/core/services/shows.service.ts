@@ -2,27 +2,26 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import {
   collection,
-  deleteDoc,
   doc,
   getDoc,
   getDocs,
-  setDoc,
   writeBatch,
 } from 'firebase/firestore';
 import { Observable, from, map, mergeMap, of, switchMap, tap } from 'rxjs';
 import { ConfigurationService, ShowsStore } from '..';
 import { environment } from '../../../environments/environment.development';
+import { BookmarksEnum } from '../../bookmarks/bookmarks.enum';
 import {
   ShowInterface,
   ShowResponseInterface,
   ShowTypesEnum,
   WatchProvidersResponse,
 } from '../../shared';
+import { StreamingPlatformsResultInterface } from '../../shared/types/show-platforms.interface';
 import { ShowVideoResponseInterface } from '../../shared/types/show-video-response.interface';
 import { WatchProviderInterface } from '../../shared/types/watch-providers-response.interface';
-import { UserDataService } from './user-data.service';
-import { BookmarksEnum } from '../../bookmarks/bookmarks.enum';
 import { MovieMetadataInterface } from '../../shows/show/show.component';
+import { UserDataService } from './user-data.service';
 
 @Injectable({
   providedIn: 'root',
@@ -201,6 +200,39 @@ export class ShowsService {
         ),
       ),
     );
+  }
+
+  public getStreamingPlatforms() {
+    if (!this.$userLocation()) {
+      return this.userDataService.getUserLocation().pipe(
+        switchMap((userLocation) => {
+          return this.http.get<StreamingPlatformsResultInterface>(
+            `${this.tmdbApi}/watch/providers/movie?language=en-US&watch_region=${userLocation.country}`,
+          );
+        }),
+        map((response) => response.results),
+        map((platforms) =>
+          platforms.filter((platform) => platform.display_priority < 50),
+        ),
+        map((platforms) =>
+          platforms.sort((a, b) => a.display_priority - b.display_priority),
+        ),
+      );
+    }
+
+    return this.http
+      .get<StreamingPlatformsResultInterface>(
+        `${this.tmdbApi}/watch/providers/movie?language=en-US&watch_region=${this.$userLocation()?.country || 'US'}`,
+      )
+      .pipe(
+        map((response) => response.results),
+        map((platforms) =>
+          platforms.filter((platform) => platform.display_priority < 50),
+        ),
+        map((platforms) =>
+          platforms.sort((a, b) => a.display_priority - b.display_priority),
+        ),
+      );
   }
 
   // ~~~ Shows API

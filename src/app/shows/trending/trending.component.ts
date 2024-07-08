@@ -100,7 +100,9 @@ export class TrendingComponent {
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         tap((res) => {
-          this.$selectedPlatformNames.set(res.map((platform) => platform.name));
+          this.$selectedPlatformNames.set(
+            res.map((platform) => platform.provider_name),
+          );
         }),
         switchMap(() => {
           if (this.isFirstPlatformChange) {

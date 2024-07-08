@@ -24,7 +24,6 @@ export class UserDataService {
   public readonly $currentUser = this.state.$currentUser.asReadonly();
 
   constructor() {
-    this.getUserLocation();
     this.getCurrentUser();
   }
 
@@ -38,11 +37,10 @@ export class UserDataService {
     });
   }
   public getUserLocation() {
-    this.http
+    return this.http
       .get<UserLocationResponseInterface>(
         `${environment.ipInfoUrl}?token=${environment.ipInfoToken}`,
       )
-      .pipe(tap((userLocation) => this.state.$userLocation.set(userLocation)))
-      .subscribe();
+      .pipe(tap((userLocation) => this.state.$userLocation.set(userLocation)));
   }
 }

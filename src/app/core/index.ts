@@ -1,5 +1,4 @@
 // Data
-export { streamingPlatforms } from './data/streaming-platforms';
 export { movieGenres } from './data/genres-data';
 export { tvGenres } from './data/genres-data';
 

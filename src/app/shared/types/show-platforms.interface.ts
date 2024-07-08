@@ -1,4 +1,9 @@
 export interface StreamingPlatformsInterface {
   provider_id: number;
-  name: string;
+  provider_name: string;
+  display_priority: number;
+}
+
+export interface StreamingPlatformsResultInterface {
+  results: StreamingPlatformsInterface[];
 }

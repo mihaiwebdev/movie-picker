@@ -12,6 +12,7 @@ export class ShowsStore {
   private readonly state = {
     $showsResults: signal<ShowInterface[] | null>(null),
     $selectedShow: signal<ShowInterface | null>(null),
+    $allStreamingPlatforms: signal<StreamingPlatformsInterface[]>([]),
     $selectedPlatforms: signal<StreamingPlatformsInterface[]>([]),
     $selectedGenres: signal<GenreInterface[]>([]),
     $selectedShowType: signal<ShowTypesEnum>(ShowTypesEnum.movie),
@@ -22,6 +23,8 @@ export class ShowsStore {
   public readonly $selectedShow = this.state.$selectedShow.asReadonly();
   public readonly $selectedPlatforms =
     this.state.$selectedPlatforms.asReadonly();
+  public readonly $allStreamingPlatforms =
+    this.state.$allStreamingPlatforms.asReadonly();
   public readonly $selectedGenres = this.state.$selectedGenres.asReadonly();
   public readonly $selectedShowType = this.state.$selectedShowType.asReadonly();
   public readonly $selectedGenreMode =
@@ -40,6 +43,9 @@ export class ShowsStore {
   }
   public setStreamingPlatforms(platforms: StreamingPlatformsInterface[]) {
     this.state.$selectedPlatforms.set(platforms);
+  }
+  public setAllStreamingPlatforms(platforms: StreamingPlatformsInterface[]) {
+    this.state.$allStreamingPlatforms.set(platforms);
   }
   public setShowsResults(showResults: ShowInterface[]) {
     this.state.$showsResults.set(showResults);
