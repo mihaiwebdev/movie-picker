@@ -1,7 +1,7 @@
 export const baseEnv = {
   tmdbApiUrl: 'https://api.themoviedb.org/3',
   ipInfoToken: 'e13edabe81e868',
-  ipInfoUrl: 'https://ipinfo.io/json',
+  ipInfoUrl: 'https://ipinfo.io',
   tmdbApiAccessToken:
     'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlMmRjMDI0Mjc2MWU3NmVmZGJmZTI1OGRjYjdiZjlkMCIsInN1YiI6IjYzNGU3YTY1Mzg5ZGExMDA3OWU2NGE1YSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.GQ3OTma_bWgWATd-IWV7i_F-BXgBRRTEz8XhzVO9XcY',
   firebaseConfig: {
