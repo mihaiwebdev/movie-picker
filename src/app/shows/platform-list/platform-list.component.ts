@@ -8,10 +8,11 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MultiSelectModule } from 'primeng/multiselect';
-import { tap } from 'rxjs';
+import { catchError, of, tap } from 'rxjs';
 import { ShowsService } from '../../core';
 import { ShowsStore } from '../../core/store/shows.store';
 import { StreamingPlatformsInterface } from '../../shared';
+import { streamingPlatforms } from '../../core/data/streaming-platforms';
 
 @Component({
   selector: 'app-platform-list',
@@ -42,6 +43,11 @@ export class PlatformListComponent {
             this.showsStore.setAllStreamingPlatforms(platforms);
 
             this.setSelectedPlatforms(platforms);
+          }),
+          catchError((error) => {
+            this.showsStore.setAllStreamingPlatforms(streamingPlatforms);
+            this.setSelectedPlatforms(streamingPlatforms);
+            return of(error);
           }),
         )
         .subscribe();

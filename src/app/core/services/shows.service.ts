@@ -207,12 +207,12 @@ export class ShowsService {
       return this.userDataService.getUserLocation().pipe(
         switchMap((userLocation) => {
           return this.http.get<StreamingPlatformsResultInterface>(
-            `${this.tmdbApi}/watch/providers/movie?language=en-US&watch_region=${userLocation.country}`,
+            `${this.tmdbApi}/watch/providers/movie?language=en-US&watch_region=${userLocation.country || 'US'}`,
           );
         }),
         map((response) => response.results),
         map((platforms) =>
-          platforms.filter((platform) => platform.display_priority < 50),
+          platforms.filter((platform) => platform.display_priority < 40),
         ),
         map((platforms) =>
           platforms.sort((a, b) => a.display_priority - b.display_priority),
@@ -289,7 +289,7 @@ export class ShowsService {
     page: number = 1,
   ): Observable<ShowResponseInterface> {
     const watchProviders = this.getWatchProviders();
-    const path = `${showType}?language=en-US&page=${page}&sort_by=popularity.desc&watch_region=${this.$userLocation()?.country || 'US'}&with_watch_providers=${watchProviders}&without_genres=16`;
+    const path = `${showType}?language=en-US&page=${page}&sort_by=popularity.desc&watch_region=${this.$userLocation()?.country || 'US'}&with_watch_providers=${watchProviders}`;
 
     return this.http.get<ShowResponseInterface>(
       `${this.tmdbApi}/discover/${path}`,

@@ -1,5 +1,4 @@
 import { HttpInterceptorFn } from '@angular/common/http';
-import { catchError, of } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
 
 export const tmdbApiAuthInterceptor: HttpInterceptorFn = (req, next) => {
@@ -11,9 +10,5 @@ export const tmdbApiAuthInterceptor: HttpInterceptorFn = (req, next) => {
     });
   }
 
-  return next(req).pipe(
-    catchError((err) => {
-      return of(err);
-    }),
-  );
+  return next(req);
 };

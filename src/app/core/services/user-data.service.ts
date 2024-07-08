@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
 import { User, onAuthStateChanged } from 'firebase/auth';
-import { switchMap, tap } from 'rxjs';
+import { catchError, tap } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
 import { UserLocationResponseInterface } from '../../shared/types/user-location-response.interface';
 import { AuthService } from './auth.service';
@@ -36,17 +36,13 @@ export class UserDataService {
       this.loaderService.setIsLoading(false);
     });
   }
+
+  // TODO: give back hardcoded platforms on error
   public getUserLocation() {
-    return this.http.get('https://api.ipify.org?format=json').pipe(
-      switchMap((ip: any) => {
-        return this.http
-          .get<UserLocationResponseInterface>(
-            `${environment.ipInfoUrl}/${ip.ip}/json?token=${environment.ipInfoToken}`,
-          )
-          .pipe(
-            tap((userLocation) => this.state.$userLocation.set(userLocation)),
-          );
-      }),
-    );
+    return this.http
+      .get<UserLocationResponseInterface>(
+        `${environment.ipInfoUrl}/json?token=${environment.ipInfoToken}`,
+      )
+      .pipe(tap((userLocation) => this.state.$userLocation.set(userLocation)));
   }
 }
