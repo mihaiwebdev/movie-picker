@@ -210,10 +210,11 @@
           display: flex;
           align-items: center;
           justify-content: center;
-          margin-top: 0.5rem;
+          height: 42px;
           padding: 0.4rem 0;
           text-align: center;
           transform: all 0.2s ease;
+          margin-top: 0.5rem;
 
           &:hover {
             transform: scale(0.98);
@@ -231,13 +232,25 @@
           }
 
           &.thumbs-up {
-            background: var(--yellow-gradient);
+            background: var(--font-color-secondary);
           }
 
           &.hide {
             border: 1px solid var(--light-dark);
             background-color: var(--light-dark);
+            margin-left: 0.5rem;
           }
+
+          &.bookmark-btn {
+            background: var(--yellow-gradient);
+          }
+        }
+
+        .sub-buttons {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          width: 100%;
         }
       }
 
@@ -287,7 +300,14 @@
     .choose-btn {
       display: flex;
       margin-top: auto;
-      margin-bottom: 2rem;
+
+      position: sticky;
+      background-color: var(--bg-dark);
+      opacity: 0.98;
+      z-index: 8;
+
+      bottom: 0;
+      left: 0;
 
       button {
         font-size: 1rem;
@@ -457,8 +477,7 @@
         border-radius: 10px 10px 0 0;
         z-index: 1;
 
-        button.back-btn,
-        button.bookmark-btn {
+        button.back-btn {
           opacity: 1;
 
           &:hover {
@@ -506,6 +525,10 @@
 
           button {
             margin-top: 0.8rem;
+          }
+
+          .sub-buttons {
+            flex-direction: column;
           }
         }
       }

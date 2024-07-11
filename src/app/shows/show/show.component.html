@@ -26,43 +26,6 @@
             <button pRipple class="back-btn" (click)="goBack()">
               <i class="bi bi-arrow-left-short"></i>
             </button>
-            @if ($isWatchlistLogin()) {
-              <button
-                routerLink="/app/login"
-                [queryParams]="{
-                  watchlist: $selectedShow()?.name || $selectedShow()?.title,
-                  movie: $selectedShow()?.title ? true : ''
-                }"
-                pRipple
-                class="login-btn"
-              >
-                Please Login
-              </button>
-            } @else {
-              @if ($isWatchlistLoading()) {
-                <div>
-                  <span class="loader bookmark-loader"></span>
-                </div>
-              } @else {
-                @if ($isInWatchlist()) {
-                  <button
-                    pRipple
-                    class="bookmark-btn"
-                    (click)="removeFromBookmarks(bookmarksTypeEnum.watchlist)"
-                  >
-                    <i class="bi bi-bookmark-check-fill"></i>
-                  </button>
-                } @else {
-                  <button
-                    pRipple
-                    class="bookmark-btn"
-                    (click)="addShowToBookmarks(bookmarksTypeEnum.watchlist)"
-                  >
-                    <i class="bi bi-bookmark"></i>
-                  </button>
-                }
-              }
-            }
           </div>
         }
 
@@ -172,78 +135,120 @@
           </div>
 
           <div class="bookmarks-buttons">
-            @if ($isWatchedLogin()) {
-              <span
-                pRipple
+            @if ($isWatchlistLogin()) {
+              <button
                 routerLink="/app/login"
                 [queryParams]="{
-                  watched: $selectedShow()?.title || $selectedShow()?.name,
+                  watchlist: $selectedShow()?.name || $selectedShow()?.title,
                   movie: $selectedShow()?.title ? true : ''
                 }"
+                pRipple
                 class="login-btn"
-                >Please login</span
               >
+                Please Login
+              </button>
             } @else {
-              @if ($isWatchedLoading()) {
-                <span class="loader"></span>
+              @if ($isWatchlistLoading()) {
+                <div>
+                  <span class="loader"></span>
+                </div>
               } @else {
-                @if ($isWatched()) {
+                @if ($isInWatchlist()) {
                   <button
                     pRipple
-                    (click)="removeFromBookmarks(bookmarksTypeEnum.watched)"
-                    class="thumbs-up"
+                    class="bookmark-btn"
+                    (click)="removeFromBookmarks(bookmarksTypeEnum.watchlist)"
                   >
-                    <i class="pi pi-eye-slash"></i>
-                    <span>Remove from Watched</span>
+                    <i class="bi bi-bookmark-check-fill"></i>
+                    <span> Remove from watchlist</span>
                   </button>
                 } @else {
                   <button
                     pRipple
-                    class="thumbs-up"
-                    (click)="addShowToBookmarks(bookmarksTypeEnum.watched)"
+                    class="bookmark-btn"
+                    (click)="addShowToBookmarks(bookmarksTypeEnum.watchlist)"
                   >
-                    <i class="pi pi-eye"></i>
-                    <span>Watched</span>
+                    <i class="bi bi-bookmark"></i>
+                    <span> Add to Watchlist </span>
                   </button>
                 }
               }
             }
 
-            @if ($isHideLogin()) {
-              <span
-                pRipple
-                routerLink="/app/login"
-                [queryParams]="{
-                  hide: $selectedShow()?.title || $selectedShow()?.name,
-                  movie: $selectedShow()?.title ? true : ''
-                }"
-                class="login-btn"
-                >Please login</span
-              >
-            } @else {
-              @if ($isHideLoading()) {
-                <span class="loader"></span>
+            <div class="sub-buttons">
+              @if ($isWatchedLogin()) {
+                <span
+                  pRipple
+                  routerLink="/app/login"
+                  [queryParams]="{
+                    watched: $selectedShow()?.title || $selectedShow()?.name,
+                    movie: $selectedShow()?.title ? true : ''
+                  }"
+                  class="login-btn"
+                  >Please login</span
+                >
               } @else {
-                @if (!$isHidden()) {
-                  <button
-                    pRipple
-                    class="hide"
-                    (click)="addShowToBookmarks(bookmarksTypeEnum.hidden)"
-                  >
-                    <i class="bi bi-x-lg"></i>
-                    <span>Stop recommending</span>
-                  </button>
+                @if ($isWatchedLoading()) {
+                  <span class="loader"></span>
                 } @else {
-                  <button
-                    pRipple
-                    class="hide"
-                    (click)="removeFromBookmarks(bookmarksTypeEnum.hidden)"
-                  >
-                    <span>Recommend again</span>
-                  </button>
+                  @if ($isWatched()) {
+                    <button
+                      pRipple
+                      (click)="removeFromBookmarks(bookmarksTypeEnum.watched)"
+                      class="thumbs-up"
+                    >
+                      <i class="pi pi-eye-slash"></i>
+                      <span>Remove from Watched</span>
+                    </button>
+                  } @else {
+                    <button
+                      pRipple
+                      class="thumbs-up"
+                      (click)="addShowToBookmarks(bookmarksTypeEnum.watched)"
+                    >
+                      <i class="pi pi-eye"></i>
+                      <span>Watched</span>
+                    </button>
+                  }
                 }
               }
-            }
+
+              @if ($isHideLogin()) {
+                <span
+                  pRipple
+                  routerLink="/app/login"
+                  [queryParams]="{
+                    hide: $selectedShow()?.title || $selectedShow()?.name,
+                    movie: $selectedShow()?.title ? true : ''
+                  }"
+                  class="login-btn"
+                  >Please login</span
+                >
+              } @else {
+                @if ($isHideLoading()) {
+                  <span class="loader"></span>
+                } @else {
+                  @if (!$isHidden()) {
+                    <button
+                      pRipple
+                      class="hide"
+                      (click)="addShowToBookmarks(bookmarksTypeEnum.hidden)"
+                    >
+                      <i class="bi bi-x-lg"></i>
+                      <span>Stop showing</span>
+                    </button>
+                  } @else {
+                    <button
+                      pRipple
+                      class="hide"
+                      (click)="removeFromBookmarks(bookmarksTypeEnum.hidden)"
+                    >
+                      <span>Show again</span>
+                    </button>
+                  }
+                }
+              }
+            </div>
           </div>
         </div>
 
@@ -251,7 +256,7 @@
           <p
             class="show-description"
             appReadMore
-            [maxLength]="250"
+            [maxLength]="readMoreLength"
             [text]="$selectedShow()?.overview || ''"
           >
             {{ $selectedShow()?.overview }}

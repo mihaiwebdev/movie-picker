@@ -87,6 +87,7 @@ export class ShowComponent {
   public readonly $isTrailerVisibile = signal(false);
   public readonly $isDesktopTrailerVisible = signal(false);
   public readonly bookmarksTypeEnum = BookmarksEnum;
+  public readonly readMoreLength = window.innerWidth < 768 ? 155 : 400;
 
   ngOnInit(): void {
     if (!this.$selectedShow()) {
@@ -220,6 +221,7 @@ export class ShowComponent {
           this.$isWatchlistLoading.set(false);
           this.$isWatchedLoading.set(false);
           this.$isHideLoading.set(false);
+          this.nextShow(false, true);
         }),
       )
       .subscribe();
