@@ -87,7 +87,7 @@ export class ShowComponent {
   public readonly $isTrailerVisibile = signal(false);
   public readonly $isDesktopTrailerVisible = signal(false);
   public readonly bookmarksTypeEnum = BookmarksEnum;
-  public readonly readMoreLength = window.innerWidth < 768 ? 155 : 400;
+  public readonly readMoreLength = window.innerWidth < 768 ? 100 : 500;
 
   ngOnInit(): void {
     if (!this.$selectedShow()) {
@@ -202,12 +202,6 @@ export class ShowComponent {
             : bookmarkType === BookmarksEnum.watched
               ? this.$isWatched.set(true)
               : this.$isHidden.set(true);
-
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Success',
-            detail: `Show was added in ${listName}!`,
-          });
         }),
         catchError((error) => {
           this.messageService.add({

@@ -288,7 +288,7 @@ export class ShowsService {
     showType: ShowTypesEnum,
     page: number = 1,
   ): Observable<ShowResponseInterface> {
-    const watchProviders = this.getWatchProviders();
+    const watchProviders = this.getWatchProviders() || '8';
     const path = `${showType}?language=en-US&page=${page}&sort_by=popularity.desc&watch_region=${this.$userLocation()?.country || 'US'}&with_watch_providers=${watchProviders}`;
 
     return this.http.get<ShowResponseInterface>(
@@ -305,7 +305,7 @@ export class ShowsService {
 
   // Get Shows Algo
   public getShows(page: number): Observable<ShowInterface[]> {
-    const watchProviders = this.getWatchProviders();
+    const watchProviders = this.getWatchProviders() || '8';
     const genresIds = this.getGenreIds();
     const joinedGenres = genresIds.join(',');
     let path = `${this.showsStore.$selectedShowType()}?language=en-US&page=${page}&sort_by=vote_count.desc&watch_region=${this.$userLocation()?.country || 'US'}&with_genres=${joinedGenres}&with_watch_providers=${watchProviders}`;
@@ -317,7 +317,9 @@ export class ShowsService {
     return this.http
       .get<ShowResponseInterface>(`${this.tmdbApi}/discover/${path}`)
       .pipe(
-        tap((res) => this.showsStore.setResultPages(res.total_pages)),
+        tap((res) => {
+          this.showsStore.setResultPages(res.total_pages);
+        }),
         map((res) => res.results),
         switchMap((res) => {
           return this.$currentUser()?.uid
@@ -336,7 +338,9 @@ export class ShowsService {
         }),
         map(this.sortShowsByScore.bind(this)),
         switchMap((res) => {
-          return res.length < 1 ? this.getShows(page + 1) : of(res);
+          return res.length < 1 && this.showsStore.$resultsPages() > page
+            ? this.getShows(page + 1)
+            : of(res);
         }),
       );
   }
